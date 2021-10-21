@@ -1,6 +1,6 @@
 .container {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background-image: linear-gradient(#0099ff, #ff00ff);
   display: flex;
   justify-content: center;
@@ -12,7 +12,7 @@
   text-align: center;
   background-color: transparent;
   padding: 1%;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }
 .label {
   margin: 0 auto;
@@ -116,6 +116,9 @@
 }
 @media screen and (max-width: 600px) {
   .subContainer {
-    width: 110%;
+    width: 100vw;
+  }
+  .btn-submit{ 
+    width: 35%;
   }
 }
