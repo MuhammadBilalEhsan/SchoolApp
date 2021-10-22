@@ -2,18 +2,9 @@ const User = require("./userModel");
 const bcrypt = require("bcryptjs");
 
 module.exports.registerUser = async (req, res) => {
-  let { full_name, father_name, email, password, roll, phone_no, class_name } =
-    req.body;
+  let { name, age, email, password, roll, fatherName, phone } = req.body;
 
-  if (
-    !full_name ||
-    !father_name ||
-    !email ||
-    !password ||
-    !roll ||
-    !phone_no ||
-    !class_name
-  ) {
+  if (!name || !age || !email || !password || !roll || !fatherName || !phone) {
     res.status(422).json({ error: "You Should write all fields properly..!" });
   }
   try {
@@ -22,13 +13,13 @@ module.exports.registerUser = async (req, res) => {
       return res.status(422).json({ error: "User already exists" });
     }
     const user = new User({
-      full_name,
-      father_name,
+      name,
+      age,
       email,
       password,
       roll,
-      phone_no,
-      class_name,
+      fatherName,
+      phone,
     });
 
     const userSave = await user.save();
@@ -47,7 +38,7 @@ module.exports.loginUser = async (req, res) => {
     let token;
     let { email, password } = req.body;
     if (!email || !password) {
-      return res.status(422).json({ error: "Please fill all fields properly" });
+      return res.status(400).json({ error: "Please fill all fields properly" });
     } else {
       const userExist = await User.findOne({ email: email }).exec();
 
@@ -58,12 +49,12 @@ module.exports.loginUser = async (req, res) => {
           httpOnly: true,
         });
         if (!isMatch) {
-          return res.status(402).json({ error: "Invalid Credentials" });
+          return res.status(401).json({ error: "Invalid Credentials" });
         } else {
           return res.status(200).json({ message: "User Login successfully" });
         }
       } else {
-        return res.status(402).json({ error: "User not exist" });
+        return res.status(401).json({ error: "User not exist" });
       }
     }
   } catch (err) {
@@ -84,4 +75,10 @@ module.exports.profile = async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+};
+module.exports.classMaterials = async (req, res) => {
+  // const id = req.params.id;
+  const id = "61708a8defe0fc8e555e618e";
+  console.log(id);
+  // const materials =
 };

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-// import { useHistory } from 'react-router-dom'
+import { useHistory } from "react-router-dom";
+import appSetting from "../appSetting/appSetting";
+import axios from "axios";
 import { CgProfile } from "react-icons/cg";
 import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
@@ -12,7 +14,7 @@ const Login = () => {
   });
   const [loader, setLoader] = useState(false);
 
-  //   const history = useHistory();
+  const history = useHistory();
   let name, value;
   const handleChange = e => {
     name = e.target.name;
@@ -20,16 +22,30 @@ const Login = () => {
     setLoginData({ ...loginData, [name]: value });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log("login");
     let { email, password } = loginData;
     if (!email) {
       alert("Please Enter The Correct Email!");
     } else if (!password || password.length < 8) {
       alert("Password! contains at least 8 characters !");
     } else {
-      alert("Enter Login Fuction");
+      // const res = await axios.post("http://4000/login", loginData);
+      // const res = await fetch(`${appSetting.severHostedUrl}/user/login`, {
+      const res = await fetch(`/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (data.status === 401 || !data) {
+        alert("Invalid Credentials");
+      } else {
+        alert("User Login Successfully");
+        history.push("/profile");
+      }
     }
   };
 
@@ -38,9 +54,8 @@ const Login = () => {
     <>
       <div className="container">
         <div className="subContainer">
-          <form onSubmit={e => handleSubmit(e)}>
-            
-              <FaUserAlt className="large-icon" color="#fa5bface" size="35%" />
+          <form method="POST" onSubmit={e => handleSubmit(e)}>
+            <FaUserAlt className="large-icon" color="#fa5bface" size="35%" />
 
             <div className="label">
               <CgProfile className="small-icons" color="#fff" size="32px" />
@@ -82,12 +97,6 @@ const Login = () => {
               value="LOGIN"
               onSubmit={e => handleSubmit(e)}
             />
-            <br />
-            <br />
-            {/* <span>New to Computing Yard?</span><span onClick={() => history.push('/signup')} className="link">Register</span> */}
-            <br />
-            <br />
-            {/* <span onClick={() => history.push('/rpassword')} className="link forgot">Forgot Password ?</span> */}
           </form>
         </div>
       </div>

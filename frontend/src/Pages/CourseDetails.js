@@ -1,20 +1,17 @@
 import React from "react";
 import UserSidebar from "./UserSidebar.js";
 
-const Profile = () => {
-
+const CourseDetails = () => {
   return (
     <>
       <div className="parent">
         <UserSidebar />
 
         <div className="dashboard">
-          <div className="sub_dash sub_dash_pro">
-            
-          </div>
+          <div className="sub_dash sub_dash_cor"></div>
         </div>
       </div>
     </>
   );
 };
-export default Profile;
+export default CourseDetails;

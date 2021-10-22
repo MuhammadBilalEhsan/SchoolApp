@@ -3,12 +3,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const UserSchema = mongoose.Schema({
-  full_name: {
+  name: {
     type: String,
     required: true,
   },
-  father_name: {
-    type: String,
+  age: {
+    type: Number,
     required: true,
   },
   email: {
@@ -19,17 +19,33 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  atClass: {
+    type: String,
+  },
+  section: {
+    type: String,
+  },
+  subjects: [],
   roll: {
     type: String,
     required: true,
   },
-  phone_no: {
+  fatherName: {
+    type: String,
+    required: true,
+  },
+  phone: {
     type: Number,
     required: true,
   },
-  class_name: {
+  fatherWork: {
     type: String,
-    required: true,
+  },
+  classTeacher: {
+    type: String,
+  },
+  education: {
+    type: String,
   },
   tokens: [
     {

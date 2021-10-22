@@ -1,7 +1,7 @@
 import React from "react";
 import UserSidebar from "./UserSidebar.js";
 
-const Profile = () => {
+const Attendance = () => {
 
   return (
     <>
@@ -9,7 +9,7 @@ const Profile = () => {
         <UserSidebar />
 
         <div className="dashboard">
-          <div className="sub_dash sub_dash_pro">
+          <div className="sub_dash sub_dash_att">
             
           </div>
         </div>
@@ -17,4 +17,4 @@ const Profile = () => {
     </>
   );
 };
-export default Profile;
+export default Attendance
