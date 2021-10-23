@@ -17,7 +17,8 @@
   text-align: center;
   background-color: #fff;
   border-radius: 5px;
-  /* box-shadow: rgba(4, 0, 255, 0.548) 0px 10px 20px, rgba(0, 0, 0, 0.103) 0px 6px 6px; */
+  box-shadow: rgba(0, 0, 0, 0.548) 0px 10px 20px,
+    rgba(0, 0, 0, 0.103) 0px 6px 6px;
   cursor: pointer;
 }
 
@@ -25,36 +26,29 @@
   box-shadow: rgba(4, 0, 255, 0.548) 0px 10px 20px,
     rgba(0, 0, 0, 0.103) 0px 6px 6px;
 }
-#side_bar_profile:hover {
-  -webkit-box-shadow: inset -2px 0px 114px 14px rgba(0, 4, 255, 0.37);
-  -moz-box-shadow: inset -2px 0px 114px 14px rgba(17, 0, 255, 0.322);
-  box-shadow: inset -2px 0px 114px 14px rgba(4, 0, 255, 0.226);
-}
 #side_bar_cdetails {
   box-shadow: rgba(255, 0, 0, 0.548) 0px 10px 20px,
     rgba(0, 0, 0, 0.103) 0px 6px 6px;
-}
-#side_bar_cdetails:hover {
-  -webkit-box-shadow: inset -2px 0px 114px 14px rgba(255, 0, 0, 0.37);
-  -moz-box-shadow: inset -2px 0px 114px 14px rgba(255, 0, 0, 0.322);
-  box-shadow: inset -2px 0px 114px 14px rgba(255, 0, 0, 0.226);
 }
 #side_bar_attendance {
   box-shadow: rgba(0, 255, 34, 0.548) 0px 10px 20px,
     rgba(0, 0, 0, 0.103) 0px 6px 6px;
 }
-#side_bar_attendance:hover {
-  -webkit-box-shadow: inset -2px 0px 114px 14px rgba(0, 255, 0, 0.37);
-  -moz-box-shadow: inset -2px 0px 114px 14px rgba(0, 255, 42, 0.322);
-  box-shadow: inset -2px 0px 114px 14px rgba(0, 255, 21, 0.226);
-}
 #side_bar_cmaterials {
   box-shadow: rgba(225, 0, 255, 0.548) 0px 10px 20px,
     rgba(0, 0, 0, 0.103) 0px 6px 6px;
 }
+#side_bar_profile:hover {
+  box-shadow: inset -2px 0px 114px 14px rgba(4, 0, 255, 0.226);
+}
+#side_bar_cdetails:hover {
+  box-shadow: inset -2px 0px 114px 14px rgba(255, 0, 0, 0.226);
+}
+
+#side_bar_attendance:hover {
+  box-shadow: inset -2px 0px 114px 14px rgba(0, 255, 21, 0.226);
+}
 #side_bar_cmaterials:hover {
-  -webkit-box-shadow: inset -2px 0px 114px 14px rgba(217, 0, 255, 0.37);
-  -moz-box-shadow: inset -2px 0px 114px 14px rgba(217, 0, 255, 0.322);
   box-shadow: inset -2px 0px 114px 14px rgba(174, 0, 255, 0.226);
 }
 

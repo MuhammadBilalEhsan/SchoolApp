@@ -1,0 +1,17 @@
+const initialState = {
+  users: [],
+  curUser: {},
+};
+
+const usersReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case "GET_USERS":
+      return { ...state, users: action.payload };
+    case "CUR_USER":
+      return { ...state, curUser: action.payload };
+    default:
+      return state;
+  }
+};
+
+export default usersReducer;

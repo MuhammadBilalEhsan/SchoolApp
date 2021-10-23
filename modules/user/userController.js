@@ -2,9 +2,9 @@ const User = require("./userModel");
 const bcrypt = require("bcryptjs");
 
 module.exports.registerUser = async (req, res) => {
-  let { name, age, email, password, roll, fatherName, phone } = req.body;
+  let { fname, lname, email, password, roll } = req.body;
 
-  if (!name || !age || !email || !password || !roll || !fatherName || !phone) {
+  if (!fname || !lname || !email || !password || roll) {
     res.status(422).json({ error: "You Should write all fields properly..!" });
   }
   try {
@@ -13,13 +13,11 @@ module.exports.registerUser = async (req, res) => {
       return res.status(422).json({ error: "User already exists" });
     }
     const user = new User({
-      name,
-      age,
+      fname,
+      lname,
       email,
       password,
       roll,
-      fatherName,
-      phone,
     });
 
     const userSave = await user.save();
@@ -41,7 +39,6 @@ module.exports.loginUser = async (req, res) => {
       return res.status(400).json({ error: "Please fill all fields properly" });
     } else {
       const userExist = await User.findOne({ email: email }).exec();
-
       if (userExist) {
         const isMatch = await bcrypt.compare(password, userExist.password);
         token = await userExist.generateAuthToken();
@@ -51,7 +48,9 @@ module.exports.loginUser = async (req, res) => {
         if (!isMatch) {
           return res.status(401).json({ error: "Invalid Credentials" });
         } else {
-          return res.status(200).json({ message: "User Login successfully" });
+          return res
+            .status(200)
+            .send({ curUser: userExist, message: "User Login successfully" });
         }
       } else {
         return res.status(401).json({ error: "User not exist" });
@@ -60,6 +59,10 @@ module.exports.loginUser = async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+};
+module.exports.getAllData = async (req, res) => {
+  const allUsers = await User.find({});
+  res.send(allUsers);
 };
 
 module.exports.profile = async (req, res) => {

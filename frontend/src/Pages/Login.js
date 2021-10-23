@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import appSetting from "../appSetting/appSetting";
 import axios from "axios";
 import { CgProfile } from "react-icons/cg";
 import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import "../css/login.css";
+import { useDispatch } from "react-redux";
+import { curUser } from "../redux/actions/index";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
-  const [loader, setLoader] = useState(false);
+  // const [loader, setLoader] = useState(false);
+  const dispatch = useDispatch();
 
   const history = useHistory();
   let name, value;
@@ -24,32 +26,41 @@ const Login = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     let { email, password } = loginData;
     if (!email) {
       alert("Please Enter The Correct Email!");
     } else if (!password || password.length < 8) {
       alert("Password! contains at least 8 characters !");
     } else {
-      // const res = await axios.post("http://4000/login", loginData);
-      // const res = await fetch(`${appSetting.severHostedUrl}/user/login`, {
-      const res = await fetch(`/user/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (data.status === 401 || !data) {
+      // axios
+      //   .post("user/login", loginData)
+      //   .then(res => {
+      //     const me = res.data.curUser
+      //     console.log(me)
+      //     dispatch(curUser(me));
+
+      //     history.push("/profile");
+      //   })
+      //   .catch(err => {
+      //     alert("Invalid Credentials");
+      //   });
+      try {
+        const res = await axios.post("user/login", loginData);
+        if (res.status === 200) {
+          localStorage.setItem("uid", res.data.curUser._id);
+          dispatch(curUser(res.data.curUser));
+
+          history.push("/profile");
+        }
+      } catch (err) {
         alert("Invalid Credentials");
-      } else {
-        alert("User Login Successfully");
-        history.push("/profile");
+        console.log(err);
       }
     }
   };
 
-  if (loader) return <div className="loader"></div>;
+  // if (loader) return <div className="loader"></div>;
   return (
     <>
       <div className="container">
