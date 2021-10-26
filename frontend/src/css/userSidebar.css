@@ -54,12 +54,12 @@
 
 .dashboard {
   width: 70%;
-  height: 100vh;
+  height: 93.5vh;
   display: flex;
 }
 .sub_dash {
   width: 100%;
-  height: 93.5vh;
+  height: 100%;
   text-align: center;
   background-color: #fff;
   margin: auto;
@@ -80,4 +80,41 @@
 .sub_dash_pro_cla {
   box-shadow: rgba(195, 0, 255, 0.548) 0px 10px 20px,
     rgba(204, 0, 255, 0.103) 0px 6px 6px;
+}
+@media screen and (max-width: 1145px) {
+  .parent {
+    flex-direction: column;
+  }
+  #side_bar {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    height: min-content;
+    font-size: 10px;
+  }
+  .side_bar_child {
+    width: 23.5%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+  }
+  .dashboard {
+    width: 98%;
+    height: 80vh;
+  }
+}
+@media screen and (max-width: 640px) {
+  #side_bar {
+    font-size: 8px;
+  }
+  .dashboard {
+    height: 85vh;
+  }
+}
+@media screen and (max-width: 510px) {
+  #side_bar {
+    font-size: 4px;
+  }
+  .dashboard {
+    height: 90vh;
+  }
 }
