@@ -10,7 +10,7 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect,
+  // Redirect,
 } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import axios from "axios";

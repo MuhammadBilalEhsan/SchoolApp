@@ -1,36 +1,68 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
 
-module.exports.registerUser = async (req, res) => {
-  let { fname, lname, email, password, roll } = req.body;
 
-  if (!fname || !lname || !email || !password || roll) {
-    res.status(422).json({ error: "You Should write all fields properly..!" });
-  }
+// REGISTER USER ROUTE
+module.exports.registerUser = async (req, res) => {
   try {
+    let { fname, lname, email, password, roll } = req.body;
+    if (!fname || !lname || !email || !password || !roll) {
+      res
+        .status(422)
+        .json({ error: "You Should write all fields properly..!" });
+    }
     const usertExist = await User.findOne({ email }).exec();
     if (usertExist) {
       return res.status(422).json({ error: "User already exists" });
-    }
-    const user = new User({
-      fname,
-      lname,
-      email,
-      password,
-      roll,
-    });
-
-    const userSave = await user.save();
-    if (userSave) {
-      return res.status(200).json({ message: "User saved successfully" });
     } else {
-      return res.status(500).json({ message: "User can not registered" });
+      const user = new User({
+        fname,
+        lname,
+        email,
+        password,
+        roll,
+      });
+
+      const userSave = await user.save();
+      if (userSave) {
+        return res.status(200).json({ message: "User Registered successfully" });
+      } else {
+        return res.status(500).json({ message: "User can not registered" });
+      }
     }
   } catch (err) {
     console.log(err);
   }
 };
 
+// EDIT PROFILE ROUTE
+module.exports.EditProfile = async (req, res) => {
+  try {
+    let { id, fname, lname, fatherName, atClass, age, phone } = req.body;
+    if (!id || !fatherName || !atClass || !age || !phone) {
+      return res.status(422).json({ error: "please fill all fields properly" });
+    }
+    const userUpdate = await User.findByIdAndUpdate(id, {
+      fname,
+      lname,
+      fatherName,
+      atClass,
+      age,
+      phone,
+    });
+    if (!userUpdate) {
+      res.status(400).send({ error: "User not Update" });
+    } else {
+      res.status(200).send({ message: "User Update Successfully" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+// USER LOGIN ROUTE
 module.exports.loginUser = async (req, res) => {
   try {
     let token;
@@ -60,6 +92,11 @@ module.exports.loginUser = async (req, res) => {
     console.log(err);
   }
 };
+
+
+
+
+// GETTING ALL DATA ROUTE
 module.exports.getAllData = async (req, res) => {
   const allUsers = await User.find({});
   res.send(allUsers);

@@ -4,7 +4,7 @@ export const getUsers = data => {
     payload: data,
   };
 };
-export const curUser = data => {
+export const curUserFun = data => {
   return {
     type: "CUR_USER",
     payload: data,

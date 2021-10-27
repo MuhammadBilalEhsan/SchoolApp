@@ -6,7 +6,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import "../css/login.css";
 import { useDispatch } from "react-redux";
-import { curUser } from "../redux/actions/index";
+import { curUserFun } from "../redux/actions/index";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
@@ -49,7 +49,7 @@ const Login = () => {
         const res = await axios.post("user/login", loginData);
         if (res.status === 200) {
           localStorage.setItem("uid", res.data.curUser._id);
-          dispatch(curUser(res.data.curUser));
+          dispatch(curUserFun(res.data.curUser));
 
           history.push("/profile");
         }

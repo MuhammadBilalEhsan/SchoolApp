@@ -23,6 +23,25 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  // Other Fields that can be user fill by him self
+
+  fatherName: {
+    type: String,
+    required: false,
+  },
+  atClass: {
+    type: String,
+    required: false,
+  },
+  age: {
+    type: Number,
+    required: false,
+  },
+  phone: {
+    type: Number,
+    required: false,
+  },
+
   tokens: [
     {
       token: {

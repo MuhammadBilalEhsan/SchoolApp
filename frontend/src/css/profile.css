@@ -36,7 +36,11 @@
 #edit_img:hover {
   background-color: rgb(202, 202, 202);
 }
-#edit_prof,
+.edit_pro_btn{
+  position: relative;
+  right: 0.5%;
+  bottom: 32%;
+}
 #record {
   outline: none;
   border: none;
@@ -57,6 +61,8 @@
   background-color: rgb(40, 134, 40);
 }
 .sub_dash_bot {
+  display: flex;
+  justify-content: center;
   margin-top: 10%;
   color: blue;
 }
@@ -77,6 +83,9 @@ h2 {
   .sub_dash_bot {
     margin-top: 20%;
   }
+  .edit_pro_btn{
+    bottom: 50%;
+  }
 }
 @media screen and (max-width: 640px) {
   .pro-header {
@@ -95,4 +104,5 @@ h2 {
   .img-div {
     width: 40% !important;
   }
+  
 }
