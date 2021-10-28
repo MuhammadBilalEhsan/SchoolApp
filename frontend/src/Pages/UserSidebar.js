@@ -17,6 +17,7 @@ const UserSidebar = () => {
         >
           <h1 style={{ color: "blue" }}>Profile</h1>
           <FaUserAlt color="blue" size="30%" />
+          
         </div>
 
         <div

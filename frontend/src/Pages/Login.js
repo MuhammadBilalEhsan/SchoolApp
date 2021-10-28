@@ -5,8 +5,6 @@ import { CgProfile } from "react-icons/cg";
 import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import "../css/login.css";
-import { useDispatch } from "react-redux";
-import { curUserFun } from "../redux/actions/index";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
@@ -14,7 +12,6 @@ const Login = () => {
     password: "",
   });
   // const [loader, setLoader] = useState(false);
-  const dispatch = useDispatch();
 
   const history = useHistory();
   let name, value;
@@ -24,7 +21,7 @@ const Login = () => {
     setLoginData({ ...loginData, [name]: value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     let { email, password } = loginData;
@@ -33,30 +30,30 @@ const Login = () => {
     } else if (!password || password.length < 8) {
       alert("Password! contains at least 8 characters !");
     } else {
-      // axios
-      //   .post("user/login", loginData)
-      //   .then(res => {
-      //     const me = res.data.curUser
-      //     console.log(me)
-      //     dispatch(curUser(me));
-
-      //     history.push("/profile");
-      //   })
-      //   .catch(err => {
-      //     alert("Invalid Credentials");
-      //   });
-      try {
-        const res = await axios.post("user/login", loginData);
-        if (res.status === 200) {
+      axios
+        .post("user/login", loginData)
+        .then(res => {
           localStorage.setItem("uid", res.data.curUser._id);
-          dispatch(curUserFun(res.data.curUser));
 
           history.push("/profile");
-        }
-      } catch (err) {
-        alert("Invalid Credentials");
-        console.log(err);
-      }
+        })
+        .catch(err => {
+          alert("Invalid Credentials");
+        });
+      // try {
+      //   const res = await axios.post("user/login", loginData);
+      //   if (res.status === 200) {
+      //     localStorage.setItem("uid", res.data.curUser._id);
+      //     dispatch(curUserFun(res.data.curUser));
+      //     // alert("User Login Successfully");
+      //     if (uid) {
+      //       history.push("/profile");
+      //     }
+      //   }
+      // } catch (err) {
+      //   alert("Invalid Credentials");
+      //   console.log(err);
+      // }
     }
   };
 
@@ -106,7 +103,7 @@ const Login = () => {
               className="btn btn-submit"
               type="submit"
               value="LOGIN"
-              onSubmit={e => handleSubmit(e)}
+              // onSubmit={e => handleSubmit(e)}
             />
           </form>
         </div>

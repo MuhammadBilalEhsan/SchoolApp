@@ -8,7 +8,6 @@ const usersReducer = (state = initialState, action) => {
     case "GET_USERS":
       return { ...state, users: action.payload };
     case "CUR_USER":
-      console.log(action.payload);
       return { ...state, curUser: action.payload };
     default:
       return state;

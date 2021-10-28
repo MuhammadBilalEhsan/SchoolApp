@@ -1,34 +1,27 @@
-// import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import UserSidebar from "./UserSidebar.js";
-import { useSelector, useDispatch } from "react-redux";
 import { GiRank3 } from "react-icons/gi";
-import { AiFillCamera } from "react-icons/ai";
+import { CgLogOff } from "react-icons/cg";
+// import { AiFillCamera } from "react-icons/ai";
+import { useHistory } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
-import EditProfile from "./EditProfile";
-import { curUserFun } from "../redux/actions/index";
+import { Button } from "@mui/material";
 import "../css/profile.css";
-const uid = localStorage.getItem("uid");
+import EditProfileFormik from "./EditProfileFormik.js";
+import OpenEdit from "./OpenEdit";
 
-const Profile = () => {
-  const users = useSelector(state => state.usersReducer.users);
-  const dispatch = useDispatch();
+const Profile = ({ uid, curUser }) => {
+  const history = useHistory();
+  // const [profImg, setProfImg] = useState(curUser.dp);
+  // const [profImg, setProfImg] = useState("C:\\fakepath\\Capture.PNG");
+  const [profImg, setProfImg] = useState("images/user.jpg");
+  // setProfImg(URL.createObjectURL("C:\\fakepath\\Capture.PNG"));
+  // console.log(profImg);
 
-  const me = users.find(user => user._id === uid);
-  if (me) {
-    dispatch(curUserFun(me));
-  }
-
-  const curUser = useSelector(state => state.usersReducer.curUser);
   let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
-  // console.log(curUser);
-
-  // const teachers = users.filter(curElem => curElem.roll === "teacher");
-  // const students = users.filter(curElem => curElem.roll === "student");
-
-  // const me = useSelector(state => state.usersReducer.curUser);
 
   return (
     <>
@@ -41,13 +34,16 @@ const Profile = () => {
                 <GiRank3 /> &nbsp; Records
               </button>
               <div className="img-div">
-                <img id="pro-img" src={`images/user.jpg`} alt="Profile_Pic" />
-                <button id="edit_img">
-                  <AiFillCamera size="20px" color="blue" />
-                </button>
+                <img id="pro-img" src={`${profImg}`} alt="Profile_Pic" />
+
+                {/* <button id="edit_img">
+                   <AiFillCamera size="20px" color="blue" />
+                  <FaUserEdit color="blue" size="32px" />
+                </button> */}
+                {/* <OpenEdit /> */}
               </div>
               <div className="edit_pro_btn">
-                <EditProfile uid={curUser.id} />
+                <EditProfileFormik />
               </div>
             </div>
             <div className="sub_dash_bot">
@@ -105,15 +101,18 @@ const Profile = () => {
                   </ListItem>
                 </List>
               </div>
-              {/* <Typography variant="h5">{fname}</Typography>
-              <Typography variant="h5">{lname}</Typography>
-              <Typography variant="h5">{age}</Typography>
-              <Typography variant="h5">{email}</Typography>
-              <Typography variant="h5">{fatherName}</Typography>
-              <Typography variant="h5">{phone}</Typography>
-              <Typography variant="h5">{roll}</Typography>
-              <Typography variant="h5">{atClass}</Typography> */}
             </div>
+            <Button
+              mt={5}
+              color="error"
+              onClick={() => {
+                localStorage.removeItem("uid");
+                history.push("/");
+              }}
+              variant="contained"
+            >
+              <CgLogOff /> &nbsp; Logout
+            </Button>
           </div>
         </div>
       </div>

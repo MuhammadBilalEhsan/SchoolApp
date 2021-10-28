@@ -36,7 +36,7 @@
 #edit_img:hover {
   background-color: rgb(202, 202, 202);
 }
-.edit_pro_btn{
+.edit_pro_btn {
   position: relative;
   right: 0.5%;
   bottom: 32%;
@@ -63,7 +63,7 @@
 .sub_dash_bot {
   display: flex;
   justify-content: center;
-  margin-top: 10%;
+  margin-top: 7%;
   color: blue;
 }
 h2 {
@@ -75,21 +75,28 @@ h2 {
   width: max-content;
   border-radius: 10px;
 }
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1400px) {
   .img-div {
-    margin-top: 10%;
+    margin-top: 4%;
     width: 30% !important;
   }
-  .sub_dash_bot {
-    margin-top: 20%;
+}
+@media screen and (max-width: 1145px) {
+  .img-div {
+    margin-top: 5%;
   }
-  .edit_pro_btn{
+}
+@media screen and (max-width: 900px) {
+  .edit_pro_btn {
     bottom: 50%;
   }
 }
 @media screen and (max-width: 640px) {
   .pro-header {
     height: 20%;
+  }
+  .sub_dash_bot {
+    margin-top: 20%;
   }
 }
 @media screen and (max-width: 450px) {
@@ -104,5 +111,4 @@ h2 {
   .img-div {
     width: 40% !important;
   }
-  
 }

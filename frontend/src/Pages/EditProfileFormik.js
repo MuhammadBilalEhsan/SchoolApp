@@ -11,6 +11,7 @@ import axios from "axios";
 export default function EditProfileFormik() {
   // const [id, setId] = useState(uid);
   const uidFromLocalStorage = localStorage.getItem("uid");
+  // const [profilePicture, setProfilePicture] = useState("");
   const [updateProf, setUpdatProf] = useState({
     id: uidFromLocalStorage,
     fname: "",
@@ -19,6 +20,7 @@ export default function EditProfileFormik() {
     atClass: "",
     age: "",
     phone: "",
+    dp: "",
   });
   const [open, setOpen] = useState(false);
 
@@ -39,7 +41,7 @@ export default function EditProfileFormik() {
   const submitUpdate = async e => {
     e.preventDefault();
     console.log(updateProf);
-    let { id, fname, lname, fatherName, atClass, age, phone } = updateProf;
+    let { id, fname, lname, fatherName, atClass, age, phone, dp } = updateProf;
     try {
       if (
         !id ||
@@ -48,7 +50,8 @@ export default function EditProfileFormik() {
         !fatherName ||
         !atClass ||
         !age ||
-        !phone
+        !phone ||
+        !dp
       ) {
         alert("Please fill all fields properly");
       } else {
@@ -137,6 +140,12 @@ export default function EditProfileFormik() {
             onChange={e => handleChange(e)}
             autoComplete="off"
             fullWidth
+          />
+          <input
+            name="dp"
+            type="file"
+            placeholder="Change Profile Picture"
+            onChange={e => handleChange(e)}
           />
         </DialogContent>
         <DialogActions>

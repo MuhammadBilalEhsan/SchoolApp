@@ -1,7 +1,6 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
 
-
 // REGISTER USER ROUTE
 module.exports.registerUser = async (req, res) => {
   try {
@@ -25,7 +24,9 @@ module.exports.registerUser = async (req, res) => {
 
       const userSave = await user.save();
       if (userSave) {
-        return res.status(200).json({ message: "User Registered successfully" });
+        return res
+          .status(200)
+          .json({ message: "User Registered successfully" });
       } else {
         return res.status(500).json({ message: "User can not registered" });
       }
@@ -60,8 +61,6 @@ module.exports.EditProfile = async (req, res) => {
   }
 };
 
-
-
 // USER LOGIN ROUTE
 module.exports.loginUser = async (req, res) => {
   try {
@@ -70,7 +69,7 @@ module.exports.loginUser = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: "Please fill all fields properly" });
     } else {
-      const userExist = await User.findOne({ email: email }).exec();
+      const userExist = await User.findOne({ email }).exec();
       if (userExist) {
         const isMatch = await bcrypt.compare(password, userExist.password);
         token = await userExist.generateAuthToken();
@@ -92,9 +91,6 @@ module.exports.loginUser = async (req, res) => {
     console.log(err);
   }
 };
-
-
-
 
 // GETTING ALL DATA ROUTE
 module.exports.getAllData = async (req, res) => {

@@ -41,6 +41,10 @@ const UserSchema = mongoose.Schema({
     type: Number,
     required: false,
   },
+  dp: {
+    type: String,
+    required: false,
+  },
 
   tokens: [
     {
