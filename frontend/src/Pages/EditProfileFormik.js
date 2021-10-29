@@ -41,7 +41,7 @@ export default function EditProfileFormik() {
   const submitUpdate = async e => {
     e.preventDefault();
     console.log(updateProf);
-    let { id, fname, lname, fatherName, atClass, age, phone, dp } = updateProf;
+    let { id, fname, lname, fatherName, atClass, age, phone } = updateProf;
     try {
       if (
         !id ||
@@ -50,8 +50,7 @@ export default function EditProfileFormik() {
         !fatherName ||
         !atClass ||
         !age ||
-        !phone ||
-        !dp
+        !phone
       ) {
         alert("Please fill all fields properly");
       } else {
@@ -78,7 +77,6 @@ export default function EditProfileFormik() {
           Edit Profile
         </DialogTitle>
         <DialogContent>
-          {/* <DialogContentText>Please Edit Your Info here</DialogContentText> */}
           <TextField
             required
             autoFocus
@@ -140,12 +138,6 @@ export default function EditProfileFormik() {
             onChange={e => handleChange(e)}
             autoComplete="off"
             fullWidth
-          />
-          <input
-            name="dp"
-            type="file"
-            placeholder="Change Profile Picture"
-            onChange={e => handleChange(e)}
           />
         </DialogContent>
         <DialogActions>

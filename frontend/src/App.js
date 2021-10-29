@@ -8,11 +8,14 @@ import ClassMaterials from "./Pages/ClassMaterials";
 import { curUserFun, getUsers } from "./redux/actions/index";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "./firebase/firebaseConfig";
 import axios from "axios";
 
 import PrivateRoute from "./PrivateRoute";
 
 function App() {
+  initializeApp(firebaseConfig);
   const users = useSelector(state => state.usersReducer.users);
   const curUser = useSelector(state => state.usersReducer.curUser);
 

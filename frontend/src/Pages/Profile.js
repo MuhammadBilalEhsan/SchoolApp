@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import UserSidebar from "./UserSidebar.js";
 import { GiRank3 } from "react-icons/gi";
 import { CgLogOff } from "react-icons/cg";
-// import { AiFillCamera } from "react-icons/ai";
 import { useHistory } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -11,15 +10,10 @@ import Divider from "@mui/material/Divider";
 import { Button } from "@mui/material";
 import "../css/profile.css";
 import EditProfileFormik from "./EditProfileFormik.js";
-import OpenEdit from "./OpenEdit";
+import ChangeProfilePic from "./ChangeProfilePic";
 
 const Profile = ({ uid, curUser }) => {
   const history = useHistory();
-  // const [profImg, setProfImg] = useState(curUser.dp);
-  // const [profImg, setProfImg] = useState("C:\\fakepath\\Capture.PNG");
-  const [profImg, setProfImg] = useState("images/user.jpg");
-  // setProfImg(URL.createObjectURL("C:\\fakepath\\Capture.PNG"));
-  // console.log(profImg);
 
   let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
 
@@ -33,15 +27,7 @@ const Profile = ({ uid, curUser }) => {
               <button id="record">
                 <GiRank3 /> &nbsp; Records
               </button>
-              <div className="img-div">
-                <img id="pro-img" src={`${profImg}`} alt="Profile_Pic" />
-
-                {/* <button id="edit_img">
-                   <AiFillCamera size="20px" color="blue" />
-                  <FaUserEdit color="blue" size="32px" />
-                </button> */}
-                {/* <OpenEdit /> */}
-              </div>
+              <ChangeProfilePic />
               <div className="edit_pro_btn">
                 <EditProfileFormik />
               </div>
