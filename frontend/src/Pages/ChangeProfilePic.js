@@ -1,46 +1,38 @@
 import React, { useState } from "react";
 
-import { getStorage, ref, uploadBytes } from "firebase/storage";
-
 import Fab from "@mui/material/Fab";
 import Button from "@mui/material/Button";
 import { FaTrashAlt } from "react-icons/fa";
+import axios from "axios";
 
 const ChangeProfilePic = () => {
-  const [imgPreview, setImgPreview] = useState(null);
-  const [imgObj, setImgObj] = useState(null);
-  const [error, setError] = useState(false);
+  const uidFromLocalStorage = localStorage.getItem("uid");
 
-  const storage = getStorage();
-
-  // const handleDpChange = e => {
-  //   const selected = e.target.files[0];
-  //   const allowTypes = ["image/png", "image/jpeg", "image/jpg"];
-  //   if (selected && allowTypes.includes(selected.type)) {
-  //     let reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setImgPreview(reader.result);
-  //     };
-  //     reader.readAsDataURL(selected);
-  //   } else {
-  //     setError(true);
-  //     console.log("Not supported");
-  //   }
-  // };
-  const saveImg = e => {
+  const handleDpChange = async e => {
     e.preventDefault();
-    const storageRef = ref(storage, `profile-images/${imgObj.name}`);
+    try {
+      const imgObj = e.target.files[0];
 
-    uploadBytes(storageRef, imgObj).then(snapshot => {
-      console.log(snapshot);
-    });
+      let formData = new FormData();
+      formData.append("myImg", imgObj, imgObj.name);
+      formData.append("_id", uidFromLocalStorage);
+      const config = {
+        headers: { "content-type": "multipart/form-data" },
+      };
+      const res = await axios.post("/user/editprofileimg", formData, config);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <>
       <div>
-        <input type="file" onChange={e => setImgObj(e.target.files[0])} />
-        <Button onClick={e => saveImg(e)}>Save Image</Button>
+        <input type="file" onChange={e => handleDpChange(e)} />
+        {/* <Button variant="contained" onClick={e => saveImg(e)}>
+          Save Image
+        </Button> */}
       </div>
     </>
   );

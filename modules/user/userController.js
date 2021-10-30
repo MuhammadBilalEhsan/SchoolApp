@@ -1,5 +1,6 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
+const { getStorage, ref, uploadBytes } = require("firebase/storage");
 
 // REGISTER USER ROUTE
 module.exports.registerUser = async (req, res) => {
@@ -40,25 +41,59 @@ module.exports.registerUser = async (req, res) => {
 module.exports.EditProfile = async (req, res) => {
   try {
     let { id, fname, lname, fatherName, atClass, age, phone } = req.body;
-    if (!id || !fatherName || !atClass || !age || !phone) {
+
+    if (!id || !fname || !lname || !fatherName || !atClass || !age || !phone) {
       return res.status(422).json({ error: "please fill all fields properly" });
-    }
-    const userUpdate = await User.findByIdAndUpdate(id, {
-      fname,
-      lname,
-      fatherName,
-      atClass,
-      age,
-      phone,
-    });
-    if (!userUpdate) {
-      res.status(400).send({ error: "User not Update" });
     } else {
-      res.status(200).send({ message: "User Update Successfully" });
+      const userUpdate = await User.findByIdAndUpdate(id, {
+        fname,
+        lname,
+        fatherName,
+        atClass,
+        age,
+        phone,
+      });
+
+      if (!userUpdate) {
+        res.status(400).send({ error: "User not Update" });
+      } else {
+        res.status(200).send({ message: "User Update Successfully" });
+      }
     }
   } catch (error) {
     console.log(error);
   }
+};
+
+module.exports.EditProfileImage = async (req, res) => {
+  const _id = req.body._id;
+  const dp = req.file;
+  try {
+    if (dp) {
+      const storage = getStorage();
+      let metadata = { contentType: dp.mimetype, name: dp.originalname };
+
+      // const storageRef = ref(storage, `profile-images/${dp.filename}`);
+      // const fbs = await uploadBytes(storageRef, dp);
+      // console.log(fbs);
+      // console.log(dp);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  // const dp = req.file ? req.file.filename : null;
+  // if (dp) {
+  //   const changeDP = await User.findByIdAndUpdate(_id, {
+  //     dp,
+  //   });
+  //   if (!changeDP) {
+  //     return res.status(400).send({ error: "Profile Pic not Update" });
+  //   } else {
+  //     return res
+  //       .status(200)
+  //       .send({ message: "Profile Pic Update Successfully" });
+  //   }
+  // }
 };
 
 // USER LOGIN ROUTE

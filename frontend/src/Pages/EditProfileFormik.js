@@ -9,9 +9,7 @@ import { FaUserEdit } from "react-icons/fa";
 import axios from "axios";
 // useformik
 export default function EditProfileFormik() {
-  // const [id, setId] = useState(uid);
   const uidFromLocalStorage = localStorage.getItem("uid");
-  // const [profilePicture, setProfilePicture] = useState("");
   const [updateProf, setUpdatProf] = useState({
     id: uidFromLocalStorage,
     fname: "",
