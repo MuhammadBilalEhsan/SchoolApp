@@ -1,14 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import UserSidebar from "./UserSidebar.js";
-import Checkbox from "@mui/material/Checkbox";
+import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
+import "../css/attendance.css";
+import axios from "axios";
 
 const Attendance = () => {
-  const [todayAttend, setTodayAttend] = useState("");
+  const [todayAttend, setTodayAttend] = useState(null);
 
-  const handleChange = (e) => {
-    e.preventDefault();
-    setTodayAttend(true);
-    console.log(todayAttend);
+  const _id = localStorage.getItem("uid");
+
+  const handleClick = async e => {
+    try {
+      e.preventDefault();
+      setTodayAttend(true);
+      const att = new Date();
+      const year = att.getFullYear();
+      const month = att.getMonth();
+      const date = att.getDate();
+      const attObj = { _id, year, month:11, date };
+      console.log(date);
+      const res = await axios.post("/user/attendance", attObj);
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -20,16 +36,34 @@ const Attendance = () => {
           <div className="sub_dash sub_dash_att">
             <div className="attendance_top">
               <h1>Check Today's Attendance</h1>
+              {/* <div className="att_slide_div">
+                <LinearProgress
+                  sx={{ width: "80%", height: "30px" }}
+                  color="success"
+                  variant="determinate"
+                  value={100}
+                /> */}
 
               {todayAttend ? (
-                <Checkbox size="large" disabled checked />
-              ) : (
-                <Checkbox
-                  size="large"
+                <Button
+                  size="small"
+                  variant="contained"
                   color="success"
-                  onChange={(e) => handleChange(e)}
-                />
+                  disabled
+                >
+                  Check In
+                </Button>
+              ) : (
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="success"
+                  onClick={e => handleClick(e)}
+                >
+                  Check In
+                </Button>
               )}
+              {/* </div> */}
             </div>
 
             <div className="attendance_bot">

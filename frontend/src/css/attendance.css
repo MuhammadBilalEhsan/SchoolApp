@@ -1,0 +1,4 @@
+.att_slide_div {
+  display: flex;
+  justify-content: space-around;
+}

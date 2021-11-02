@@ -45,6 +45,7 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: false,
   },
+  attendance: [],
 
   tokens: [
     {

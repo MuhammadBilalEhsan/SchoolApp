@@ -15,11 +15,12 @@ const storage = multer.diskStorage({
   var upload = multer({ storage: storage });
 
 user.route("/register").post(userController.registerUser);
+user.route("/login").post(userController.loginUser);
+user.route("/profile").post(userController.profile);
 user.route("/edit-profile").post(userController.EditProfile);
 user.post("/editprofileimg", upload.single("myImg"), userController.EditProfileImage);
-user.route("/login").post(userController.loginUser);
 user.route("/getdata").get(userController.getAllData);
-user.route("/profile").post(userController.profile);
+user.route("/attendance").post(userController.checkAttendance);
 user.route("/claass_materials").post(userController.classMaterials);
 
 module.exports = user;

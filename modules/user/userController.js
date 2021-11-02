@@ -133,6 +133,55 @@ module.exports.getAllData = async (req, res) => {
   res.send(allUsers);
 };
 
+module.exports.checkAttendance = async (req, res) => {
+  try {
+    const attObj = req.body;
+    const { _id, year, month, date } = attObj;
+    const findAtt = await User.findOne({ _id });
+    if (!findAtt) {
+      res.status(400).send({ error: "User Not Found" });
+    } else {
+      const objName = `${month}_${year}`;
+      const checkObj = findAtt.attendance.find(
+        curElem => curElem.monthName == objName
+      );
+      if (!checkObj) {
+        const newObj = { monthName: objName, [date]: date };
+        await User.findByIdAndUpdate(_id, {
+          attendance: [...findAtt.attendance, newObj],
+        });
+      } else {
+        const abc = await User.findByIdAndUpdate(_id, {
+          attendance: [...findAtt.attendance],
+        });
+        console.log(checkObj);
+      }
+
+      // const days = [];
+      // days.push({ [date]: date });
+      // const newObj = { monthName: objName, days };
+      // if (!checkObj) {
+      //   await User.findByIdAndUpdate(_id, {
+      //     attendance: [...findAtt.attendance, newObj],
+      //   });
+      // } else {
+      //   // console.log(checkObj);
+      //   //               { monthName: '10_2021', dates: [ { date: 2 } ] }
+
+      //   await User.findByIdAndUpdate(_id, {
+      //     attendance: [
+      //       ...findAtt.attendance,
+      //       checkObj.days.push({ [date]: date }),
+      //     ],
+      //   });
+      //   // console.log((findAtt.attendance.monthName = objName));
+      //   console.log(checkObj);
+      // }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 module.exports.profile = async (req, res) => {
   try {
     const _id = "61708a8defe0fc8e555e618e";
@@ -149,7 +198,6 @@ module.exports.profile = async (req, res) => {
 };
 module.exports.classMaterials = async (req, res) => {
   // const id = req.params.id;
-  const id = "61708a8defe0fc8e555e618e";
-  console.log(id);
-  // const materials =
+  // const id = "61708a8defe0fc8e555e618e";
+  // console.log(id);
 };

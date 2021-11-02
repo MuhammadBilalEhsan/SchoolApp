@@ -51,7 +51,7 @@ function App() {
             auth={uid}
             exact
             path="/"
-            SuccessComp={<Redirect to="/profile" />}
+            SuccessComp={<Redirect to="/attendance" />}
             FailComp={<Login />}
           />
           <PrivateRoute
