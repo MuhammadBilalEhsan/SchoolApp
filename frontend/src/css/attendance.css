@@ -1,4 +1,13 @@
-.att_slide_div {
+.attendance_bot {
   display: flex;
   justify-content: space-around;
+  justify-self: flex-end;
+}
+.attendance_bot_left,
+.attendance_bot_right {
+  width: 40%;
+  /* border: 1px solid blue; */
+  margin-top: 10%;
+  padding-top: 5%;
+  padding-right: 9%;
 }

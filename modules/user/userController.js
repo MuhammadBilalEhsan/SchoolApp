@@ -1,6 +1,7 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
-const { getStorage, ref, uploadBytes } = require("firebase/storage");
+const moment = require("moment");
+// const { getStorage, ref, uploadBytes } = require("firebase/storage");
 
 // REGISTER USER ROUTE
 module.exports.registerUser = async (req, res) => {
@@ -133,53 +134,51 @@ module.exports.getAllData = async (req, res) => {
   res.send(allUsers);
 };
 
-module.exports.checkAttendance = async (req, res) => {
+module.exports.markAttendance = async (req, res) => {
   try {
     const attObj = req.body;
     const { _id, year, month, date } = attObj;
-    const findAtt = await User.findOne({ _id });
-    if (!findAtt) {
-      res.status(400).send({ error: "User Not Found" });
+    const findUser = await User.findOne({ _id });
+    const mm_yy = `${month}_${year}`;
+    if (!findUser) {
+      return res.status(400).send({ error: "User not found" });
     } else {
-      const objName = `${month}_${year}`;
-      const checkObj = findAtt.attendance.find(
-        curElem => curElem.monthName == objName
-      );
-      if (!checkObj) {
-        const newObj = { monthName: objName, [date]: date };
-        await User.findByIdAndUpdate(_id, {
-          attendance: [...findAtt.attendance, newObj],
+      const getMonth = findUser.attendance.find(cur => cur.monthName === mm_yy);
+      if (!getMonth) {
+        const markAttWithNewMonth = await User.findByIdAndUpdate(_id, {
+          attendance: [
+            ...findUser.attendance,
+            { monthName: mm_yy, days: [{ [date]: date }] },
+          ],
         });
+        if (!markAttWithNewMonth) {
+          return res
+            .status(500)
+            .send({ error: "Mark Attendance with new Month failed!" });
+        }
       } else {
-        const abc = await User.findByIdAndUpdate(_id, {
-          attendance: [...findAtt.attendance],
+        const getMonthIndexNo = findUser.attendance.findIndex(
+          cur => cur.monthName === mm_yy
+        );
+        const newAtt = [...findUser.attendance];
+        newAtt[`${getMonthIndexNo}`].days.push({
+          [date]: date,
         });
-        console.log(checkObj);
+        const markAttWithExistMonth = await User.findByIdAndUpdate(_id, {
+          attendance: newAtt,
+        });
+        if (!markAttWithExistMonth) {
+          return res
+            .status(500)
+            .send({ error: "Mark Attendance with new Month failed!" });
+        }
       }
-
-      // const days = [];
-      // days.push({ [date]: date });
-      // const newObj = { monthName: objName, days };
-      // if (!checkObj) {
-      //   await User.findByIdAndUpdate(_id, {
-      //     attendance: [...findAtt.attendance, newObj],
-      //   });
-      // } else {
-      //   // console.log(checkObj);
-      //   //               { monthName: '10_2021', dates: [ { date: 2 } ] }
-
-      //   await User.findByIdAndUpdate(_id, {
-      //     attendance: [
-      //       ...findAtt.attendance,
-      //       checkObj.days.push({ [date]: date }),
-      //     ],
-      //   });
-      //   // console.log((findAtt.attendance.monthName = objName));
-      //   console.log(checkObj);
-      // }
+      return res
+        .status(200)
+        .send({ message: "Attendance marked Successfully" });
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 };
 module.exports.profile = async (req, res) => {
@@ -200,4 +199,12 @@ module.exports.classMaterials = async (req, res) => {
   // const id = req.params.id;
   // const id = "61708a8defe0fc8e555e618e";
   // console.log(id);
+};
+
+module.exports.test = async (req, res) => {
+  const m = moment();
+  // console.log(m.toString());
+  // console.log(m.format());
+  console.log(m.isValid());
+  console.log(m.daysInMonth());
 };
