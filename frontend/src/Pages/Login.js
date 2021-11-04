@@ -34,7 +34,6 @@ const Login = () => {
         .post("user/login", loginData)
         .then(res => {
           localStorage.setItem("uid", res.data.curUser._id);
-
           history.push("/profile");
         })
         .catch(err => {

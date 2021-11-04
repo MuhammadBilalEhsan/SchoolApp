@@ -1,0 +1,19 @@
+#main_spinner_div {
+  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(122, 113, 241, 0.315);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#sub_spinner_div {
+  margin: 0 auto;
+  width: 55vw;
+  height: 100vh;
+  border-radius: 50%;
+  /* background-color: rgba(247, 0, 255, 0.123); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

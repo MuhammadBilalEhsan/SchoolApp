@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserSidebar from "./UserSidebar.js";
 // import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
+import moment from "moment-business-days";
 import "../css/attendance.css";
 import axios from "axios";
 
-const Attendance = () => {
+const Attendance = ({ curUser }) => {
   const [todayAttend, setTodayAttend] = useState(null);
 
   const _id = localStorage.getItem("uid");
@@ -21,19 +22,25 @@ const Attendance = () => {
       const month = att.getMonth();
       const date = att.getDate();
       const attObj = { _id, year, month, date };
-      await axios.post("/user/attendance", attObj);
+      const res = await axios.post("/user/attendance", attObj);
+      console.log(res.data.message);
     } catch (err) {
       console.error(err);
+      alert("Your Attendance not marked");
     }
   };
-  const handleCheck = async e => {
-    try {
-      console.log("Testing...");
-      await axios.post("/user/test");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const curUserAtt = curUser.attendance;
+  // console.log(curUserAtt);
+  // curUserAtt?.map(curElem => console.log(curElem));
+  // console.log(curUserAtt[0].days.length);
+  useEffect(() => {
+    let m = moment();
+    // let diff = moment("02-11-2021", "DD-MM-YYYY").businessDiff(
+    //   moment("8-01-2021", "DD-MM-YYYY")
+    // );
+    console.log(m.isValid());
+    // console.log(diff);
+  }, []);
 
   return (
     <>
@@ -42,12 +49,11 @@ const Attendance = () => {
         <div className="dashboard">
           <div className="sub_dash sub_dash_att">
             <div className="attendance_top">
-              <Typography mt={2} mb={2} variant="h4">
+              <Typography mt={8} mb={2} variant="h4">
                 Mark Today's Attendance
               </Typography>
-              {/* <h1>Mark Today's Attendance</h1> */}
 
-              {/* {todayAttend ? (
+              {todayAttend ? (
                 <Button
                   size="small"
                   variant="contained"
@@ -65,19 +71,12 @@ const Attendance = () => {
                 >
                   Check In
                 </Button>
-              )} */}
-              <Button
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={e => handleCheck(e)}
-              >
-                Testing
-              </Button>
+              )}
             </div>
 
             <div className="attendance_bot">
               <div className="attendance_bot_left">
+                <h1>This Month</h1>
                 <CircularProgress
                   color="success"
                   size="50%"
@@ -86,6 +85,7 @@ const Attendance = () => {
                 />
               </div>
               <div className="attendance_bot_right">
+                <h1>Overall</h1>
                 <CircularProgress
                   color="success"
                   size="50%"

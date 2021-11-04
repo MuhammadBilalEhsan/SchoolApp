@@ -1,13 +1,17 @@
+
 .attendance_bot {
   display: flex;
   justify-content: space-around;
-  justify-self: flex-end;
+  align-self: flex-end;
 }
 .attendance_bot_left,
 .attendance_bot_right {
+  display: flex;
   width: 40%;
-  /* border: 1px solid blue; */
-  margin-top: 10%;
-  padding-top: 5%;
-  padding-right: 9%;
+  border: 1 px solid blue;
+  height: 40 vh;
+  margin-top: 10vh;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }

@@ -4,6 +4,7 @@ import Login from "./Pages/Login";
 import Profile from "./Pages/Profile";
 import CourseDetails from "./Pages/CourseDetails";
 import Attendance from "./Pages/Attendance";
+import Spinner from "./Pages/Spinner";
 import ClassMaterials from "./Pages/ClassMaterials";
 import { curUserFun, getUsers } from "./redux/actions/index";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
@@ -16,10 +17,11 @@ import PrivateRoute from "./PrivateRoute";
 
 function App() {
   initializeApp(firebaseConfig);
-  const users = useSelector(state => state.usersReducer.users);
+
   const curUser = useSelector(state => state.usersReducer.curUser);
 
   const [uid, setUid] = useState(curUser._id);
+  const [spinner, setSpinner] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -28,21 +30,21 @@ function App() {
       .get("/user/getdata")
       .then(response => {
         const data = response.data;
+        const _id = localStorage.getItem("uid");
+        const currentUser = data.find(user => user._id === _id);
+        if (currentUser) {
+          dispatch(curUserFun(currentUser));
+          setUid(true);
+          setSpinner(false);
+        } else {
+          setSpinner(false);
+          setUid(false);
+        }
         dispatch(getUsers(data));
       })
       .catch(error => console.log(error));
-
-    const uid = localStorage.getItem("uid");
-    const me = users.find(user => user._id === uid);
-    if (uid === "") {
-      setUid(false);
-    } else {
-      setUid(uid);
-    }
-    if (me) {
-      dispatch(curUserFun(me));
-    }
-  }, [users, dispatch]);
+  }, [dispatch]);
+  if (spinner) return <Spinner />;
   return (
     <>
       <Router>
@@ -63,7 +65,7 @@ function App() {
           <PrivateRoute
             auth={uid}
             path="/attendance"
-            SuccessComp={<Attendance />}
+            SuccessComp={<Attendance curUser={curUser} />}
             FailComp={<Redirect to="/" />}
           />
           <PrivateRoute

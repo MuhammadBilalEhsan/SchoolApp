@@ -1,6 +1,5 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
-const moment = require("moment");
 // const { getStorage, ref, uploadBytes } = require("firebase/storage");
 
 // REGISTER USER ROUTE
@@ -170,12 +169,12 @@ module.exports.markAttendance = async (req, res) => {
         if (!markAttWithExistMonth) {
           return res
             .status(500)
-            .send({ error: "Mark Attendance with new Month failed!" });
+            .send({ error: "Mark Attendance with Existing Month failed!" });
         }
       }
       return res
         .status(200)
-        .send({ message: "Attendance marked Successfully" });
+        .send({ message: "Todays attendance have been marked." });
     }
   } catch (err) {
     console.error(err);
@@ -199,12 +198,4 @@ module.exports.classMaterials = async (req, res) => {
   // const id = req.params.id;
   // const id = "61708a8defe0fc8e555e618e";
   // console.log(id);
-};
-
-module.exports.test = async (req, res) => {
-  const m = moment();
-  // console.log(m.toString());
-  // console.log(m.format());
-  console.log(m.isValid());
-  console.log(m.daysInMonth());
 };
