@@ -138,7 +138,10 @@ module.exports.getAllData = async (req, res) => {
 module.exports.markAttendance = async (req, res) => {
 	try {
 		const attObj = req.body;
-		const { _id, year, month, date } = attObj;
+		const { _id, year, month, date, time } = attObj;
+		if (!_id || !year || !month || !date || !time) {
+			return res.status(400).send({ error: "Invalid Request" });
+		}
 		const findUser = await User.findOne({ _id });
 		const mm_yy = `${month}_${year}`;
 		if (!findUser) {
@@ -151,9 +154,10 @@ module.exports.markAttendance = async (req, res) => {
 				const markAttWithNewMonth = await User.findByIdAndUpdate(_id, {
 					attendance: [
 						...findUser.attendance,
-						{ monthName: mm_yy, days: [{ [date]: date }] },
+						{ monthName: mm_yy, days: [{ todayDate: date, time }] },
 					],
 				});
+				console.log(markAttWithNewMonth);
 				if (!markAttWithNewMonth) {
 					return res
 						.status(500)
@@ -165,11 +169,13 @@ module.exports.markAttendance = async (req, res) => {
 				);
 				const newAtt = [...findUser.attendance];
 				newAtt[`${getMonthIndexNo}`].days.push({
-					[date]: date,
+					todayDate: date,
+					time,
 				});
 				const markAttWithExistMonth = await User.findByIdAndUpdate(_id, {
 					attendance: newAtt,
 				});
+				console.log(markAttWithExistMonth);
 				if (!markAttWithExistMonth) {
 					return res
 						.status(500)

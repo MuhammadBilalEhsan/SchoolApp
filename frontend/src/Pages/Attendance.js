@@ -10,57 +10,121 @@ import axios from "axios";
 
 const Attendance = ({ curUser }) => {
 	const [todayAttend, setTodayAttend] = useState(null);
+	const [firstDate, setFirstDate] = useState();
+	const [curMonth, setCurMonth] = useState();
+	const [curYear, setCurYear] = useState();
 	const [attPercent, setAttPercent] = useState(0);
 	const [lastMonthPercent, setLastMonthPercent] = useState(0);
 
 	const _id = localStorage.getItem("uid");
 
-	const overAllAttCalc = () => {
-		// getting total working/bussiness days (dateOfAddmission- curr Date)
+	// ____________________________________________________________________________________________
 
-		const largeDOA = new Date(curUser.dateOfAddmission);
-		const monthDOA = largeDOA.getMonth() + 1;
-		const dateDOA = largeDOA.getDate();
-		const yearDOA = largeDOA.getFullYear();
-		const dateOfAddmission = `${monthDOA}-${dateDOA}-${yearDOA}`;
-		let overallTotalDays = moment(dateOfAddmission, "MM-DD-YYYY").businessDiff(
-			moment(moment(), "MM-DD-YYYY"),
-		);
-		// getting total days in which user present
+	const checkTodayAtt = () => {
+		if (curUser.attendance && curUser.attendance.length > 0) {
+			const attArr = curUser.attendance;
+			const lastMonth = attArr[attArr?.length - 1];
 
-		const abc = curUser.attendance?.map((curElem, i) => {
-			return curElem.days.length;
-		});
-		const overallPresentDays = abc.reduce(myFunc);
-		function myFunc(total, num) {
-			return total + num;
+			// check user have marked his/her attendance of today or not
+			const checkTodayAtt = lastMonth.days.find(
+				(curElem) => curElem.todayDate === moment().date(),
+			);
+			if (!checkTodayAtt) {
+				setTodayAttend(false);
+			} else {
+				setTodayAttend(true);
+			}
 		}
-		const overAllOpperation = (overallPresentDays / overallTotalDays) * 100;
-		// console.log(overallTotalDays,overallPresentDays);
-		setAttPercent(overAllOpperation);
+	};
+
+	// ____________________________________________________________________________________________
+	const overAllAttCalc = () => {
+		if (curUser.attendance && curUser.attendance.length > 0) {
+			// getting total working/bussiness days (dateOfAddmission- curr Date)
+			if (
+				moment(curUser.dateOfAddmission).month() === moment().month() &&
+				moment(curUser.dateOfAddmission).year() === moment().year()
+			) {
+				setAttPercent(lastMonthPercent);
+			} else {
+				const largeDOA = new Date(curUser.dateOfAddmission);
+				const monthDOA = largeDOA.getMonth() + 1;
+				const dateDOA = largeDOA.getDate();
+				const yearDOA = largeDOA.getFullYear();
+				const dateOfAddmission = `${monthDOA}-${dateDOA}-${yearDOA}`;
+				let overallTotalDays = moment(
+					dateOfAddmission,
+					"MM-DD-YYYY",
+				).businessDiff(moment(moment(), "MM-DD-YYYY"));
+				// getting total days in which user present
+
+				const abc = curUser.attendance.map((curElem) => {
+					return curElem.days.length;
+				});
+				const overallPresentDays = abc?.reduce(myFunc);
+				function myFunc(total, num) {
+					return total + num;
+				}
+				const overAllOpperation = (overallPresentDays / overallTotalDays) * 100;
+				// console.log(overallTotalDays,overallPresentDays);
+				setAttPercent(overAllOpperation);
+			}
+		}
 	};
 	// ____________________________________________________________________________________________
 
 	const latestMonthAttCalc = () => {
-		// getting total working/bussiness days (01-CurMonth-curYear - curr Date)
+		if (curUser.attendance && curUser.attendance.length > 0) {
+			// getting total working/bussiness days (01-CurMonth-curYear - curr Date)
+			if (
+				moment(curUser.dateOfAddmission).date() === moment().date() &&
+				moment(curUser.dateOfAddmission).month() === moment().month() &&
+				moment(curUser.dateOfAddmission).year() === moment().year()
+			) {
+				setLastMonthPercent(100);
+			} else if (
+				moment(curUser.dateOfAddmission).month() === moment().month() &&
+				moment(curUser.dateOfAddmission).year() === moment().year()
+			) {
+				setFirstDate(moment(curUser.dateOfAddmission).date());
+				setCurMonth(moment(curUser.dateOfAddmission).month() + 1);
+				setCurYear(moment(curUser.dateOfAddmission).year());
 
-		const newDate = new Date();
-		const curMonth = newDate.getMonth() + 1;
-		const firstDate = 1;
-		const curYear = newDate.getFullYear();
-		const firstDateOfCurMonth = `${curMonth}-${firstDate}-${curYear}`;
-		let overallTotalDays = moment(
-			firstDateOfCurMonth,
-			"MM-DD-YYYY",
-		).businessDiff(moment(moment(), "MM-DD-YYYY"));
+				const firstDateOfCurMonth = `${curMonth}-${firstDate}-${curYear}`;
+				const overallTotalDays = moment(
+					firstDateOfCurMonth,
+					"MM-DD-YYYY",
+				).businessDiff(moment(moment(), "MM-DD-YYYY"));
+				// getting total days of current month in which user present
+				const attArr = curUser.attendance;
+				const lastMonth = attArr[attArr?.length - 1];
+				const curMonthTotalPresent = lastMonth.days.length;
 
-		// getting total days of current month in which user present
-		const attArr = curUser.attendance;
-		const lastMonth = attArr[attArr?.length - 1];
-		const curMonthTotalPresent = lastMonth.days.length;
+				const curMonthOpperation =
+					(curMonthTotalPresent / overallTotalDays) * 100;
+				setLastMonthPercent(curMonthOpperation);
+			} else {
+				setFirstDate(1);
+				setCurMonth(moment().month() + 1);
+				setCurYear(moment().year());
 
-		const curMonthOpperation = (curMonthTotalPresent / overallTotalDays) * 100;
-		setLastMonthPercent(curMonthOpperation);
+				const firstDateOfCurMonth = `${curMonth}-${firstDate}-${curYear}`;
+				const overallTotalDays = moment(
+					firstDateOfCurMonth,
+					"MM-DD-YYYY",
+				).businessDiff(moment(moment(), "MM-DD-YYYY"));
+				// getting total days of current month in which user present
+				const attArr = curUser.attendance;
+				const lastMonth = attArr[attArr?.length - 1];
+				const curMonthTotalPresent = lastMonth.days.length;
+
+				const curMonthOpperation =
+					(curMonthTotalPresent / overallTotalDays) * 100;
+				setLastMonthPercent(curMonthOpperation);
+			}
+		} else {
+			console.log("ok");
+		}
 	};
 
 	// ____________________________________________________________________________________________
@@ -73,7 +137,12 @@ const Attendance = ({ curUser }) => {
 			const year = att.getFullYear();
 			const month = att.getMonth();
 			const date = att.getDate();
-			const attObj = { _id, year, month, date };
+			const hours = att.getHours();
+			const mins = att.getMinutes();
+
+			const time = `${hours}:${mins}`;
+
+			const attObj = { _id, year, month, date, time };
 			const res = await axios.post("/user/attendance", attObj);
 			console.log(res.data.message);
 		} catch (err) {
@@ -81,10 +150,16 @@ const Attendance = ({ curUser }) => {
 			alert("Your Attendance not marked");
 		}
 	};
+	// useEffect(() => {
+	// 	checkTodayAtt();
+	// 	latestMonthAttCalc();
+	// 	overAllAttCalc();
+	// }, []);
 	useEffect(() => {
-		overAllAttCalc();
+		checkTodayAtt();
 		latestMonthAttCalc();
-	}, []);
+		overAllAttCalc();
+	});
 
 	return (
 		<>
