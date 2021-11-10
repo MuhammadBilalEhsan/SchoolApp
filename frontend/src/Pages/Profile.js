@@ -13,11 +13,11 @@ import EditProfileFormik from "./EditProfileFormik.js";
 import ChangeProfilePic from "./ChangeProfilePic";
 
 const Profile = ({ uid, curUser }) => {
-  const history = useHistory();
+	const history = useHistory();
 
-  let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
+	let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
 
-  return (
+	return (
 		<>
 			<div className="parent">
 				<UserSidebar />
@@ -49,6 +49,7 @@ const Profile = ({ uid, curUser }) => {
 									<ListItem button divider>
 										<ListItemText primary="Class :" />
 									</ListItem>
+
 									<ListItem button divider>
 										<ListItemText primary="Email :" />
 									</ListItem>

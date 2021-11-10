@@ -18,6 +18,7 @@ user.route("/register").post(userController.registerUser);
 user.route("/login").post(userController.loginUser);
 user.route("/profile").post(userController.profile);
 user.route("/edit-profile").post(userController.EditProfile);
+// user.post("/editprofileimg", userController.EditProfileImage);
 user.post("/editprofileimg", upload.single("myImg"), userController.EditProfileImage);
 user.route("/getdata").get(userController.getAllData);
 user.route("/attendance").post(userController.markAttendance);

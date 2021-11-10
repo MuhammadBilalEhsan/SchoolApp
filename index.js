@@ -1,5 +1,10 @@
+const http = require("http");
 const express = require("express");
+const cors = require("cors");
+const socketIO = require("socket.io");
+
 const app = express();
+
 const db = require("./database/conn");
 const user = require("./modules/user/userRoutes");
 const bodyParser = require("body-parser");
@@ -10,6 +15,7 @@ const firebaseConfig = require("./firebase/firebaseConfig");
 require("dotenv").config();
 const port = process.env.PORT || 4040;
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 initializeApp(firebaseConfig);
@@ -17,10 +23,26 @@ initializeApp(firebaseConfig);
 app.use("/user", user);
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+	res.send("Hello World!");
 });
 
-app.listen(port, _ => {
-  console.log(`server is working on http://localhost:${port}`);
-  db.dbConnector();
+// setting for socket io
+const server = http.createServer(app);
+const io = socketIO(server);
+
+io.on("connection", (socket) => {
+	console.log("SocketIO New Connection");
+
+	socket.on("joined", ({ curUser }) => {
+		console.log(curUser);
+	});
+
+	socket.on("disconnected", () => {
+		console.log("User Left");
+	});
+});
+
+server.listen(port, (_) => {
+	console.log(`server is working on http://localhost:${port}`);
+	db.dbConnector();
 });

@@ -9,7 +9,7 @@ import "../css/attendance.css";
 import axios from "axios";
 
 const Attendance = ({ curUser }) => {
-	const [todayAttend, setTodayAttend] = useState(null);
+	const [todayAttend, setTodayAttend] = useState(false);
 	const [firstDate, setFirstDate] = useState();
 	const [curMonth, setCurMonth] = useState();
 	const [curYear, setCurYear] = useState();
@@ -40,17 +40,18 @@ const Attendance = ({ curUser }) => {
 	// ____________________________________________________________________________________________
 	const overAllAttCalc = () => {
 		if (curUser.attendance && curUser.attendance.length > 0) {
-			// getting total working/bussiness days (dateOfAddmission- curr Date)
 			if (
 				moment(curUser.dateOfAddmission).month() === moment().month() &&
 				moment(curUser.dateOfAddmission).year() === moment().year()
 			) {
 				setAttPercent(lastMonthPercent);
 			} else {
-				const largeDOA = new Date(curUser.dateOfAddmission);
-				const monthDOA = largeDOA.getMonth() + 1;
-				const dateDOA = largeDOA.getDate();
-				const yearDOA = largeDOA.getFullYear();
+				// getting total working/bussiness days (dateOfAddmission- curr Date)
+
+				const largeDOA = moment(curUser.dateOfAddmission);
+				const monthDOA = largeDOA.month() + 1;
+				const dateDOA = largeDOA.date();
+				const yearDOA = largeDOA.year();
 				const dateOfAddmission = `${monthDOA}-${dateDOA}-${yearDOA}`;
 				let overallTotalDays = moment(
 					dateOfAddmission,
@@ -150,11 +151,6 @@ const Attendance = ({ curUser }) => {
 			alert("Your Attendance not marked");
 		}
 	};
-	// useEffect(() => {
-	// 	checkTodayAtt();
-	// 	latestMonthAttCalc();
-	// 	overAllAttCalc();
-	// }, []);
 	useEffect(() => {
 		checkTodayAtt();
 		latestMonthAttCalc();

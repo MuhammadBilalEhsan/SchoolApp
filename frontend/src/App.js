@@ -16,74 +16,76 @@ import axios from "axios";
 import PrivateRoute from "./PrivateRoute";
 
 function App() {
-  initializeApp(firebaseConfig);
+	initializeApp(firebaseConfig);
 
-  const curUser = useSelector(state => state.usersReducer.curUser);
+	const curUser = useSelector((state) => state.usersReducer.curUser);
 
-  const [uid, setUid] = useState(curUser._id);
-  const [spinner, setSpinner] = useState(true);
+	const [uid, setUid] = useState(curUser._id);
+	const [auth, setAuth] = useState(null);
+	const [spinner, setSpinner] = useState(true);
 
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
-  useEffect(() => {
-    axios
-      .get("/user/getdata")
-      .then(response => {
-        const data = response.data;
-        const _id = localStorage.getItem("uid");
-        const currentUser = data.find(user => user._id === _id);
-        if (currentUser) {
-          dispatch(curUserFun(currentUser));
-          setUid(true);
-          setSpinner(false);
-        } else {
-          setSpinner(false);
-          setUid(false);
-        }
-        dispatch(getUsers(data));
-      })
-      .catch(error => console.log(error));
-  }, [dispatch]);
-  if (spinner) return <Spinner />;
-  return (
-    <>
-      <Router>
-        <Switch>
-          <PrivateRoute
-            auth={uid}
-            exact
-            path="/"
-            SuccessComp={<Redirect to="/profile" />}
-            FailComp={<Login />}
-          />
-          <PrivateRoute
-            auth={uid}
-            path="/profile"
-            SuccessComp={<Profile curUser={curUser} />}
-            FailComp={<Redirect to="/" />}
-          />
-          <PrivateRoute
-            auth={uid}
-            path="/attendance"
-            SuccessComp={<Attendance curUser={curUser} />}
-            FailComp={<Redirect to="/" />}
-          />
-          <PrivateRoute
-            auth={uid}
-            path="/course-details"
-            SuccessComp={<CourseDetails />}
-            FailComp={<Redirect to="/" />}
-          />
-          <PrivateRoute
-            auth={uid}
-            path="/class-materials"
-            SuccessComp={<ClassMaterials />}
-            FailComp={<Redirect to="/" />}
-          />
-        </Switch>
-      </Router>
-    </>
-  );
+	useEffect(() => {
+		axios
+			.get("/user/getdata")
+			.then((response) => {
+				const data = response.data;
+				const _id = localStorage.getItem("uid");
+				const currentUser = data.find((user) => user._id === _id);
+				if (currentUser) {
+					setAuth(true);
+					dispatch(curUserFun(currentUser));
+					setUid(currentUser._id);
+					setSpinner(false);
+				} else {
+					setSpinner(false);
+					setAuth(false);
+				}
+				dispatch(getUsers(data));
+			})
+			.catch((error) => console.log(error));
+	}, [curUser]);
+	if (spinner) return <Spinner />;
+	return (
+		<>
+			<Router>
+				<Switch>
+					<PrivateRoute
+						auth={auth}
+						exact
+						path="/"
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Login />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						path="/profile"
+						SuccessComp={<Profile curUser={curUser} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						path="/attendance"
+						SuccessComp={<Attendance curUser={curUser} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						path="/course-details"
+						SuccessComp={<CourseDetails curUser={curUser} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						path="/class-materials"
+						SuccessComp={<ClassMaterials />}
+						FailComp={<Redirect to="/" />}
+					/>
+				</Switch>
+			</Router>
+		</>
+	);
 }
 
 export default App;

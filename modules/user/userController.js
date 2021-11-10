@@ -68,21 +68,24 @@ module.exports.EditProfile = async (req, res) => {
 };
 
 module.exports.EditProfileImage = async (req, res) => {
-	const _id = req.body._id;
-	const dp = req.file;
-	try {
-		if (dp) {
-			const storage = getStorage();
-			let metadata = { contentType: dp.mimetype, name: dp.originalname };
+	// const _id = req.body._id;
+	// const dp = req.file;
 
-			// const storageRef = ref(storage, `profile-images/${dp.filename}`);
-			// const fbs = await uploadBytes(storageRef, dp);
-			// console.log(fbs);
-			// console.log(dp);
-		}
-	} catch (err) {
-		console.log(err);
-	}
+	console.log(req.body);
+	console.log(req.file);
+	// try {
+	// if (dp) {
+	// const storage = getStorage();
+	// let metadata = { contentType: dp.mimetype, name: dp.originalname };
+
+	// const storageRef = ref(storage, `profile-images/${dp.filename}`);
+	// const fbs = await uploadBytes(storageRef, dp);
+	// console.log(fbs);
+	// console.log(dp);
+	// 	}
+	// } catch (err) {
+	// 	console.log(err);
+	// }
 	// const dp = req.file ? req.file.filename : null;
 	// if (dp) {
 	//   const changeDP = await User.findByIdAndUpdate(_id, {
