@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
-import Login from "./Pages/Login";
-import Profile from "./Pages/Profile";
-import CourseDetails from "./Pages/CourseDetails";
-import Attendance from "./Pages/Attendance";
-import Spinner from "./Pages/Spinner";
-import ClassMaterials from "./Pages/ClassMaterials";
-import { curUserFun, getUsers } from "./redux/actions/index";
+import Spinner from "./components/Spinner";
+import Login from "./components/Login";
+import Profile from "./components/Profile";
+import Attendance from "./components/Attendance";
+import CourseDetails from "./components/CourseDetails";
+import ClassMaterials from "./components/ClassMaterials";
+import Contact from "./components/Contact";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
+import { curUserFun, getUsers } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "./firebase/firebaseConfig";
 import axios from "axios";
+import "./App.css";
 
 import PrivateRoute from "./PrivateRoute";
 
-function App() {
-	initializeApp(firebaseConfig);
-
+const App = () => {
 	const curUser = useSelector((state) => state.usersReducer.curUser);
 
 	const [uid, setUid] = useState(curUser._id);
-	const [auth, setAuth] = useState(null);
 	const [spinner, setSpinner] = useState(true);
 
 	const dispatch = useDispatch();
@@ -34,58 +30,63 @@ function App() {
 				const _id = localStorage.getItem("uid");
 				const currentUser = data.find((user) => user._id === _id);
 				if (currentUser) {
-					setAuth(true);
 					dispatch(curUserFun(currentUser));
-					setUid(currentUser._id);
+					setUid(true);
 					setSpinner(false);
 				} else {
 					setSpinner(false);
-					setAuth(false);
+					setUid(false);
 				}
 				dispatch(getUsers(data));
 			})
 			.catch((error) => console.log(error));
-	}, [curUser]);
+	}, []);
 	if (spinner) return <Spinner />;
 	return (
 		<>
 			<Router>
 				<Switch>
 					<PrivateRoute
-						auth={auth}
+						auth={uid}
 						exact
 						path="/"
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Login />}
 					/>
 					<PrivateRoute
-						auth={auth}
+						auth={uid}
 						path="/profile"
 						SuccessComp={<Profile curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
-						auth={auth}
+						auth={uid}
 						path="/attendance"
 						SuccessComp={<Attendance curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
-						auth={auth}
-						path="/course-details"
-						SuccessComp={<CourseDetails curUser={curUser} />}
+						auth={uid}
+						path="/coursedetails"
+						SuccessComp={<CourseDetails />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
-						auth={auth}
-						path="/class-materials"
+						auth={uid}
+						path="/classmaterials"
 						SuccessComp={<ClassMaterials />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={uid}
+						path="/contact"
+						SuccessComp={<Contact />}
 						FailComp={<Redirect to="/" />}
 					/>
 				</Switch>
 			</Router>
 		</>
 	);
-}
+};
 
 export default App;

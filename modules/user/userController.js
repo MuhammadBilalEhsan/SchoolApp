@@ -1,6 +1,13 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
-// const { getStorage, ref, uploadBytes } = require("firebase/storage");
+const fs = require("fs");
+const {
+	getStorage,
+	ref,
+	uploadBytes,
+	getMetadata,
+} = require("firebase/storage");
+const { async } = require("@firebase/util");
 
 // REGISTER USER ROUTE
 module.exports.registerUser = async (req, res) => {
@@ -68,24 +75,26 @@ module.exports.EditProfile = async (req, res) => {
 };
 
 module.exports.EditProfileImage = async (req, res) => {
-	// const _id = req.body._id;
-	// const dp = req.file;
+	const _id = req.body._id;
+	const dp = JSON.parse(req.file);
+	try {
+		if (dp) {
+			const storage = getStorage();
 
-	console.log(req.body);
-	console.log(req.file);
-	// try {
-	// if (dp) {
-	// const storage = getStorage();
-	// let metadata = { contentType: dp.mimetype, name: dp.originalname };
-
-	// const storageRef = ref(storage, `profile-images/${dp.filename}`);
-	// const fbs = await uploadBytes(storageRef, dp);
-	// console.log(fbs);
-	// console.log(dp);
-	// 	}
-	// } catch (err) {
-	// 	console.log(err);
-	// }
+			const storageRef = ref(storage, "profileImg/" + _id);
+			const fbs = await uploadBytes(storageRef, req.file.buffer, {
+				contentType: req.file.mimetype,
+			});
+			if (fbs) {
+				console.log("successfully uploaded");
+			}
+			console.log(fbs);
+			// console.log(dp);
+			// console.log(`${__dirname}/profile-images/${dp.filename}`);
+		}
+	} catch (err) {
+		console.log(err);
+	}
 	// const dp = req.file ? req.file.filename : null;
 	// if (dp) {
 	//   const changeDP = await User.findByIdAndUpdate(_id, {
@@ -135,7 +144,7 @@ module.exports.loginUser = async (req, res) => {
 // GETTING ALL DATA ROUTE
 module.exports.getAllData = async (req, res) => {
 	const allUsers = await User.find({});
-	res.send(allUsers);
+	res.status(200).send(allUsers);
 };
 
 module.exports.markAttendance = async (req, res) => {

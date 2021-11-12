@@ -21,6 +21,8 @@ app.use(bodyParser.json());
 initializeApp(firebaseConfig);
 
 app.use("/user", user);
+// with this line of code we will get all the profile images
+app.use(express.static(__dirname + "./public/"));
 
 app.get("/", (req, res) => {
 	res.send("Hello World!");
@@ -42,7 +44,7 @@ io.on("connection", (socket) => {
 	});
 });
 
-server.listen(port, (_) => {
+server.listen(port, () => {
 	console.log(`server is working on http://localhost:${port}`);
 	db.dbConnector();
 });

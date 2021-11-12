@@ -1,1 +1,10 @@
-
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+._main {
+	background-image: linear-gradient(#fff, rgba(0, 128, 0, 0.247));
+	width: 100vw;
+	min-height: 100vh;
+}
