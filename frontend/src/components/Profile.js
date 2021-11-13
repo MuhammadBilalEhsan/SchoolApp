@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@mui/styles";
+// import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
 import { Box, Avatar, Grid, Paper, Fab } from "@mui/material";
@@ -16,19 +16,19 @@ const Item = styled(Paper)(({ theme }) => ({
 	color: "green",
 }));
 
-const useStyles = makeStyles((theme) => ({
+// const useStyles = makeStyles((theme) => ({
 	
-}));
+// }));
 
 const Profile = ({ curUser }) => {
-	const classes = useStyles();
+	// const classes = useStyles();
 	let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
 	return (
 		<>
 			<Box className={`_main`}>
 				<Header />
 				<Box mt={5} width="100%">
-					<Box width="70%" className={classes.pro} mx="auto">
+					<Box width="70%" mx="auto">
 						<Grid container spacing={2} justifyContent="center">
 							<Avatar
 								alt="Remy Sharp"
@@ -47,7 +47,7 @@ const Profile = ({ curUser }) => {
 							<EditProfile curUser={curUser} />
 						</Grid>
 					</Box>
-					<Box width="70%" className={classes.pro} mx="auto" mt={3}>
+					<Box width="70%" mx="auto" mt={3}>
 						<Grid container spacing={2} justifyContent="center">
 							<Grid item xs={10} md={6}>
 								<Item>

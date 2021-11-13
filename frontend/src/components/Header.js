@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
 	AppBar,
 	Toolbar,
@@ -10,7 +11,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
-import { CgMoreVerticalR } from "react-icons/cg";
+import { CgMoreVerticalR, CgLogOff } from "react-icons/cg";
 
 import { Link } from "react-router-dom";
 const BtnBox = styled("div")(({ theme }) => ({
@@ -27,15 +28,13 @@ const MobMenuComp = styled("div")(({ theme }) => ({
 		display: "flex",
 	},
 }));
-const useStyles = makeStyles((theme) => ({
-	mob_menu: {
-		paddingTop: "0%",
-	},
-}));
+const useStyles = makeStyles((theme) => ({}));
 const Header = () => {
 	const classes = useStyles();
 	const [mobMenuAnchor, setMobMenuAnchor] = useState(null);
 	const isMobMenuOpen = Boolean(mobMenuAnchor);
+
+	const history = useHistory();
 
 	const openMobMenu = (e) => {
 		setMobMenuAnchor(e.currentTarget);
@@ -45,7 +44,6 @@ const Header = () => {
 	};
 	const mobileMenu = (
 		<Menu
-			className={classes.mob_menu}
 			anchorEl={mobMenuAnchor}
 			id="mob_menu"
 			keepMounted
@@ -156,7 +154,7 @@ const Header = () => {
 						>
 							Class Materials
 						</Button>
-						<Button
+						{/* <Button
 							component={Link}
 							to="/contact"
 							size="small"
@@ -164,6 +162,18 @@ const Header = () => {
 							sx={{ marginLeft: 3 }}
 						>
 							Contact Us
+						</Button> */}
+						<Button
+							variant="contained"
+							size="small"
+							color="error"
+							sx={{ marginLeft: 3 }}
+							onClick={() => {
+								localStorage.removeItem("uid");
+								history.push("/");
+							}}
+						>
+							LogOut &nbsp; <CgLogOff />
 						</Button>
 					</BtnBox>
 					<MobMenuComp>

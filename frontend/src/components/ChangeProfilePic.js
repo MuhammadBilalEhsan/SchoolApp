@@ -31,7 +31,7 @@ export default function ChangeProfilePic({ curUser }) {
 
 			let formData = new FormData();
 			formData.append("_id", uidFromLocalStorage);
-			formData.append("myImg", JSON.stringify(imgObj));
+			formData.append("myImg", imgObj);
 			console.log(formData);
 			const config = {
 				headers: { "content-type": "multipart/form-data" },

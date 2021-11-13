@@ -157,9 +157,9 @@ const Attendance = ({ curUser }) => {
 	// ____________________________________________________________________________________________
 
 	const handleClick = async (e) => {
+		setTodayAttend(true);
 		try {
 			e.preventDefault();
-			setTodayAttend(true);
 			const att = new Date();
 			const year = att.getFullYear();
 			const month = att.getMonth();

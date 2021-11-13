@@ -5,7 +5,7 @@ import Profile from "./components/Profile";
 import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
-import Contact from "./components/Contact";
+// import Contact from "./components/Contact";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { curUserFun, getUsers } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,6 +51,7 @@ const App = () => {
 						exact
 						path="/"
 						SuccessComp={<Redirect to="/profile" />}
+						// SuccessComp={<Redirect to="/coursedetails" />}
 						FailComp={<Login />}
 					/>
 					<PrivateRoute
@@ -68,7 +69,7 @@ const App = () => {
 					<PrivateRoute
 						auth={uid}
 						path="/coursedetails"
-						SuccessComp={<CourseDetails />}
+						SuccessComp={<CourseDetails curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
@@ -77,12 +78,12 @@ const App = () => {
 						SuccessComp={<ClassMaterials />}
 						FailComp={<Redirect to="/" />}
 					/>
-					<PrivateRoute
+					{/* <PrivateRoute
 						auth={uid}
 						path="/contact"
 						SuccessComp={<Contact />}
 						FailComp={<Redirect to="/" />}
-					/>
+					/> */}
 				</Switch>
 			</Router>
 		</>

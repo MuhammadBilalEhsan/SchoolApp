@@ -17,7 +17,7 @@ module.exports.registerUser = async (req, res) => {
 		if (!fname || !lname || !email || !password || !roll || !dateOfAddmission) {
 			res
 				.status(422)
-				.json({ error: "You Should write all fields properly..!" });
+				.json({ error: "You Should fill all fields properly..!" });
 		}
 		const usertExist = await User.findOne({ email }).exec();
 		if (usertExist) {
@@ -76,7 +76,7 @@ module.exports.EditProfile = async (req, res) => {
 
 module.exports.EditProfileImage = async (req, res) => {
 	const _id = req.body._id;
-	const dp = JSON.parse(req.file);
+	const dp = req.file;
 	try {
 		if (dp) {
 			const storage = getStorage();
@@ -87,8 +87,9 @@ module.exports.EditProfileImage = async (req, res) => {
 			});
 			if (fbs) {
 				console.log("successfully uploaded");
+				console.log(fbs);
 			}
-			console.log(fbs);
+			// console.log(fbs);
 			// console.log(dp);
 			// console.log(`${__dirname}/profile-images/${dp.filename}`);
 		}
