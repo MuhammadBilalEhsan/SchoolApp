@@ -7,29 +7,29 @@ import {
 	DialogActions,
 	Dialog,
 	TextField,
+	Menu,
+	MenuItem,
 	Button,
 } from "@mui/material/";
-import ChipInput from "material-ui-chip-input";
-import { MdUpload } from "react-icons/md";
+import AddTopic from "./AddTopic";
+// import ChipInput from "material-ui-chip-input";
+import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 
+const duration = ["1 Week", "2 Week", "3 Week", "4 Week"];
+
 export default function AddCourse({ curUser }) {
-	const [open, setOpen] = useState(false);
 	const uidFromLocalStorage = localStorage.getItem("uid");
+	const [open, setOpen] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(null);
+	const [selectDurInd, setSelectDurInd] = useState(null);
+	const [topicChips, setTopicChips] = useState([]);
 
 	// https://www.npmjs.com/package/material-ui-chip-input
 
-	const [myChips, setMyChips] = useState([]);
-	const handleAddChip = (chip) => {
-		setMyChips([...myChips, chip]);
-	};
-	const handleDeleteChip = (chip) => {
-		const newArr = myChips.filter((c) => c != chip);
-		setMyChips(newArr);
-	};
-
+	console.log(topicChips);
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -37,12 +37,37 @@ export default function AddCourse({ curUser }) {
 		setOpen(false);
 	};
 
+	// const handleAddChip = (chip) => {
+	// 	formik.initialValues.topics.push(chip);
+	// };
+	// const handleDeleteChip = (chip) => {
+	// 	const newArr = formik.initialValues.topics.filter((c) => c != chip);
+	// 	formik.initialValues.topics.splice(
+	// 		0,
+	// 		formik.initialValues.topics.length,
+	// 		...newArr,
+	// 	);
+	// };
+
+	const handleMenuOpen = (e) => {
+		setMenuOpen(e.currentTarget);
+	};
+	const handleMenuClose = () => {
+		setMenuOpen(false);
+	};
+	const handleSelect = (index) => {
+		setSelectDurInd(index);
+		handleMenuClose();
+	};
 	const formik = useFormik({
 		initialValues: {
 			teacher_id: uidFromLocalStorage,
-			teacherName: `${curUser.fname} ${curUser.lname}`,
+			teacherEmail: curUser.email,
 			courseName: "",
 			courseDesc: "",
+			topics: [],
+			duration: selectDurInd + 1,
+			// completingMindset:[]
 		},
 		// validationSchema: yup.object().shape({
 		// 	fname: yup.string().required(),
@@ -82,7 +107,7 @@ export default function AddCourse({ curUser }) {
 			{/* Openning Dialouge Box */}
 			<Dialog open={open} onClose={handleClose}>
 				<DialogTitle align="center" backgroundColor="white">
-					Edit Profile
+					Create Course
 				</DialogTitle>
 				<DialogContent>
 					<form onSubmit={formik.handleSubmit}>
@@ -90,7 +115,7 @@ export default function AddCourse({ curUser }) {
 							autoFocus
 							margin="dense"
 							name="courseName"
-							label="Course Name"
+							label="Name"
 							type="text"
 							variant="outlined"
 							value={formik.values.courseName}
@@ -108,7 +133,7 @@ export default function AddCourse({ curUser }) {
 						<TextField
 							margin="dense"
 							name="courseDesc"
-							label="Course Description"
+							label="Description"
 							type="text"
 							variant="outlined"
 							value={formik.values.courseDesc}
@@ -123,15 +148,45 @@ export default function AddCourse({ curUser }) {
 								{formik.errors.courseDesc}
 							</p>
 						)}
+
 						{/* add Topics field */}
+						{/* <ChipInput
+							fullWidth
+							variant="outlined"
+							name="topics"
+							color="success"
+							value={formik.values.topics}
+							onAdd={(chip) => handleAddChip(chip)}
+							onDelete={(chip, index) => handleDeleteChip(chip, index)}
+						/> */}
+
+						{/* add Topic field */}
+
+						<AddTopic topicChips={topicChips} setTopicChips={setTopicChips} />
+
 						{/* add duration field */}
-					<ChipInput
-						fullWidth
-						variant="outlined"
-						value={myChips}
-						onAdd={(chip) => handleAddChip(chip)}
-						onDelete={(chip, index) => handleDeleteChip(chip, index)}
-					/>
+						<Button
+							onClick={handleMenuOpen}
+							color="success"
+							endIcon={<MdKeyboardArrowDown />}
+						>
+							{duration[selectDurInd] || "Duration"}
+						</Button>
+						<Menu
+							open={Boolean(menuOpen)}
+							anchorEl={menuOpen}
+							onClose={handleMenuClose}
+						>
+							{duration.map((item, index) => (
+								<MenuItem
+									key={index}
+									onClick={() => handleSelect(index)}
+									name="duration"
+								>
+									{item}
+								</MenuItem>
+							))}
+						</Menu>
 					</form>
 				</DialogContent>
 				<DialogActions>
