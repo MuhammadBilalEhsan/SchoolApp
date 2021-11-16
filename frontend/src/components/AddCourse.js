@@ -12,13 +12,13 @@ import {
 	Button,
 } from "@mui/material/";
 import AddTopic from "./AddTopic";
-// import ChipInput from "material-ui-chip-input";
+import CourseOutlineComp from "./CourseOutlineComp";
 import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 
-const duration = ["1 Week", "2 Week", "3 Week", "4 Week"];
+const duration = ["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"];
 
 export default function AddCourse({ curUser }) {
 	const uidFromLocalStorage = localStorage.getItem("uid");
@@ -26,28 +26,23 @@ export default function AddCourse({ curUser }) {
 	const [menuOpen, setMenuOpen] = useState(null);
 	const [selectDurInd, setSelectDurInd] = useState(null);
 	const [topicChips, setTopicChips] = useState([]);
-
-	// https://www.npmjs.com/package/material-ui-chip-input
-
-	console.log(topicChips);
+	const [topicErr, setTopicErr] = useState(null);
+	const [coOutErr, setCoOutErr] = useState(null);
+	const iniState = {
+		week1: "",
+		week2: "",
+		week3: "",
+		week4: "",
+	};
+	const [courseOutlineObj, setCourseOutlineObj] = useState(iniState);
+	// https://p.bdir.in/demo/A-Chips-Input-Field-In-React/7539
+	// https://p.bdir.in/p/A-Chips-Input-Field-In-React/7539
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
 	const handleClose = () => {
 		setOpen(false);
 	};
-
-	// const handleAddChip = (chip) => {
-	// 	formik.initialValues.topics.push(chip);
-	// };
-	// const handleDeleteChip = (chip) => {
-	// 	const newArr = formik.initialValues.topics.filter((c) => c != chip);
-	// 	formik.initialValues.topics.splice(
-	// 		0,
-	// 		formik.initialValues.topics.length,
-	// 		...newArr,
-	// 	);
-	// };
 
 	const handleMenuOpen = (e) => {
 		setMenuOpen(e.currentTarget);
@@ -65,22 +60,40 @@ export default function AddCourse({ curUser }) {
 			teacherEmail: curUser.email,
 			courseName: "",
 			courseDesc: "",
-			topics: [],
-			duration: selectDurInd + 1,
-			// completingMindset:[]
+			topics: null,
+			duration: null,
+			courseOutline: null,
 		},
-		// validationSchema: yup.object().shape({
-		// 	fname: yup.string().required(),
-		// 	lname: yup.string().required(),
-		// 	fatherName: yup.string().required(),
-		// 	atClass: yup.number().required().positive().integer(),
-		// 	age: yup.number().required().positive().integer(),
-		// 	phone: yup.number().required().positive().integer(),
-		// }),
+		validationSchema: yup.object().shape({
+			courseName: yup.string().required(),
+			courseDesc: yup.string().required(),
+			// atClass: yup.number().required().positive().integer(),
+			// age: yup.number().required().positive().integer(),
+			// phone: yup.number().required().positive().integer(),
+		}),
 
 		onSubmit: async (values) => {
 			try {
-				console.log(values);
+				setCoOutErr(false);
+				if (topicChips.length == 0) {
+					setTopicErr(true);
+				}
+				const courseOutline = Object.values(courseOutlineObj).filter(
+					(curElem) => curElem !== "",
+				);
+
+				const topic = topicChips.map((item) => item.label);
+				values.topics = topic;
+				values.duration = selectDurInd + 1;
+				values.courseOutline = courseOutline;
+				if (
+					values.duration !== values.courseOutline.length ||
+					values.courseOutline.length === 0
+				) {
+					setCoOutErr(true);
+				}
+				const res = await axios.post("course/add", values);
+				console.log(res);
 			} catch (error) {
 				console.log(error);
 				handleClose();
@@ -105,7 +118,7 @@ export default function AddCourse({ curUser }) {
 				</Fab>
 			</Tooltip>
 			{/* Openning Dialouge Box */}
-			<Dialog open={open} onClose={handleClose}>
+			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
 				<DialogTitle align="center" backgroundColor="white">
 					Create Course
 				</DialogTitle>
@@ -148,25 +161,21 @@ export default function AddCourse({ curUser }) {
 								{formik.errors.courseDesc}
 							</p>
 						)}
-
-						{/* add Topics field */}
-						{/* <ChipInput
-							fullWidth
-							variant="outlined"
-							name="topics"
-							color="success"
-							value={formik.values.topics}
-							onAdd={(chip) => handleAddChip(chip)}
-							onDelete={(chip, index) => handleDeleteChip(chip, index)}
-						/> */}
-
 						{/* add Topic field */}
 
-						<AddTopic topicChips={topicChips} setTopicChips={setTopicChips} />
+						<AddTopic
+							topicChips={topicChips}
+							setTopicChips={setTopicChips}
+							topicErr={topicErr}
+							setTopicErr={setTopicErr}
+						/>
 
 						{/* add duration field */}
 						<Button
-							onClick={handleMenuOpen}
+							onClick={(e) => {
+								handleMenuOpen(e);
+								setCourseOutlineObj(iniState);
+							}}
 							color="success"
 							endIcon={<MdKeyboardArrowDown />}
 						>
@@ -187,6 +196,18 @@ export default function AddCourse({ curUser }) {
 								</MenuItem>
 							))}
 						</Menu>
+						{selectDurInd !== null ? (
+							// <p>Describe Course Outline...</p>
+							<CourseOutlineComp
+								selectDurInd={selectDurInd}
+								courseOutlineObj={courseOutlineObj}
+								setCourseOutlineObj={setCourseOutlineObj}
+								coOutErr={coOutErr}
+								setCoOutErr={setCoOutErr}
+							/>
+						) : (
+							""
+						)}
 					</form>
 				</DialogContent>
 				<DialogActions>

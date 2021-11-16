@@ -5,6 +5,7 @@
 }
 ._main {
 	background-image: linear-gradient(#fff, rgba(0, 128, 0, 0.247));
+	/* background-image: linear-gradient(#fff, #00800086); */
 	width: 100vw;
 	min-height: 100vh;
 }
