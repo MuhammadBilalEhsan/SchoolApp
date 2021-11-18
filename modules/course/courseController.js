@@ -82,3 +82,44 @@ module.exports.addCourse = async (req, res) => {
 		res.status(400).send({ error: "Unexpected error..." });
 	}
 };
+module.exports.editCourse = async (req, res) => {
+	const {
+		teacher_id,
+		teacherEmail,
+		courseName,
+		courseDesc,
+		topics,
+		duration,
+		courseOutline,
+	} = req.body;
+	try {
+		if (
+			!teacher_id ||
+			!teacherEmail ||
+			!courseName ||
+			!courseDesc ||
+			!topics ||
+			!duration ||
+			!courseOutline
+		) {
+			res.status(400).send({ error: "You Should fill all fields properly..!" });
+		}
+		const editCourse = await Course.findOneAndUpdate(teacher_id, {
+			teacher_id,
+			teacherEmail,
+			courseName,
+			courseDesc,
+			topics,
+			duration,
+			courseOutline
+		});
+		if (!editCourse) {
+			return res.status(512).send({ error: "Course not Updating" })
+		} else {
+			return res.status(200).send({ message: "Successfully Course Updated" })
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(400).send({ error: "Unexpected error..." });
+	}
+};

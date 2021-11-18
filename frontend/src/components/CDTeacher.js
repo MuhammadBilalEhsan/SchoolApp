@@ -21,7 +21,7 @@ const CDTeacher = ({ curUser, course }) => {
 							{`${curUser.fname} ${curUser.lname}(${curUser.roll})`}
 						</Typography>
 						{/* course={course} */}
-						<AddCourse curUser={curUser} editCourse={false} />
+						<AddCourse curUser={curUser} course={course} editCourse={false} />
 					</Box>
 					<Box
 						sx={{

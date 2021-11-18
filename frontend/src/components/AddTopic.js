@@ -1,10 +1,7 @@
-import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
+import React, { useState, useEffect } from "react";
+// import { styled } from "@mui/material/styles";
 import { Chip, TextField, Box } from "@mui/material";
 
-const ListItem = styled("li")(({ theme }) => ({
-	margin: theme.spacing(0.5),
-}));
 // { topicChips, setTopicChips }
 export default function AddTopic({
 	topicChips,
@@ -14,8 +11,13 @@ export default function AddTopic({
 	editCourse,
 	course,
 }) {
+	useEffect(() => {
+		if (editCourse) {
+			const preVals = course?.topics.map((item) => item)
+			setTopicChips(preVals)
+		}
+	}, [])
 	const [topicLabel, setTopicLabel] = useState("");
-
 	const handleDelete = (chipToDelete) => () => {
 		setTopicChips((chips) =>
 			topicChips.filter((chip) => chip.key !== chipToDelete.key),
@@ -32,11 +34,10 @@ export default function AddTopic({
 			};
 			if (editCourse == true) {
 				setTopicChips([
-					...course?.topics?.map((curElem) => curElem),
+
 					...topicChips,
 					topicObj,
 				]);
-				console.log(topicChips);
 				setTopicLabel("");
 				setTopicErr(false);
 			} else {

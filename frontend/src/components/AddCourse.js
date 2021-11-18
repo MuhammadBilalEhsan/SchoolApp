@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Tooltip,
 	Fab,
@@ -30,14 +30,23 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	const [topicChips, setTopicChips] = useState([]);
 	const [topicErr, setTopicErr] = useState(null);
 	const [coOutErr, setCoOutErr] = useState(null);
-	const iniState = {
-		week1: "",
-		week2: "",
-		week3: "",
-		week4: "",
-	};
+	let iniState;
+	if (editCourse) {
+		iniState = {
+			week1: course?.courseOutline[0] || "",
+			week2: course?.courseOutline[1] || "",
+			week3: course?.courseOutline[2] || "",
+			week4: course?.courseOutline[3] || "",
+		}
+	} else {
+		iniState = {
+			week1: "",
+			week2: "",
+			week3: "",
+			week4: "",
+		}
+	}
 	const [courseOutlineObj, setCourseOutlineObj] = useState(iniState);
-
 	// let { courseName, courseDesc, topics, duration, courseOutline } = course;
 	// console.log(course);
 	const handleClickOpen = () => {
@@ -57,6 +66,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 		setSelectDurInd(index);
 		handleMenuClose();
 	};
+
 	const formik = useFormik({
 		initialValues: {
 			teacher_id: uidFromLocalStorage,
@@ -75,6 +85,8 @@ export default function AddCourse({ curUser, editCourse, course }) {
 			// age: yup.number().required().positive().integer(),
 			// phone: yup.number().required().positive().integer(),
 		}),
+
+
 		onSubmit: async (values) => {
 			try {
 				setCoOutErr(false);
@@ -94,21 +106,31 @@ export default function AddCourse({ curUser, editCourse, course }) {
 					) {
 						setCoOutErr(true);
 					} else {
-						const res = await axios.post("course/add", values);
-						if (res.data.message) {
-							alert(res.data.message);
-							console.log(res.data.message);
+						if (editCourse) {
+							const res = await axios.post("course/editcourse", values);
+							if (res.data.message) {
+								alert(res.data.message);
+							} else {
+								alert(res.data.error);
+							}
+							handleClose();
 						} else {
-							alert(res.data.error);
+							const res = await axios.post("course/add", values);
+							if (res.data.message) {
+								alert(res.data.message);
+								console.log(res.data.message);
+							} else {
+								alert(res.data.error);
+							}
+							handleClose();
 						}
-						handleClose();
 					}
 				}
 			} catch (error) {
 				console.log(error);
 				handleClose();
 			}
-		},
+		}
 	});
 	const delCourseFunc = async (e) => {
 		try {
@@ -126,6 +148,11 @@ export default function AddCourse({ curUser, editCourse, course }) {
 			console.log(error);
 		}
 	};
+	useEffect(() => {
+		if (editCourse) {
+			handleSelect(course?.duration - 1)
+		}
+	}, [])
 	return (
 		<div>
 			{editCourse ? (
@@ -189,7 +216,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							fullWidth
 							color={editCourse ? "warning" : "success"}
 
-							// required
+						// required
 						/>
 						{formik.errors.courseName && formik.touched.courseName && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -207,7 +234,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							autoComplete="off"
 							fullWidth
 							color={editCourse ? "warning" : "success"}
-							// required
+						// required
 						/>
 						{formik.errors.courseDesc && formik.touched.courseDesc && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -234,7 +261,10 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							color={editCourse ? "warning" : "success"}
 							endIcon={<MdKeyboardArrowDown />}
 						>
-							{durationArr[selectDurInd] || "Duration"}
+							{/* {durationArr[selectDurInd] || "Duration"} */}
+							{
+								editCourse ? durationArr[course.duration - 1] : durationArr[selectDurInd] || "Duration"
+							}
 						</Button>
 						<Menu
 							open={Boolean(menuOpen)}
