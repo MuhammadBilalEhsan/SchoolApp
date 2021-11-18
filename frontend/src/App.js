@@ -7,7 +7,7 @@ import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 // import Contact from "./components/Contact";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
-import { curUserFun, getUsers } from "./redux/actions/index";
+import { curUserFun, getUsers, getCourseFunc } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./App.css";
@@ -21,7 +21,6 @@ const App = () => {
 	const [spinner, setSpinner] = useState(true);
 
 	const dispatch = useDispatch();
-
 	useEffect(() => {
 		axios
 			.get("/user/getdata")
@@ -29,18 +28,26 @@ const App = () => {
 				const data = response.data;
 				const _id = localStorage.getItem("uid");
 				const currentUser = data.find((user) => user._id === _id);
-				if (currentUser) {
-					dispatch(curUserFun(currentUser));
-					setUid(true);
-					setSpinner(false);
-				} else {
+				if (!currentUser) {
 					setSpinner(false);
 					setUid(false);
+				} else {
+					dispatch(curUserFun(currentUser));
+					if (currentUser.roll === "teacher") {
+						axios.post("course/mycourse", { teacher_id: currentUser._id })
+							.then((resp) => {
+								const course = resp.data.course;
+								dispatch(getCourseFunc(course))
+							}).catch(err => console.log(err))
+					}
+					setUid(true);
+					setSpinner(false);
 				}
-				dispatch(getUsers(data));
+				// dispatch(getUsers(data));
 			})
 			.catch((error) => console.log(error));
 	}, []);
+
 	if (spinner) return <Spinner />;
 	return (
 		<>

@@ -10,3 +10,9 @@ export const curUserFun = data => {
     payload: data,
   };
 };
+export const getCourseFunc = data => {
+  return {
+    type: "GET_COURSE",
+    payload: data,
+  };
+};

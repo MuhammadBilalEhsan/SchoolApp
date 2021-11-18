@@ -143,10 +143,6 @@ module.exports.loginUser = async (req, res) => {
 };
 
 // GETTING ALL DATA ROUTE
-module.exports.getAllData = async (req, res) => {
-	const allUsers = await User.find({});
-	res.status(200).send(allUsers);
-};
 
 module.exports.markAttendance = async (req, res) => {
 	try {
@@ -221,4 +217,9 @@ module.exports.classMaterials = async (req, res) => {
 	// const id = req.params.id;
 	// const id = "61708a8defe0fc8e555e618e";
 	// console.log(id);
+};
+
+module.exports.getData = async (req, res) => {
+	const allUsers = await User.find({});
+	res.status(200).send(allUsers);
 };

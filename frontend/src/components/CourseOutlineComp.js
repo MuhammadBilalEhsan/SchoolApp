@@ -6,7 +6,7 @@ const CourseOutlineComp = ({
 	courseOutlineObj,
 	setCourseOutlineObj,
 	coOutErr,
-	setCoOutErr,
+	editCourse,
 }) => {
 	// const [courseOutlineObj, setcourseOutlineObj] = useState("");
 
@@ -30,7 +30,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week1}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					{coOutErr ? (
@@ -53,7 +53,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week1}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					<TextField
@@ -65,7 +65,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week2}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					{coOutErr ? (
@@ -88,7 +88,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week1}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					<TextField
@@ -100,7 +100,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week2}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					<TextField
@@ -112,7 +112,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week3}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					{coOutErr ? (
@@ -135,7 +135,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week1}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					<TextField
@@ -147,7 +147,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week2}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					<TextField
@@ -159,7 +159,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week3}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					<TextField
@@ -171,7 +171,7 @@ const CourseOutlineComp = ({
 						value={courseOutlineObj.week4}
 						onChange={(e) => handleChange(e)}
 						autoComplete="off"
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
 					{coOutErr ? (

@@ -6,6 +6,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import Spinner from "./Spinner";
 import "../css/login.css";
+// import { MdChangeHistory } from "react-icons/md";
 
 const Login = () => {
 	const [loginData, setLoginData] = useState({
@@ -22,6 +23,10 @@ const Login = () => {
 		setLoginData({ ...loginData, [name]: value });
 	};
 
+	const changeHistory = () => {
+		history.push("/profile");
+	}
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		setLoader(true);
@@ -36,8 +41,8 @@ const Login = () => {
 				.post("user/login", loginData)
 				.then((res) => {
 					localStorage.setItem("uid", res.data.curUser._id);
-					history.push("/profile");
 					setLoader(false);
+					changeHistory()
 				})
 				.catch((err) => {
 					alert("Invalid Credentials");
@@ -106,7 +111,7 @@ const Login = () => {
 							className="btn btn-submit"
 							type="submit"
 							value="LOGIN"
-							// onSubmit={e => handleSubmit(e)}
+						// onSubmit={e => handleSubmit(e)}
 						/>
 					</form>
 				</div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Tooltip,
 	Fab,
@@ -14,13 +14,15 @@ import {
 import AddTopic from "./AddTopic";
 import CourseOutlineComp from "./CourseOutlineComp";
 import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { RiFileEditFill } from "react-icons/ri";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 
-const duration = ["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"];
+const durationArr = ["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"];
 
-export default function AddCourse({ curUser }) {
+export default function AddCourse({ curUser, editCourse, course }) {
 	const uidFromLocalStorage = localStorage.getItem("uid");
 	const [open, setOpen] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(null);
@@ -35,8 +37,9 @@ export default function AddCourse({ curUser }) {
 		week4: "",
 	};
 	const [courseOutlineObj, setCourseOutlineObj] = useState(iniState);
-	// https://p.bdir.in/demo/A-Chips-Input-Field-In-React/7539
-	// https://p.bdir.in/p/A-Chips-Input-Field-In-React/7539
+
+	// let { courseName, courseDesc, topics, duration, courseOutline } = course;
+	// console.log(course);
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -58,8 +61,9 @@ export default function AddCourse({ curUser }) {
 		initialValues: {
 			teacher_id: uidFromLocalStorage,
 			teacherEmail: curUser.email,
-			courseName: "",
-			courseDesc: "",
+			// editCourse ? courseName :
+			courseName: editCourse ? course.courseName : "",
+			courseDesc: editCourse ? course.courseDesc : "",
 			topics: null,
 			duration: null,
 			courseOutline: null,
@@ -71,56 +75,104 @@ export default function AddCourse({ curUser }) {
 			// age: yup.number().required().positive().integer(),
 			// phone: yup.number().required().positive().integer(),
 		}),
-
 		onSubmit: async (values) => {
 			try {
 				setCoOutErr(false);
 				if (topicChips.length == 0) {
 					setTopicErr(true);
-				}
-				const courseOutline = Object.values(courseOutlineObj).filter(
-					(curElem) => curElem !== "",
-				);
+				} else {
+					const courseOutline = Object.values(courseOutlineObj).filter(
+						(curElem) => curElem !== "",
+					);
 
-				const topic = topicChips.map((item) => item.label);
-				values.topics = topic;
-				values.duration = selectDurInd + 1;
-				values.courseOutline = courseOutline;
-				if (
-					values.duration !== values.courseOutline.length ||
-					values.courseOutline.length === 0
-				) {
-					setCoOutErr(true);
+					values.topics = topicChips;
+					values.duration = selectDurInd + 1;
+					values.courseOutline = courseOutline;
+					if (
+						values.duration !== values.courseOutline.length ||
+						values.courseOutline.length === 0
+					) {
+						setCoOutErr(true);
+					} else {
+						const res = await axios.post("course/add", values);
+						if (res.data.message) {
+							alert(res.data.message);
+							console.log(res.data.message);
+						} else {
+							alert(res.data.error);
+						}
+						handleClose();
+					}
 				}
-				const res = await axios.post("course/add", values);
-				console.log(res);
 			} catch (error) {
 				console.log(error);
 				handleClose();
 			}
 		},
 	});
-
+	const delCourseFunc = async (e) => {
+		try {
+			e.preventDefault();
+			const res = await axios.post("course/delcourse", {
+				teacher_id: uidFromLocalStorage,
+			});
+			if (res.data.message) {
+				alert(res.data.message);
+				console.log(res.data.message);
+			} else {
+				alert(res.data.error);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<div>
-			<Tooltip title="Add Course" arrow>
-				<Fab
-					size="small"
-					sx={{
-						backgroundColor: "green",
-						"&:hover": {
+			{editCourse ? (
+				<>
+					<Tooltip title="Edit Course" arrow>
+						<Button
+							sx={{ marginTop: 3, marginLeft: 2 }}
+							size="small"
+							variant="contained"
+							color="warning"
+							onClick={handleClickOpen}
+						>
+							<RiFileEditFill size="20px" color="#fff" />
+						</Button>
+					</Tooltip>
+					<Tooltip title="Delete Course" arrow>
+						<Button
+							sx={{ marginTop: 3, marginLeft: 2 }}
+							size="small"
+							variant="outlined"
+							color="error"
+							onClick={(e) => delCourseFunc(e)}
+						>
+							<FaRegTrashAlt color="red" size="20px" />
+						</Button>
+					</Tooltip>
+				</>
+			) : (
+				<Tooltip title="Add Course" arrow>
+					<Fab
+						size="small"
+						sx={{
 							backgroundColor: "green",
-						},
-					}}
-					onClick={handleClickOpen}
-				>
-					<MdUpload size="20px" color="#fff" />
-				</Fab>
-			</Tooltip>
+							"&:hover": {
+								backgroundColor: "green",
+							},
+						}}
+						onClick={handleClickOpen}
+					>
+						<MdUpload size="20px" color="#fff" />
+					</Fab>
+				</Tooltip>
+			)}
 			{/* Openning Dialouge Box */}
 			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
 				<DialogTitle align="center" backgroundColor="white">
-					Create Course
+					{editCourse ? "Edit Course" : "Create Course"}
 				</DialogTitle>
 				<DialogContent>
 					<form onSubmit={formik.handleSubmit}>
@@ -128,14 +180,15 @@ export default function AddCourse({ curUser }) {
 							autoFocus
 							margin="dense"
 							name="courseName"
-							label="Name"
+							label="Course Name"
 							type="text"
 							variant="outlined"
 							value={formik.values.courseName}
 							onChange={formik.handleChange("courseName")}
 							autoComplete="off"
 							fullWidth
-							color="success"
+							color={editCourse ? "warning" : "success"}
+
 							// required
 						/>
 						{formik.errors.courseName && formik.touched.courseName && (
@@ -153,7 +206,7 @@ export default function AddCourse({ curUser }) {
 							onChange={formik.handleChange("courseDesc")}
 							autoComplete="off"
 							fullWidth
-							color="success"
+							color={editCourse ? "warning" : "success"}
 							// required
 						/>
 						{formik.errors.courseDesc && formik.touched.courseDesc && (
@@ -168,6 +221,8 @@ export default function AddCourse({ curUser }) {
 							setTopicChips={setTopicChips}
 							topicErr={topicErr}
 							setTopicErr={setTopicErr}
+							editCourse={editCourse}
+							course={course}
 						/>
 
 						{/* add duration field */}
@@ -176,17 +231,17 @@ export default function AddCourse({ curUser }) {
 								handleMenuOpen(e);
 								setCourseOutlineObj(iniState);
 							}}
-							color="success"
+							color={editCourse ? "warning" : "success"}
 							endIcon={<MdKeyboardArrowDown />}
 						>
-							{duration[selectDurInd] || "Duration"}
+							{durationArr[selectDurInd] || "Duration"}
 						</Button>
 						<Menu
 							open={Boolean(menuOpen)}
 							anchorEl={menuOpen}
 							onClose={handleMenuClose}
 						>
-							{duration.map((item, index) => (
+							{durationArr.map((item, index) => (
 								<MenuItem
 									key={index}
 									onClick={() => handleSelect(index)}
@@ -203,7 +258,8 @@ export default function AddCourse({ curUser }) {
 								courseOutlineObj={courseOutlineObj}
 								setCourseOutlineObj={setCourseOutlineObj}
 								coOutErr={coOutErr}
-								setCoOutErr={setCoOutErr}
+								editCourse={editCourse}
+								course={course}
 							/>
 						) : (
 							""
@@ -212,14 +268,17 @@ export default function AddCourse({ curUser }) {
 				</DialogContent>
 				<DialogActions>
 					<Button
-						color="success"
+						color={editCourse ? "warning" : "success"}
 						variant="contained"
 						onClick={formik.handleSubmit}
 					>
 						Save Edit
 					</Button>
 
-					<Button color="success" onClick={handleClose}>
+					<Button
+						color={editCourse ? "warning" : "success"}
+						onClick={handleClose}
+					>
 						Cancel
 					</Button>
 				</DialogActions>

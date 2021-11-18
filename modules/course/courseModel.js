@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const courseSchema = mongoose.Schema({
-	teacherName: {
+	teacher_id: {
 		type: String,
 		required: true,
 	},
-	teacher_id: {
+	teacherEmail: {
 		type: String,
 		required: true,
 	},
@@ -23,6 +23,10 @@ const courseSchema = mongoose.Schema({
 	},
 	duration: {
 		type: Number,
+		required: true,
+	},
+	courseOutline: {
+		type: Array,
 		required: true,
 	},
 	// Automatic fillable fields

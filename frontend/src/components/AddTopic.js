@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Chip, Paper, TextField, Box } from "@mui/material";
+import { Chip, TextField, Box } from "@mui/material";
 
 const ListItem = styled("li")(({ theme }) => ({
 	margin: theme.spacing(0.5),
@@ -11,6 +11,8 @@ export default function AddTopic({
 	setTopicChips,
 	topicErr,
 	setTopicErr,
+	editCourse,
+	course,
 }) {
 	const [topicLabel, setTopicLabel] = useState("");
 
@@ -28,9 +30,20 @@ export default function AddTopic({
 				key: new Date().getTime().toString(),
 				label: topicLabelTrim,
 			};
-			setTopicChips([...topicChips, topicObj]);
-			setTopicLabel("");
-			setTopicErr(false);
+			if (editCourse == true) {
+				setTopicChips([
+					...course?.topics?.map((curElem) => curElem),
+					...topicChips,
+					topicObj,
+				]);
+				console.log(topicChips);
+				setTopicLabel("");
+				setTopicErr(false);
+			} else {
+				setTopicChips([...topicChips, topicObj]);
+				setTopicLabel("");
+				setTopicErr(false);
+			}
 		}
 	};
 	const handleChange = (e) => {
@@ -47,8 +60,6 @@ export default function AddTopic({
 
 	return (
 		<Box width="100%">
-			{/* {topicChips.length < 4 ? (
-				<> */}
 			<TextField
 				InputProps={{
 					startAdornment: (
@@ -56,7 +67,10 @@ export default function AddTopic({
 							{topicChips?.map((data) => {
 								return (
 									<Chip
-										sx={{ backgroundColor: "#00800030", marginRight: 1 }}
+										sx={{
+											backgroundColor: editCourse ? "orange" : "#00800030",
+											marginRight: 1,
+										}}
 										key={data.key}
 										label={data.label}
 										onDelete={handleDelete(data)}
@@ -66,7 +80,7 @@ export default function AddTopic({
 						</>
 					),
 				}}
-				disabled={topicChips.length >= 4 ? true : false}
+				disabled={topicChips.length >= 10 ? true : false}
 				margin="dense"
 				name="topicItems"
 				label="Topics"
@@ -76,7 +90,7 @@ export default function AddTopic({
 				onChange={(e) => handleChange(e)}
 				onKeyPress={(e) => handleKeyPress(e)}
 				autoComplete="off"
-				color="success"
+				color={editCourse ? "warning" : "success"}
 				className="abc"
 				fullWidth
 			/>

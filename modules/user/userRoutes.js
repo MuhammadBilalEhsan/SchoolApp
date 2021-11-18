@@ -20,7 +20,7 @@ user.route("/profile").post(userController.profile);
 user.route("/edit-profile").post(userController.EditProfile);
 // user.post("/editprofileimg", userController.EditProfileImage);
 user.post("/editprofileimg", upload, userController.EditProfileImage);
-user.route("/getdata").get(userController.getAllData);
+user.route("/getdata").get(userController.getData);
 user.route("/attendance").post(userController.markAttendance);
 user.route("/claass_materials").post(userController.classMaterials);
 

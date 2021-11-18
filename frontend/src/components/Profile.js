@@ -2,7 +2,7 @@ import React from "react";
 // import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
-import { Box, Avatar, Grid, Paper, Fab } from "@mui/material";
+import { Box, Avatar, Grid, Paper, Fab, Button, Typography } from "@mui/material";
 import img from "../images/img.jpg";
 import EditProfile from "./EditProfile";
 import ChangeProfilePic from "./ChangeProfilePic";
@@ -17,7 +17,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 // const useStyles = makeStyles((theme) => ({
-	
+
 // }));
 
 const Profile = ({ curUser }) => {
@@ -73,7 +73,15 @@ const Profile = ({ curUser }) => {
 										Class:
 									</Box>
 									<Box width="48%" textAlign="left">
-										{atClass}
+										{
+											atClass ? (
+												atClass
+											) : (
+												<Typography variant="body1" color="success">
+													not Provided
+												</Typography>
+											)
+										}
 									</Box>
 								</Item>
 							</Grid>
@@ -83,7 +91,15 @@ const Profile = ({ curUser }) => {
 										Age:
 									</Box>
 									<Box width="48%" textAlign="left">
-										{age}
+										{
+											age ? (
+												age
+											) : (
+												<Typography variant="body1" color="success">
+													not Provided
+												</Typography>
+											)
+										}
 									</Box>
 								</Item>
 							</Grid>
@@ -93,7 +109,15 @@ const Profile = ({ curUser }) => {
 										Son of:
 									</Box>
 									<Box width="48%" textAlign="left">
-										{fatherName}
+										{
+											fatherName ? (
+												fatherName
+											) : (
+												<Typography variant="body1" color="success">
+													not Provided
+												</Typography>
+											)
+										}
 									</Box>
 								</Item>
 							</Grid>
@@ -103,7 +127,15 @@ const Profile = ({ curUser }) => {
 										Contact:
 									</Box>
 									<Box width="48%" textAlign="left">
-										{phone}
+										{
+											phone ? (
+												phone
+											) : (
+												<Typography variant="body1" color="success">
+													not Provided
+												</Typography>
+											)
+										}
 									</Box>
 								</Item>
 							</Grid>
