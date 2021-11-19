@@ -1,11 +1,11 @@
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 ._main {
-	background-image: linear-gradient(#fff, rgba(0, 128, 0, 0.247));
-	/* background-image: linear-gradient(#fff, #00800086); */
-	width: 100vw;
-	min-height: 100vh;
+  background-image: linear-gradient(#fff, rgba(0, 128, 0, 0.247));
+  width: 100vw;
+  min-height: 100vh;
+  padding-bottom: 20px;
 }

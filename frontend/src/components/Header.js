@@ -8,6 +8,7 @@ import {
 	IconButton,
 	Menu,
 	MenuItem,
+	Tooltip
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
@@ -102,17 +103,20 @@ const Header = () => {
 				Class Materials
 			</MenuItem>
 			<MenuItem
-				component={Link}
-				to="/contact"
+				component={Button}
+				onClick={() => {
+					localStorage.removeItem("uid");
+					history.push("/");
+				}}
 				sx={{
 					backgroundColor: "green",
-					color: "#fff",
+					color: "red",
 					width: "100vw",
 					justifyContent: "center",
 					paddingBottom: 2,
 				}}
 			>
-				Contact Us
+				Log Out
 			</MenuItem>
 		</Menu>
 	);
@@ -163,18 +167,19 @@ const Header = () => {
 						>
 							Contact Us
 						</Button> */}
-						<Button
-							variant="contained"
-							size="small"
-							color="error"
-							sx={{ marginLeft: 3 }}
-							onClick={() => {
-								localStorage.removeItem("uid");
-								history.push("/");
-							}}
-						>
-							LogOut &nbsp; <CgLogOff />
-						</Button>
+						<Tooltip title="Log Out" arrow>
+							<Button
+								// size="small"
+								color="error"
+								sx={{ marginLeft: 3 }}
+								onClick={() => {
+									localStorage.removeItem("uid");
+									history.push("/");
+								}}
+							>
+								<CgLogOff size="25px" />
+							</Button>
+						</Tooltip>
 					</BtnBox>
 					<MobMenuComp>
 						<IconButton color="inherit" onClick={openMobMenu}>

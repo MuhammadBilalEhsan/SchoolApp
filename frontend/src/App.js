@@ -7,7 +7,7 @@ import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 // import Contact from "./components/Contact";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
-import { curUserFun, getUsers, getCourseFunc } from "./redux/actions/index";
+import { curUserFun, getUsers, getCourseFunc, getStudentCourseFunc } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./App.css";
@@ -38,6 +38,14 @@ const App = () => {
 							.then((resp) => {
 								const course = resp.data.course;
 								dispatch(getCourseFunc(course))
+							}).catch(err => console.log(err))
+					}
+					if (currentUser.roll === "student" && currentUser.atClass) {
+
+						axios.post("course/forstudent", { studentClass: currentUser.atClass })
+							.then((resp) => {
+								const courses = resp.data.courses;
+								dispatch(getStudentCourseFunc(courses))
 							}).catch(err => console.log(err))
 					}
 					setUid(true);

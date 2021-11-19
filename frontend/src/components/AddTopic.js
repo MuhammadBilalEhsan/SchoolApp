@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 // import { styled } from "@mui/material/styles";
 import { Chip, TextField, Box } from "@mui/material";
 
-// { topicChips, setTopicChips }
 export default function AddTopic({
 	topicChips,
 	setTopicChips,

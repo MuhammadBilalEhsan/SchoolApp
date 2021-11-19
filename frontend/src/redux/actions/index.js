@@ -16,3 +16,9 @@ export const getCourseFunc = data => {
     payload: data,
   };
 };
+export const getStudentCourseFunc = data => {
+  return {
+    type: "GET_Student_COURSES",
+    payload: data,
+  };
+};

@@ -71,7 +71,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 		initialValues: {
 			teacher_id: uidFromLocalStorage,
 			teacherEmail: curUser.email,
-			// editCourse ? courseName :
+			teacherClass: curUser.atClass,
 			courseName: editCourse ? course.courseName : "",
 			courseDesc: editCourse ? course.courseDesc : "",
 			topics: null,

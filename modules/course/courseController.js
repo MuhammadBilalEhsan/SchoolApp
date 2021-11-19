@@ -8,7 +8,6 @@ module.exports.getMyCourse = async (req, res) => {
 			res.status(400).send({ error: "teacher not found" });
 		} else {
 			const course = await Course.findOne({ teacher_id });
-			console.log(course);
 			res.status(200).send({ course });
 		}
 	} catch (err) {
@@ -36,6 +35,7 @@ module.exports.addCourse = async (req, res) => {
 	const {
 		teacher_id,
 		teacherEmail,
+		teacherClass,
 		courseName,
 		courseDesc,
 		topics,
@@ -47,6 +47,7 @@ module.exports.addCourse = async (req, res) => {
 		if (
 			!teacher_id ||
 			!teacherEmail ||
+			!teacherClass ||
 			!courseName ||
 			!courseDesc ||
 			!topics ||
@@ -61,6 +62,7 @@ module.exports.addCourse = async (req, res) => {
 			const course = new Course({
 				teacher_id,
 				teacherEmail,
+				teacherClass,
 				courseName,
 				courseDesc,
 				topics,
@@ -86,6 +88,7 @@ module.exports.editCourse = async (req, res) => {
 	const {
 		teacher_id,
 		teacherEmail,
+		teacherClass,
 		courseName,
 		courseDesc,
 		topics,
@@ -96,6 +99,7 @@ module.exports.editCourse = async (req, res) => {
 		if (
 			!teacher_id ||
 			!teacherEmail ||
+			!teacherClass ||
 			!courseName ||
 			!courseDesc ||
 			!topics ||
@@ -107,6 +111,7 @@ module.exports.editCourse = async (req, res) => {
 		const editCourse = await Course.findOneAndUpdate(teacher_id, {
 			teacher_id,
 			teacherEmail,
+			teacherClass,
 			courseName,
 			courseDesc,
 			topics,
@@ -123,3 +128,21 @@ module.exports.editCourse = async (req, res) => {
 		res.status(400).send({ error: "Unexpected error..." });
 	}
 };
+module.exports.forStudentController = async (req, res) => {
+	const studentClass = Number(req.body.studentClass)
+	try {
+		if (!studentClass) {
+			res.status(400).send({ error: "Students Class ??" })
+		} else {
+			const availaleCourses = await Course.find({ teacherClass: studentClass })
+			if (!availaleCourses) {
+				res.status(200).send({ message: `No Courses Available for class ${studentClass}` })
+			} else {
+				res.status(200).send({ courses: availaleCourses, message: `These Courses are Available for class ${studentClass}` })
+			}
+		}
+
+	} catch (error) {
+		console.log(error)
+	}
+}

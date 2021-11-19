@@ -9,6 +9,10 @@ const courseSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	teacherClass: {
+		type: Number,
+		required: true,
+	},
 	courseName: {
 		type: String,
 		required: true,

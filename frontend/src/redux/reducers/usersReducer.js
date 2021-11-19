@@ -1,7 +1,8 @@
 const initialState = {
   users: [],
   curUser: {},
-  course: {}
+  course: {},
+  studentCourse: []
 };
 
 const usersReducer = (state = initialState, action) => {
@@ -12,6 +13,8 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, curUser: action.payload };
     case "GET_COURSE":
       return { ...state, course: action.payload };
+    case "GET_Student_COURSES":
+      return { ...state, studentCourse: action.payload };
     default:
       return state;
   }
