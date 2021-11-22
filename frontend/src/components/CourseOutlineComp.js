@@ -8,7 +8,6 @@ const CourseOutlineComp = ({
 	coOutErr,
 	editCourse,
 }) => {
-	// const [courseOutlineObj, setcourseOutlineObj] = useState("");
 
 	let name, value;
 	const handleChange = (e) => {
@@ -18,7 +17,48 @@ const CourseOutlineComp = ({
 	};
 	return (
 		<>
-			{selectDurInd === 0 ? (
+			{[...Array(selectDurInd + 1)].map((curElem, ind) => {
+				return (
+					<>
+
+						<TextField
+							margin="dense"
+							name={`week${ind + 1}`}
+							label={`week ${ind + 1}`}
+							type="text"
+							variant="outlined"
+							value={courseOutlineObj[Object.keys(courseOutlineObj)[ind]]}
+							onChange={(e) => handleChange(e)}
+							autoComplete="off"
+							color={editCourse ? "warning" : "success"}
+							fullWidth
+						/>
+						{
+							console.log("selectDurInd", selectDurInd)
+						}
+						{/* {
+							console.log("courseOutlineObj", courseOutlineObj)
+						}
+						{
+							console.log("setCourseOutlineObj", setCourseOutlineObj)
+						}
+						{
+							console.log("coOutErr", coOutErr)
+						}
+						{
+							console.log("editCourse", editCourse)
+						} */}
+						{coOutErr ? (
+							<p style={{ color: "red", marginLeft: "5px" }}>
+								Please Enter This week Outline
+							</p>
+						) : (
+							""
+						)}
+					</>
+				)
+			})}
+			{/* {selectDurInd === 0 ? (
 				<Box>
 					<Typography mb={1}>Describe Course Outline</Typography>
 					<TextField
@@ -33,13 +73,7 @@ const CourseOutlineComp = ({
 						color={editCourse ? "warning" : "success"}
 						fullWidth
 					/>
-					{coOutErr ? (
-						<p style={{ color: "red", marginLeft: "5px" }}>
-							Please Enter Course Outline
-						</p>
-					) : (
-						""
-					)}
+					
 				</Box>
 			) : selectDurInd === 1 ? (
 				<Box>
@@ -184,7 +218,7 @@ const CourseOutlineComp = ({
 				</Box>
 			) : (
 				""
-			)}
+			)} */}
 		</>
 	);
 };

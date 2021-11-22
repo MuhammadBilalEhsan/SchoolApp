@@ -1,15 +1,17 @@
-import React from "react";
-import "../css/Spinner.css";
-import Loader from "react-loader-spinner";
+import React from 'react';
+import { Backdrop, CircularProgress } from '@mui/material';
 
-const Spinner = () => {
+function Spinner() {
     return (
-        <div id="main_spinner_div">
-            <div id="sub_spinner_div">
-                <Loader type="Puff" color="green" height={"80%"} width={"80%"} />
-            </div>
+        <div>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={true}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </div>
     );
-};
+}
 
-export default Spinner;
+export default Spinner

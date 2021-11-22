@@ -42,6 +42,9 @@ const Attendance = ({ curUser }) => {
 	const [attPercent, setAttPercent] = useState(0);
 	const [lastMonthPercent, setLastMonthPercent] = useState(0);
 
+	const checkHoliday = moment().day === 0 || moment().day === 6
+
+
 	const _id = localStorage.getItem("uid");
 
 	// ____________________________________________________________________________________________
@@ -61,6 +64,8 @@ const Attendance = ({ curUser }) => {
 				setTodayAttend(false);
 			}
 		}
+		latestMonthAttCalc();
+		overAllAttCalc();
 	};
 
 	// ____________________________________________________________________________________________
@@ -99,7 +104,6 @@ const Attendance = ({ curUser }) => {
 		}
 	};
 	// ____________________________________________________________________________________________
-
 	const latestMonthAttCalc = () => {
 		if (curUser.attendance && curUser.attendance.length > 0) {
 			// getting total working/bussiness days (01-CurMonth-curYear - curr Date)
@@ -149,16 +153,14 @@ const Attendance = ({ curUser }) => {
 					(curMonthTotalPresent / overallTotalDays) * 100;
 				setLastMonthPercent(curMonthOpperation);
 			}
-		} else {
-			console.log("ok");
 		}
 	};
 
 	// ____________________________________________________________________________________________
 
 	const handleClick = async (e) => {
-		setTodayAttend(true);
 		try {
+			setTodayAttend(true);
 			e.preventDefault();
 			const att = new Date();
 			const year = att.getFullYear();
@@ -171,7 +173,7 @@ const Attendance = ({ curUser }) => {
 
 			const attObj = { _id, year, month, date, time };
 			const res = await axios.post("/user/attendance", attObj);
-			console.log(res.data.message);
+			alert(res.data.message)
 		} catch (err) {
 			console.error(err);
 			alert("Your Attendance not marked");
@@ -179,8 +181,6 @@ const Attendance = ({ curUser }) => {
 	};
 	useEffect(() => {
 		checkTodayAtt();
-		latestMonthAttCalc();
-		overAllAttCalc();
 	});
 
 	return (
@@ -194,7 +194,7 @@ const Attendance = ({ curUser }) => {
 						</Typography>
 
 						<Box>
-							{todayAttend ? (
+							{todayAttend || checkHoliday ? (
 								<Button
 									size="small"
 									variant="contained"

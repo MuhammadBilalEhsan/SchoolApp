@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 import {
-	Fab,
 	DialogTitle,
 	DialogContent,
 	DialogActions,
 	Dialog,
 	TextField,
 	Button,
+	Tooltip
 } from "@mui/material/";
 import { FaUserEdit } from "react-icons/fa";
-// import { Field, Form, Formik } from "formik";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
-// useformik
 export default function EditProfileFormik({ curUser }) {
 	const [open, setOpen] = useState(false);
 	const uidFromLocalStorage = localStorage.getItem("uid");
@@ -25,6 +23,7 @@ export default function EditProfileFormik({ curUser }) {
 		setOpen(false);
 	};
 
+	// const validPhoneNum = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 	const formik = useFormik({
 		initialValues: {
 			id: uidFromLocalStorage,
@@ -36,43 +35,58 @@ export default function EditProfileFormik({ curUser }) {
 			phone: curUser.phone,
 		},
 		validationSchema: yup.object().shape({
-			fname: yup.string().required(),
-			lname: yup.string().required(),
-			fatherName: yup.string().required(),
-			atClass: yup.number().required().positive().integer(),
-			age: yup.number().required().positive().integer(),
-			phone: yup.number().required().positive().integer(),
+			fname: yup.string()
+				.max(12, "Plese Enter a Name less then 12 Characters")
+				.required("Please Enter First Name"),
+			lname: yup.string()
+				.max(12, "Plese Enter a Name less then 12 Characters")
+				.required("Please Enter Last Name"),
+			fatherName: yup.string()
+				.max(16, "Plese Enter a Name less then 16 Characters")
+				.required("Please Enter Your Father's Name"),
+			atClass: yup.number().required().positive().integer().min(6).max(10),
+			age: yup.number().required("It is not a good habit to hide your age.")
+				.positive("That doesn't look like a human's age.")
+				.integer("Don't use decimal point")
+				.min(10, "You are not egligible for this school, your age a baby,")
+				.max(199, "A noble human cannot live so long"),
+			// phone: yup.string().matches(validPhoneNum, 'Phone number is not valid').required(),
+			phone: yup.number()
+				.typeError("That doesn't look like a phone number")
+				.positive("A phone number can't start with a minus")
+				.integer("A phone number can't include a decimal point")
+				.min(8)
+				.required('A phone number is required')
 		}),
-
 		onSubmit: async (values) => {
 			try {
-				const res = await axios.post("user/edit-profile", values);
-				if (res.data.message) {
-					alert(res.data.message);
-					handleClose();
-				} else {
-					alert("User not update!");
-					handleClose();
-				}
+				console.log(values)
+				// const res = await axios.post("user/edit-profile", values);
+				// if (res.data.message) {
+				// 	alert(res.data.message);
+				// 	handleClose();
+				// } else {
+				// 	alert("User not update!");
+				// 	handleClose();
+				// }
 			} catch (error) {
 				console.log(error);
 				handleClose();
 			}
-		},
-	});
+		}
+
+	})
 
 	return (
 		<div>
-			<Fab
-				sx={{ color: "#fff", backgroundColor: "#ff5100" }}
-				aria-label="edit"
-				size="small"
-				onClick={handleClickOpen}
-			>
-				<FaUserEdit color="white" size="18px" />
-			</Fab>
+			<Tooltip title="Edit Profile" arrow >
+				<Button color="success" variant="contained" size="small" onClick={handleClickOpen}>
+					<FaUserEdit color="inherit" size="28px" />
+				</Button>
+			</Tooltip>
+
 			{/* Openning Dialouge Box */}
-			<Dialog open={open} onClose={handleClose}>
+			<Dialog Dialog open={open} onClose={handleClose} >
 				<DialogTitle align="center" backgroundColor="white">
 					Edit Profile
 				</DialogTitle>
@@ -90,7 +104,7 @@ export default function EditProfileFormik({ curUser }) {
 							autoComplete="off"
 							fullWidth
 							color="success"
-							// required
+						// required
 						/>
 						{formik.errors.fname && formik.touched.fname && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -108,7 +122,7 @@ export default function EditProfileFormik({ curUser }) {
 							autoComplete="off"
 							fullWidth
 							color="success"
-							// required
+						// required
 						/>
 						{formik.errors.lname && formik.touched.lname && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -126,7 +140,7 @@ export default function EditProfileFormik({ curUser }) {
 							autoComplete="off"
 							fullWidth
 							color="success"
-							// required
+						// required
 						/>
 						{formik.errors.fatherName && formik.touched.fatherName && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -161,7 +175,7 @@ export default function EditProfileFormik({ curUser }) {
 							autoComplete="off"
 							fullWidth
 							color="success"
-							// required
+						// required
 						/>
 						{formik.errors.age && formik.touched.age && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -179,7 +193,7 @@ export default function EditProfileFormik({ curUser }) {
 							autoComplete="off"
 							fullWidth
 							color="success"
-							// required
+						// required
 						/>
 						{formik.errors.phone && formik.touched.phone && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -204,7 +218,7 @@ export default function EditProfileFormik({ curUser }) {
 						Cancel
 					</Button>
 				</DialogActions>
-			</Dialog>
-		</div>
+			</Dialog >
+		</div >
 	);
 }

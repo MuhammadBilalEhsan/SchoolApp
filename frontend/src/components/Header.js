@@ -10,9 +10,9 @@ import {
 	MenuItem,
 	Tooltip
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+// import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
-import { CgMoreVerticalR, CgLogOff } from "react-icons/cg";
+import { CgMoreVertical, CgLogOff } from "react-icons/cg";
 
 import { Link } from "react-router-dom";
 const BtnBox = styled("div")(({ theme }) => ({
@@ -23,15 +23,14 @@ const BtnBox = styled("div")(({ theme }) => ({
 	},
 }));
 const MobMenuComp = styled("div")(({ theme }) => ({
-	// padding: theme.spacing(1),
 	display: "none",
 	[theme.breakpoints.down("md")]: {
 		display: "flex",
 	},
 }));
-const useStyles = makeStyles((theme) => ({}));
+// const useStyles = makeStyles((theme) => ({}));
 const Header = () => {
-	const classes = useStyles();
+	// const classes = useStyles();
 	const [mobMenuAnchor, setMobMenuAnchor] = useState(null);
 	const isMobMenuOpen = Boolean(mobMenuAnchor);
 
@@ -49,15 +48,16 @@ const Header = () => {
 			id="mob_menu"
 			keepMounted
 			open={isMobMenuOpen}
+			onClose={closeMobMenu}
 		>
 			<MenuItem
 				component={Link}
+				onClick={closeMobMenu}
 				to="/profile"
 				sx={{
-					backgroundColor: "green",
-					color: "#fff",
-					width: "100vw",
-					justifyContent: "center",
+					backgroundColor: "#fff",
+					color: "green",
+					width: "fit-content",
 					paddingBottom: 2,
 				}}
 			>
@@ -65,12 +65,12 @@ const Header = () => {
 			</MenuItem>
 			<MenuItem
 				component={Link}
+				onClick={closeMobMenu}
 				to="/attendance"
 				sx={{
-					backgroundColor: "green",
-					color: "#fff",
-					width: "100vw",
-					justifyContent: "center",
+					backgroundColor: "#fff",
+					color: "green",
+					width: "fit-content",
 					paddingBottom: 2,
 				}}
 			>
@@ -78,12 +78,12 @@ const Header = () => {
 			</MenuItem>
 			<MenuItem
 				component={Link}
+				onClick={closeMobMenu}
 				to="/coursedetails"
 				sx={{
-					backgroundColor: "green",
-					color: "#fff",
-					width: "100vw",
-					justifyContent: "center",
+					backgroundColor: "#fff",
+					color: "green",
+					width: "fit-content",
 					paddingBottom: 2,
 				}}
 			>
@@ -91,12 +91,12 @@ const Header = () => {
 			</MenuItem>
 			<MenuItem
 				component={Link}
+				onClick={closeMobMenu}
 				to="/classmaterials"
 				sx={{
-					backgroundColor: "green",
-					color: "#fff",
-					width: "100vw",
-					justifyContent: "center",
+					backgroundColor: "#fff",
+					color: "green",
+					width: "fit-content",
 					paddingBottom: 2,
 				}}
 			>
@@ -109,10 +109,9 @@ const Header = () => {
 					history.push("/");
 				}}
 				sx={{
-					backgroundColor: "green",
+					backgroundColor: "#fff",
 					color: "red",
-					width: "100vw",
-					justifyContent: "center",
+					width: "fit-content",
 					paddingBottom: 2,
 				}}
 			>
@@ -124,7 +123,7 @@ const Header = () => {
 		<>
 			<AppBar color="success" position="static">
 				<Toolbar>
-					<Typography variant="h5" sx={{ flexGrow: 1 }}>
+					<Typography component={Link} color="inherit" to="/profile" variant="h5" sx={{ flexGrow: 1, textDecoration: "none" }}>
 						BE School
 					</Typography>
 					<BtnBox>
@@ -183,7 +182,7 @@ const Header = () => {
 					</BtnBox>
 					<MobMenuComp>
 						<IconButton color="inherit" onClick={openMobMenu}>
-							<CgMoreVerticalR />
+							<CgMoreVertical />
 						</IconButton>
 					</MobMenuComp>
 				</Toolbar>

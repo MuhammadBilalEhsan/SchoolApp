@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 // import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
 import { Box, Avatar, Grid, Paper, Fab, Button, Typography } from "@mui/material";
-import img from "../images/img.jpg";
 import EditProfile from "./EditProfile";
 import ChangeProfilePic from "./ChangeProfilePic";
 import "../App.css";
@@ -15,6 +14,12 @@ const Item = styled(Paper)(({ theme }) => ({
 	justifyContent: "space-between",
 	color: "green",
 }));
+const MyDiv = styled("div")(({ theme }) => ({
+	width: "100%",
+	[theme.breakpoints.down("xs")]: {
+		width: "110%"
+	}
+}))
 
 // const useStyles = makeStyles((theme) => ({
 
@@ -22,57 +27,68 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Profile = ({ curUser }) => {
 	// const classes = useStyles();
-	let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
+	const [imgURL, setImgURL] = useState(curUser.dp)
+
+	let { age, atClass, email, fatherName, fname, lname, phone, roll, dp } = curUser;
 	return (
 		<>
 			<Box className={`_main`}>
 				<Header />
 				<Box mt={5} width="100%">
-					<Box width="70%" mx="auto">
-						<Grid container spacing={2} justifyContent="center">
-							<Avatar
-								alt="Remy Sharp"
-								src={img}
-								sx={{ width: "300px", height: "300px" }}
-								mx="auto"
-							/>
-						</Grid>
-						<Grid
-							container
-							justifyContent="space-between"
-							width="25%"
+					<Box width="70%" mx="auto" display="flex" justifyContent="center" alignItems="center">
+						<Avatar
+							alt={`${fname} ${lname}`}
+							src={imgURL}
+							sx={{ width: "180px", height: "180px", border: "1px dashed green" }}
 							mx="auto"
-						>
-							<ChangeProfilePic curUser={curUser} />
-							<EditProfile curUser={curUser} />
-						</Grid>
+						/>
 					</Box>
-					<Box width="70%" mx="auto" mt={3}>
+					<Box
+						width="100%"
+						display="flex"
+						justifyContent="center"
+						position="relative"
+						bottom="13px"
+						zIndex={1}
+					>
+						<ChangeProfilePic curUser={curUser} setImgURL={setImgURL} />
+					</Box>
+					<Box
+						width="90%"
+						display="flex"
+						justifyContent="flex-end"
+					// position="relative"
+					// bottom="13px"
+					// zIndex={1}
+					>
+						<EditProfile curUser={curUser} />
+					</Box>
+					<Box width="80%" mx="auto" mt={3}>
 						<Grid container spacing={2} justifyContent="center">
-							<Grid item xs={10} md={6}>
+							<Grid item xs={12} md={6}>
 								<Item>
-									<Box width="48%" textAlign="right">
+									<Box width="30%" color="black" textAlign="right">
 										Name:
 									</Box>
-									<Box width="48%" textAlign="left">{`${fname} ${lname}`}</Box>
+									<Box width="66%" textAlign="center">{`${fname} ${lname}`}</Box>
 								</Item>
 							</Grid>
-							<Grid item xs={10} md={6}>
+							<Grid item xs={12} md={6}>
 								<Item>
-									<Box width="48%" textAlign="right">
+									<Box width="30%" color="black" textAlign="right">
 										Email:
 									</Box>
-									<Box width="48%" textAlign="left">
+									<Box width="66%" textAlign="center">
 										{email}
 									</Box>
 								</Item>
 							</Grid>
-							<Grid item xs={10} md={6}>
+							<Grid item xs={12} md={6}>
 								<Item>
-									<Box width="48%" textAlign="right">
+									<Box width="30%" color="black" textAlign="right">
 										Class:
 									</Box>
-									<Box width="48%" textAlign="left">
+									<Box width="66%" textAlign="center">
 										{
 											atClass ? (
 												atClass
@@ -85,12 +101,12 @@ const Profile = ({ curUser }) => {
 									</Box>
 								</Item>
 							</Grid>
-							<Grid item xs={10} md={6}>
+							<Grid item xs={12} md={6}>
 								<Item>
-									<Box width="48%" textAlign="right">
+									<Box width="30%" color="black" textAlign="right">
 										Age:
 									</Box>
-									<Box width="48%" textAlign="left">
+									<Box width="66%" textAlign="center">
 										{
 											age ? (
 												age
@@ -103,12 +119,12 @@ const Profile = ({ curUser }) => {
 									</Box>
 								</Item>
 							</Grid>
-							<Grid item xs={10} md={6}>
+							<Grid item xs={12} md={6}>
 								<Item>
-									<Box width="48%" textAlign="right">
+									<Box width="30%" color="black" textAlign="right">
 										Son of:
 									</Box>
-									<Box width="48%" textAlign="left">
+									<Box width="66%" textAlign="center">
 										{
 											fatherName ? (
 												fatherName
@@ -121,12 +137,12 @@ const Profile = ({ curUser }) => {
 									</Box>
 								</Item>
 							</Grid>
-							<Grid item xs={10} md={6}>
+							<Grid item xs={12} md={6}>
 								<Item>
-									<Box width="48%" textAlign="right">
+									<Box width="30%" color="black" textAlign="right">
 										Contact:
 									</Box>
-									<Box width="48%" textAlign="left">
+									<Box width="66%" textAlign="center">
 										{
 											phone ? (
 												phone
@@ -139,12 +155,12 @@ const Profile = ({ curUser }) => {
 									</Box>
 								</Item>
 							</Grid>
-							<Grid item xs={10} md={6} mb={2}>
+							<Grid item xs={12} md={6} mb={2}>
 								<Item>
-									<Box width="48%" textAlign="right">
+									<Box width="30%" color="black" textAlign="right">
 										Roll:
 									</Box>
-									<Box width="48%" textAlign="left">
+									<Box width="66%" textAlign="center">
 										{roll}
 									</Box>
 								</Item>

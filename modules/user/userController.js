@@ -1,13 +1,23 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
-const fs = require("fs");
+const admin = require("firebase-admin");
+const path = require("path")
+const serviceAccount = require("../../firebase/serviceAccount")
+// const fs = require("fs");
 const {
 	getStorage,
 	ref,
 	uploadBytes,
 	getMetadata,
 } = require("firebase/storage");
-const { async } = require("@firebase/util");
+
+
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount),
+	databaseURL: "https://schoolapp-4ee60-default-rtdb.europe-west1.firebasedatabase.app/"
+});
+
+const bucket = admin.storage().bucket("gs://schoolapp-4ee60.appspot.com/");
 
 // REGISTER USER ROUTE
 module.exports.registerUser = async (req, res) => {
@@ -75,41 +85,43 @@ module.exports.EditProfile = async (req, res) => {
 };
 
 module.exports.EditProfileImage = async (req, res) => {
+	// try {
 	const _id = req.body._id;
 	const dp = req.file;
-	try {
-		if (dp) {
-			const storage = getStorage();
-
-			const storageRef = ref(storage, "profileImg/" + _id);
-			const fbs = await uploadBytes(storageRef, req.file.buffer, {
-				contentType: req.file.mimetype,
-			});
-			if (fbs) {
-				console.log("successfully uploaded");
-				console.log(fbs);
-			}
-			// console.log(fbs);
-			// console.log(dp);
-			// console.log(`${__dirname}/profile-images/${dp.filename}`);
-		}
-	} catch (err) {
-		console.log(err);
+	if (!_id || !dp) {
+		res.status(400).send({ error: "Invalid Credentials!" })
 	}
-	// const dp = req.file ? req.file.filename : null;
-	// if (dp) {
-	//   const changeDP = await User.findByIdAndUpdate(_id, {
-	//     dp,
-	//   });
-	//   if (!changeDP) {
-	//     return res.status(400).send({ error: "Profile Pic not Update" });
-	//   } else {
-	//     return res
-	//       .status(200)
-	//       .send({ message: "Profile Pic Update Successfully" });
-	//   }
-	// }
-};
+	bucket.upload(dp.path,
+		// function (err, file, apiResponse) {
+		function (err, file) {
+			if (!err) {
+				file.getSignedUrl({
+					action: 'read',
+					expires: '03-09-2491'
+				}).then(async (urlData, err) => {
+					try {
+						if (!err) {
+							// console.log("public downloadable url: ", urlData[0])
+							const pubURL = urlData[0]
+							const pPic = await User.findByIdAndUpdate(_id, {
+								dp: pubURL
+							})
+							if (pPic) {
+								res.send({ message: "Profile Picture Updated", pPic })
+							} else {
+								res.status(512).send({ error: "Profile Picture Not Updated" })
+							}
+						}
+					} catch (error) {
+						console.log(error)
+					}
+				})
+			}
+		}
+	)
+
+
+}
 
 // USER LOGIN ROUTE
 module.exports.loginUser = async (req, res) => {

@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-	Tooltip,
-	Fab,
-	DialogTitle,
-	DialogContent,
-	DialogActions,
-	Dialog,
-	TextField,
-	Menu,
-	MenuItem,
-	Button,
-} from "@mui/material/";
+import { Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField, Menu, MenuItem, Button, } from "@mui/material/";
 import AddTopic from "./AddTopic";
 import CourseOutlineComp from "./CourseOutlineComp";
 import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
@@ -33,10 +22,10 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	let iniState;
 	if (editCourse) {
 		iniState = {
-			week1: course?.courseOutline[0] || "",
-			week2: course?.courseOutline[1] || "",
-			week3: course?.courseOutline[2] || "",
-			week4: course?.courseOutline[3] || "",
+			week1: course?.courseOutline[0],
+			week2: course?.courseOutline[1],
+			week3: course?.courseOutline[2],
+			week4: course?.courseOutline[3],
 		}
 	} else {
 		iniState = {
@@ -292,7 +281,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 								course={course}
 							/>
 						) : (
-							""
+							<></>
 						)}
 					</form>
 				</DialogContent>
