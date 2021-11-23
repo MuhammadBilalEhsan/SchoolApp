@@ -57,7 +57,7 @@ const Header = () => {
 				sx={{
 					backgroundColor: "#fff",
 					color: "green",
-					width: "fit-content",
+					width: "100%",
 					paddingBottom: 2,
 				}}
 			>
@@ -70,7 +70,7 @@ const Header = () => {
 				sx={{
 					backgroundColor: "#fff",
 					color: "green",
-					width: "fit-content",
+					width: "100%",
 					paddingBottom: 2,
 				}}
 			>
@@ -83,7 +83,7 @@ const Header = () => {
 				sx={{
 					backgroundColor: "#fff",
 					color: "green",
-					width: "fit-content",
+					width: "100%",
 					paddingBottom: 2,
 				}}
 			>
@@ -96,7 +96,7 @@ const Header = () => {
 				sx={{
 					backgroundColor: "#fff",
 					color: "green",
-					width: "fit-content",
+					width: "100%",
 					paddingBottom: 2,
 				}}
 			>
@@ -111,7 +111,7 @@ const Header = () => {
 				sx={{
 					backgroundColor: "#fff",
 					color: "red",
-					width: "fit-content",
+					width: "100%",
 					paddingBottom: 2,
 				}}
 			>
@@ -169,14 +169,14 @@ const Header = () => {
 						<Tooltip title="Log Out" arrow>
 							<Button
 								// size="small"
-								color="error"
+								// color="success"
 								sx={{ marginLeft: 3 }}
 								onClick={() => {
 									localStorage.removeItem("uid");
 									history.push("/");
 								}}
 							>
-								<CgLogOff size="25px" />
+								<CgLogOff color="#fff" size="25px" />
 							</Button>
 						</Tooltip>
 					</BtnBox>

@@ -128,9 +128,9 @@ module.exports.editCourse = async (req, res) => {
 		res.status(400).send({ error: "Unexpected error..." });
 	}
 };
-module.exports.forStudentController = async (req, res) => {
-	const studentClass = Number(req.body.studentClass)
+module.exports.coursesForStudents = async (req, res) => {
 	try {
+		const studentClass = Number(req.body.studentClass)
 		if (!studentClass) {
 			res.status(400).send({ error: "Students Class ??" })
 		} else {
@@ -142,6 +142,33 @@ module.exports.forStudentController = async (req, res) => {
 			}
 		}
 
+	} catch (error) {
+		console.log(error)
+	}
+}
+module.exports.applyForCourse = async (req, res) => {
+	try {
+		const { course_id, student_id, student_name } = req.body
+		if (!course_id || !student_id || !student_name) {
+			return res.status(400).send({ error: "Unautherize Request" })
+		} else {
+
+			const findCourse = await Course.findOne({ _id: course_id })
+			if (findCourse) {
+				const newStudent = { id: student_id, name: student_name }
+				const addStudent = await Course.findByIdAndUpdate(course_id, {
+					students: [...findCourse.students, newStudent]
+				})
+				if (addStudent) {
+					return res.send({ message: "Student Enrolled" })
+				} else {
+					return res.status(512).send({ error: "Student can't Enrole." })
+				}
+			} else {
+				return res.status(402).send({ error: "This Course not Exist" })
+
+			}
+		}
 	} catch (error) {
 		console.log(error)
 	}

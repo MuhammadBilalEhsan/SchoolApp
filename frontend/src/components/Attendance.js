@@ -4,9 +4,7 @@ import { makeStyles } from "@mui/styles";
 
 import { styled } from "@mui/material/styles";
 import { Box, Typography, Button } from "@mui/material";
-import LinearProgress, {
-	linearProgressClasses,
-} from "@mui/material/LinearProgress";
+import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress";
 import moment from "moment-business-days";
 import Header from "./Header";
 import axios from "axios";
@@ -24,9 +22,6 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	},
 }));
 const useStyles = makeStyles((theme) => ({
-	// main: {
-	// 	height: "100vh",
-	// },
 	attendance_top: {
 		textAlign: "center",
 	},
@@ -35,14 +30,15 @@ const useStyles = makeStyles((theme) => ({
 const Attendance = ({ curUser }) => {
 	const classes = useStyles();
 
-	const [todayAttend, setTodayAttend] = useState(null);
+	const [todayAttend, setTodayAttend] = useState(true);
+	const [newState, setNewState] = useState(false);
 	const [firstDate, setFirstDate] = useState();
 	const [curMonth, setCurMonth] = useState();
 	const [curYear, setCurYear] = useState();
 	const [attPercent, setAttPercent] = useState(0);
 	const [lastMonthPercent, setLastMonthPercent] = useState(0);
 
-	const checkHoliday = moment().day === 0 || moment().day === 6
+
 
 
 	const _id = localStorage.getItem("uid");
@@ -58,7 +54,8 @@ const Attendance = ({ curUser }) => {
 			const checkTodayAtt = lastMonth.days.find(
 				(curElem) => curElem.todayDate === moment().date(),
 			);
-			if (checkTodayAtt) {
+			const checkHoliday = moment().day == 0 || moment().day == 6
+			if (checkTodayAtt || checkHoliday) {
 				setTodayAttend(true);
 			} else {
 				setTodayAttend(false);
@@ -158,10 +155,10 @@ const Attendance = ({ curUser }) => {
 
 	// ____________________________________________________________________________________________
 
-	const handleClick = async (e) => {
+	const handleClick = async () => {
 		try {
-			setTodayAttend(true);
-			e.preventDefault();
+			setNewState(true);
+			// e.preventDefault();/
 			const att = new Date();
 			const year = att.getFullYear();
 			const month = att.getMonth();
@@ -181,6 +178,8 @@ const Attendance = ({ curUser }) => {
 	};
 	useEffect(() => {
 		checkTodayAtt();
+		latestMonthAttCalc();
+		overAllAttCalc();
 	});
 
 	return (
@@ -194,25 +193,16 @@ const Attendance = ({ curUser }) => {
 						</Typography>
 
 						<Box>
-							{todayAttend || checkHoliday ? (
-								<Button
-									size="small"
-									variant="contained"
-									color="success"
-									disabled
-								>
-									Marked
-								</Button>
-							) : (
-								<Button
-									size="small"
-									variant="contained"
-									color="success"
-									onClick={(e) => handleClick(e)}
-								>
-									Mark
-								</Button>
-							)}
+							<Button
+								size="small"
+								variant="contained"
+								color="success"
+								onClick={(e) => handleClick(e)}
+								disabled={todayAttend || newState}
+							>
+								{todayAttend ? "Marked" : "Mark"}
+							</Button>
+							{/* )} */}
 						</Box>
 					</Box>
 					<Box my={5} mx="auto" sx={{ width: "80%" }} display="block">

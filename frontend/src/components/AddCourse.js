@@ -19,23 +19,9 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	const [topicChips, setTopicChips] = useState([]);
 	const [topicErr, setTopicErr] = useState(null);
 	const [coOutErr, setCoOutErr] = useState(null);
-	let iniState;
-	if (editCourse) {
-		iniState = {
-			week1: course?.courseOutline[0],
-			week2: course?.courseOutline[1],
-			week3: course?.courseOutline[2],
-			week4: course?.courseOutline[3],
-		}
-	} else {
-		iniState = {
-			week1: "",
-			week2: "",
-			week3: "",
-			week4: "",
-		}
-	}
-	const [courseOutlineObj, setCourseOutlineObj] = useState(iniState);
+	const [weekNotSelected, setWeekNotSelected] = useState(null);
+
+	const [courseOutlineObj, setCourseOutlineObj] = useState({});
 	// let { courseName, courseDesc, topics, duration, courseOutline } = course;
 	// console.log(course);
 	const handleClickOpen = () => {
@@ -46,6 +32,8 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	};
 
 	const handleMenuOpen = (e) => {
+		setWeekNotSelected(false);
+		setCoOutErr(false);
 		setMenuOpen(e.currentTarget);
 	};
 	const handleMenuClose = () => {
@@ -68,11 +56,12 @@ export default function AddCourse({ curUser, editCourse, course }) {
 			courseOutline: null,
 		},
 		validationSchema: yup.object().shape({
-			courseName: yup.string().required(),
-			courseDesc: yup.string().required(),
-			// atClass: yup.number().required().positive().integer(),
-			// age: yup.number().required().positive().integer(),
-			// phone: yup.number().required().positive().integer(),
+			courseName: yup.string()
+				.max(12, "Enter Course name less then 12 Characters")
+				.required("Course Name is Required Field."),
+			courseDesc: yup.string()
+				.max(100, "Enter Course Description less then 100 Characters")
+				.required("Course Description is Required Field."),
 		}),
 
 
@@ -85,7 +74,9 @@ export default function AddCourse({ curUser, editCourse, course }) {
 					const courseOutline = Object.values(courseOutlineObj).filter(
 						(curElem) => curElem !== "",
 					);
-
+					if (!selectDurInd) {
+						setWeekNotSelected(true);
+					}
 					values.topics = topicChips;
 					values.duration = selectDurInd + 1;
 					values.courseOutline = courseOutline;
@@ -96,6 +87,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 						setCoOutErr(true);
 					} else {
 						if (editCourse) {
+							console.log("Edit Course", values)
 							const res = await axios.post("course/editcourse", values);
 							if (res.data.message) {
 								alert(res.data.message);
@@ -104,6 +96,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							}
 							handleClose();
 						} else {
+							console.log("Add Course", values)
 							const res = await axios.post("course/add", values);
 							if (res.data.message) {
 								alert(res.data.message);
@@ -139,9 +132,9 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	};
 	useEffect(() => {
 		if (editCourse) {
-			handleSelect(course?.duration - 1)
+			setSelectDurInd(course?.duration - 1)
 		}
-	}, [])
+	})
 	return (
 		<div>
 			{editCourse ? (
@@ -222,6 +215,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							onChange={formik.handleChange("courseDesc")}
 							autoComplete="off"
 							fullWidth
+							multiline
 							color={editCourse ? "warning" : "success"}
 						// required
 						/>
@@ -245,16 +239,21 @@ export default function AddCourse({ curUser, editCourse, course }) {
 						<Button
 							onClick={(e) => {
 								handleMenuOpen(e);
-								setCourseOutlineObj(iniState);
+								setCourseOutlineObj({});
 							}}
 							color={editCourse ? "warning" : "success"}
 							endIcon={<MdKeyboardArrowDown />}
 						>
 							{/* {durationArr[selectDurInd] || "Duration"} */}
 							{
-								editCourse ? durationArr[course.duration - 1] : durationArr[selectDurInd] || "Duration"
+								editCourse ? durationArr[course?.duration - 1] : durationArr[selectDurInd] || "Duration"
 							}
 						</Button>
+						{weekNotSelected ?
+							(<p style={{ color: "red", marginLeft: "5px" }}>
+								Please Select Duration of Your Course
+							</p>) : (<></>)
+						}
 						<Menu
 							open={Boolean(menuOpen)}
 							anchorEl={menuOpen}
@@ -273,6 +272,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 						{selectDurInd !== null ? (
 							// <p>Describe Course Outline...</p>
 							<CourseOutlineComp
+								course={course}
 								selectDurInd={selectDurInd}
 								courseOutlineObj={courseOutlineObj}
 								setCourseOutlineObj={setCourseOutlineObj}

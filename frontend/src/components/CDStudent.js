@@ -15,7 +15,7 @@ const CDStudent = ({ curUser, courses }) => {
             <Box className="_main" >
                 <Header />
                 <Box width="100%">
-                    <Box width="70%" marginX="auto" mt={2}>
+                    <Box maxWidth="1100px" width="95%" marginX="auto" mt={2}>
                         <Typography variant="h4">
                             {`${curUser.fname} ${curUser.lname}(${curUser.roll})`}
                         </Typography>
@@ -47,7 +47,7 @@ const CDStudent = ({ curUser, courses }) => {
                                     {
                                         courses.map((curElem, ind) => {
                                             // return <CourseCard key={ind} curElem={curElem} />
-                                            return <CourseAcc key={ind} curElem={curElem} />
+                                            return <CourseAcc key={ind} curElem={curElem} curUser={curUser} />
                                         })
                                     }
                                 </Box>

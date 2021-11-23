@@ -5,18 +5,33 @@ import {
     AccordionSummary,
     Typography,
     Box,
+    Button,
+    Grid,
     Chip
 } from '@mui/material';
-import { MdMoreVert, MdFavorite, MdOutlineExpandMore } from 'react-icons/md';
+import axios from "axios"
+import { MdOutlineExpandMore } from 'react-icons/md';
 
-function CourseAcc({ curElem }) {
+function CourseAcc({ curElem, curUser }) {
     const [expanded, setExpanded] = useState(false);
-
+    const { fname, lname } = curUser
     const { _id, courseDesc, courseName, courseOutline, dateOfCreation, duration, students, teacherClass, teacherEmail, teacher_id, topics } = curElem
-
+    const uid = localStorage.getItem("uid")
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
+    const applyCourse = async (e) => {
+        try {
+            const obj = {
+                student_name: `${fname} ${lname}`,
+                course_id: _id, student_id: uid
+            }
+            const res = await axios.post("course/applynow", obj)
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div style={{ marginBottom: 2 }}>
@@ -26,29 +41,29 @@ function CourseAcc({ curElem }) {
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                 >
-                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                    <Typography sx={{ width: '45%', flexShrink: 0, wordWrap: "break-word", paddingX: 0.5 }}>
                         {`Course: ${courseName}`}
                     </Typography>
                     <Typography sx={{ color: 'text.secondary' }}>{`Duration: ${duration} Week / Weeks`}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Box mt={1} display="flex" >
-                        <Box width="49%">
-                            <Typography color="black" variant="h6">
+                    <Grid container>
+                        <Grid item xs={12} sm={6} sx={{ wordWrap: "break-word" }}>
+                            <Typography color="black" variant="subtitle2">
                                 Course Name:
                             </Typography>
-                            <Typography ml={5} variant="subtitle1">
+                            <Typography ml={5} variant="body2">
                                 {courseName}
                             </Typography>
 
-                            <Typography color="black" variant="h6">
+                            <Typography color="black" variant="subtitle2">
                                 Description:
                             </Typography>
-                            <Typography ml={5} variant="subtitle1">
+                            <Typography ml={5} variant="body2">
                                 {courseDesc}
                             </Typography>
 
-                            <Typography color="black" variant="h6">
+                            <Typography color="black" variant="subtitle2">
                                 Topics:
                             </Typography>
                             <Box ml={4}>
@@ -65,21 +80,21 @@ function CourseAcc({ curElem }) {
                                     );
                                 })}
                             </Box>
-                            <Typography color="black" variant="h6">
+                            <Typography color="black" variant="subtitle2">
                                 Duration:
                             </Typography>
-                            <Typography ml={5} variant="subtitle1">
+                            <Typography ml={5} variant="body2">
                                 {duration} week / weeks
                             </Typography>
-                        </Box>
-                        <Box width="49%">
-                            <Typography color="black" variant="h6">
+                        </Grid>
+                        <Grid item xs={12} sm={6} sx={{ wordWrap: "break-word" }}>
+                            <Typography color="black" variant="subtitle2">
                                 Course Outline:
                             </Typography>
                             {courseOutline?.map((curElem, ind) => {
                                 return (
                                     <Box key={ind}>
-                                        <Typography color="black" ml={5} variant="subtitle1">
+                                        <Typography color="black" ml={5} variant="body2">
                                             week {ind + 1}:
                                         </Typography>
                                         <Typography ml={9} variant="body1">
@@ -88,9 +103,9 @@ function CourseAcc({ curElem }) {
                                     </Box>
                                 );
                             })}
-
-                        </Box>
-                    </Box>
+                            <Button sx={{ justifySelf: "flex-end" }} color="success" onClick={(e) => applyCourse(e)} variant="contained">Apply Now</Button>
+                        </Grid>
+                    </Grid>
                 </AccordionDetails>
             </Accordion>
         </div>

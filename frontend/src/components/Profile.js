@@ -1,3 +1,6 @@
+// const imageClick = (event) => {
+// 	hiddenFileInput.current.click();
+// };
 import React, { useState } from "react";
 // import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
@@ -14,12 +17,12 @@ const Item = styled(Paper)(({ theme }) => ({
 	justifyContent: "space-between",
 	color: "green",
 }));
-const MyDiv = styled("div")(({ theme }) => ({
-	width: "100%",
-	[theme.breakpoints.down("xs")]: {
-		width: "110%"
-	}
-}))
+// const MyDiv = styled("div")(({ theme }) => ({
+// 	width: "100%",
+// 	[theme.breakpoints.down("xs")]: {
+// 		width: "110%"
+// 	}
+// }))
 
 // const useStyles = makeStyles((theme) => ({
 
@@ -28,6 +31,7 @@ const MyDiv = styled("div")(({ theme }) => ({
 const Profile = ({ curUser }) => {
 	// const classes = useStyles();
 	const [imgURL, setImgURL] = useState(curUser.dp)
+	// const ref = useRef(initialValue)
 
 	let { age, atClass, email, fatherName, fname, lname, phone, roll, dp } = curUser;
 	return (
@@ -56,14 +60,11 @@ const Profile = ({ curUser }) => {
 					<Box
 						width="90%"
 						display="flex"
-						justifyContent="flex-end"
-					// position="relative"
-					// bottom="13px"
-					// zIndex={1}
+						justifyContent="flex-end" position="relative" bottom="55px"
 					>
 						<EditProfile curUser={curUser} />
 					</Box>
-					<Box width="80%" mx="auto" mt={3}>
+					<Box width="80%" mx="auto" mt={3} position="relative" bottom="60px">
 						<Grid container spacing={2} justifyContent="center">
 							<Grid item xs={12} md={6}>
 								<Item>

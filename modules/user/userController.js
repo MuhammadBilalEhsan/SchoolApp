@@ -3,13 +3,6 @@ const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
 const path = require("path")
 const serviceAccount = require("../../firebase/serviceAccount")
-// const fs = require("fs");
-const {
-	getStorage,
-	ref,
-	uploadBytes,
-	getMetadata,
-} = require("firebase/storage");
 
 
 admin.initializeApp({

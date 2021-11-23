@@ -63,13 +63,18 @@ export default function AddTopic({
 			<TextField
 				InputProps={{
 					startAdornment: (
-						<>
+						<Box style={{
+							// maxWidth: "1000px",
+							display: "flex",
+							flexDirection: "row",
+							flexWrap: "wrap"
+						}}>
 							{topicChips?.map((data) => {
 								return (
 									<Chip
 										sx={{
 											backgroundColor: editCourse ? "orange" : "#00800030",
-											marginRight: 1,
+											marginRight: 1
 										}}
 										key={data.key}
 										label={data.label}
@@ -77,7 +82,7 @@ export default function AddTopic({
 									/>
 								);
 							})}
-						</>
+						</Box>
 					),
 				}}
 				disabled={topicChips.length >= 10 ? true : false}
@@ -91,21 +96,16 @@ export default function AddTopic({
 				onKeyPress={(e) => handleKeyPress(e)}
 				autoComplete="off"
 				color={editCourse ? "warning" : "success"}
-				className="abc"
 				fullWidth
 			/>
-			{topicErr ? (
-				<p style={{ color: "red", marginLeft: "5px" }}>
-					Please Add at least 1 Topic
-				</p>
-			) : (
-				""
-			)}
-			{/* {formik.errors.topicItems && formik.touched.topicItems && (
-						<p style={{ color: "red", marginLeft: "5px" }}>
-							{formik.errors.topicItems}
-						</p>
-					)} */}
-		</Box>
+			{
+				topicErr ? (
+					<p style={{ color: "red", marginLeft: "5px" }} >
+						Please Add at least 1 Topic
+					</p >
+				) : (
+					<></>
+				)}
+		</Box >
 	);
 }

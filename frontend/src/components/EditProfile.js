@@ -6,7 +6,8 @@ import {
 	Dialog,
 	TextField,
 	Button,
-	Tooltip
+	Tooltip,
+	Box
 } from "@mui/material/";
 import { FaUserEdit } from "react-icons/fa";
 import { useFormik } from "formik";
@@ -22,8 +23,6 @@ export default function EditProfileFormik({ curUser }) {
 	const handleClose = () => {
 		setOpen(false);
 	};
-
-	// const validPhoneNum = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 	const formik = useFormik({
 		initialValues: {
 			id: uidFromLocalStorage,
@@ -34,6 +33,8 @@ export default function EditProfileFormik({ curUser }) {
 			age: curUser.age,
 			phone: curUser.phone,
 		},
+		validateOnChange: true,
+
 		validationSchema: yup.object().shape({
 			fname: yup.string()
 				.max(12, "Plese Enter a Name less then 12 Characters")
@@ -50,25 +51,25 @@ export default function EditProfileFormik({ curUser }) {
 				.integer("Don't use decimal point")
 				.min(10, "You are not egligible for this school, your age a baby,")
 				.max(199, "A noble human cannot live so long"),
-			// phone: yup.string().matches(validPhoneNum, 'Phone number is not valid').required(),
 			phone: yup.number()
 				.typeError("That doesn't look like a phone number")
 				.positive("A phone number can't start with a minus")
 				.integer("A phone number can't include a decimal point")
-				.min(8)
+				.min(3000000000, "That doesn't look like a phone number")
+				.max(3499999999, "That doesn't look like a phone number")
 				.required('A phone number is required')
 		}),
 		onSubmit: async (values) => {
 			try {
 				console.log(values)
-				// const res = await axios.post("user/edit-profile", values);
-				// if (res.data.message) {
-				// 	alert(res.data.message);
-				// 	handleClose();
-				// } else {
-				// 	alert("User not update!");
-				// 	handleClose();
-				// }
+				const res = await axios.post("user/edit-profile", values);
+				if (res.data.message) {
+					alert(res.data.message);
+					handleClose();
+				} else {
+					alert("User not update!");
+					handleClose();
+				}
 			} catch (error) {
 				console.log(error);
 				handleClose();
@@ -78,7 +79,7 @@ export default function EditProfileFormik({ curUser }) {
 	})
 
 	return (
-		<div>
+		<Box>
 			<Tooltip title="Edit Profile" arrow >
 				<Button color="success" variant="contained" size="small" onClick={handleClickOpen}>
 					<FaUserEdit color="inherit" size="28px" />
@@ -182,19 +183,21 @@ export default function EditProfileFormik({ curUser }) {
 								{formik.errors.age}
 							</p>
 						)}
-						<TextField
-							margin="dense"
-							name="phone"
-							label="Contact No..."
-							type="number"
-							variant="outlined"
-							value={formik.values.phone}
-							onChange={formik.handleChange("phone")}
-							autoComplete="off"
-							fullWidth
-							color="success"
-						// required
-						/>
+						<Tooltip title="Enter Phone Number Escaped 0" arrow>
+							<TextField
+								margin="dense"
+								name="phone"
+								label="Contact No..."
+								type="number"
+								variant="outlined"
+								value={formik.values.phone}
+								onChange={formik.handleChange("phone")}
+								autoComplete="off"
+								fullWidth
+								color="success"
+							// required
+							/>
+						</Tooltip>
 						{formik.errors.phone && formik.touched.phone && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
 								{formik.errors.phone}
@@ -219,6 +222,6 @@ export default function EditProfileFormik({ curUser }) {
 					</Button>
 				</DialogActions>
 			</Dialog >
-		</div >
+		</Box >
 	);
 }
