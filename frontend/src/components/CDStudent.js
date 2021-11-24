@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Header from './Header'
 import { Box, Typography, Tabs, Tab, } from "@mui/material"
-import CourseCard from './CourseCard'
 import CourseAcc from './CourseAcc'
 
 const CDStudent = ({ curUser, courses }) => {

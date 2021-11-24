@@ -59,22 +59,22 @@ export default function AddTopic({
 	};
 
 	return (
-		<Box width="100%">
+		<div width="100%" style={{ display: "flex", flexDirection: "column" }} >
 			<TextField
 				InputProps={{
 					startAdornment: (
-						<Box style={{
-							// maxWidth: "1000px",
-							display: "flex",
-							flexDirection: "row",
-							flexWrap: "wrap"
-						}}>
+						// <div style={{
+						// 	// maxWidth: "1000px",
+						// 	flexWrap: "wrap"
+						// }}>
+						<span>
 							{topicChips?.map((data) => {
 								return (
 									<Chip
 										sx={{
 											backgroundColor: editCourse ? "orange" : "#00800030",
-											marginRight: 1
+											marginRight: 1,
+											marginTop: 1,
 										}}
 										key={data.key}
 										label={data.label}
@@ -82,7 +82,8 @@ export default function AddTopic({
 									/>
 								);
 							})}
-						</Box>
+						</span>
+						//yaha </div> tha
 					),
 				}}
 				disabled={topicChips.length >= 10 ? true : false}
@@ -106,6 +107,6 @@ export default function AddTopic({
 				) : (
 					<></>
 				)}
-		</Box >
+		</div >
 	);
 }

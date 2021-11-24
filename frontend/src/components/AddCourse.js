@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField, Menu, MenuItem, Button, } from "@mui/material/";
+import {
+	Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField,
+	Menu, MenuItem, Button, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel
+} from "@mui/material/";
 import AddTopic from "./AddTopic";
 import CourseOutlineComp from "./CourseOutlineComp";
 import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
@@ -21,7 +24,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	const [coOutErr, setCoOutErr] = useState(null);
 	const [weekNotSelected, setWeekNotSelected] = useState(null);
 
-	const [courseOutlineObj, setCourseOutlineObj] = useState({});
+	const [courseOutlineArr, setCourseOutlineArr] = useState([]);
 	// let { courseName, courseDesc, topics, duration, courseOutline } = course;
 	// console.log(course);
 	const handleClickOpen = () => {
@@ -40,17 +43,32 @@ export default function AddCourse({ curUser, editCourse, course }) {
 		setMenuOpen(false);
 	};
 	const handleSelect = (index) => {
-		setSelectDurInd(index);
+		console.log(index)
+		// if (index === 0) {
+		// 	// courseOutlineArr.push({ week1: "" })
+		// 	setCourseOutlineArr([{ week1: "" }])
+		// } else {
+		const objsOfCOArr = [...Array(index + 1)].map((v, ind) => {
+			// const obj = {
+			// const name = `week${ind + 1}`
+			// const obj = { [name]: "" }
+			const obj = { label: "" }
+			return obj;
+		})
+		setCourseOutlineArr(objsOfCOArr)
+		// }
+		setSelectDurInd(String(index));
 		handleMenuClose();
+
 	};
 
 	const formik = useFormik({
 		initialValues: {
 			teacher_id: uidFromLocalStorage,
-			teacherEmail: curUser.email,
-			teacherClass: curUser.atClass,
-			courseName: editCourse ? course.courseName : "",
-			courseDesc: editCourse ? course.courseDesc : "",
+			teacherEmail: curUser?.email,
+			teacherClass: curUser?.atClass,
+			courseName: editCourse ? course?.courseName : "",
+			courseDesc: editCourse ? course?.courseDesc : "",
 			topics: null,
 			duration: null,
 			courseOutline: null,
@@ -68,18 +86,20 @@ export default function AddCourse({ curUser, editCourse, course }) {
 		onSubmit: async (values) => {
 			try {
 				setCoOutErr(false);
-				if (topicChips.length == 0) {
+				if (topicChips.length === 0) {
 					setTopicErr(true);
 				} else {
-					const courseOutline = Object.values(courseOutlineObj).filter(
-						(curElem) => curElem !== "",
-					);
 					if (!selectDurInd) {
 						setWeekNotSelected(true);
 					}
+					console.log(selectDurInd + 1)
+					// if(){
+
+					// }
 					values.topics = topicChips;
 					values.duration = selectDurInd + 1;
-					values.courseOutline = courseOutline;
+					// values.courseOutline = courseOutline;
+					values.courseOutline = courseOutlineArr;
 					if (
 						values.duration !== values.courseOutline.length ||
 						values.courseOutline.length === 0
@@ -88,23 +108,23 @@ export default function AddCourse({ curUser, editCourse, course }) {
 					} else {
 						if (editCourse) {
 							console.log("Edit Course", values)
-							const res = await axios.post("course/editcourse", values);
-							if (res.data.message) {
-								alert(res.data.message);
-							} else {
-								alert(res.data.error);
-							}
-							handleClose();
+							// const res = await axios.post("course/editcourse", values);
+							// if (res.data.message) {
+							// 	alert(res.data.message);
+							// } else {
+							// 	alert(res.data.error);
+							// }
+							// handleClose();
 						} else {
 							console.log("Add Course", values)
-							const res = await axios.post("course/add", values);
-							if (res.data.message) {
-								alert(res.data.message);
-								console.log(res.data.message);
-							} else {
-								alert(res.data.error);
-							}
-							handleClose();
+							// const res = await axios.post("course/add", values);
+							// if (res.data.message) {
+							// 	alert(res.data.message);
+							// 	console.log(res.data.message);
+							// } else {
+							// 	alert(res.data.error);
+							// }
+							// handleClose();
 						}
 					}
 				}
@@ -133,8 +153,11 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	useEffect(() => {
 		if (editCourse) {
 			setSelectDurInd(course?.duration - 1)
+			setCourseOutlineArr(course?.courseOutline)
+		} else {
+			setCourseOutlineArr([])
 		}
-	})
+	}, [])
 	return (
 		<div>
 			{editCourse ? (
@@ -225,7 +248,6 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							</p>
 						)}
 						{/* add Topic field */}
-
 						<AddTopic
 							topicChips={topicChips}
 							setTopicChips={setTopicChips}
@@ -233,13 +255,14 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							setTopicErr={setTopicErr}
 							editCourse={editCourse}
 							course={course}
-						/>
+							style={{ display: "flex", background: "orange" }}
 
+						/>
 						{/* add duration field */}
 						<Button
 							onClick={(e) => {
 								handleMenuOpen(e);
-								setCourseOutlineObj({});
+								// setCourseOutlineArr([]);
 							}}
 							color={editCourse ? "warning" : "success"}
 							endIcon={<MdKeyboardArrowDown />}
@@ -249,10 +272,11 @@ export default function AddCourse({ curUser, editCourse, course }) {
 								editCourse ? durationArr[course?.duration - 1] : durationArr[selectDurInd] || "Duration"
 							}
 						</Button>
-						{weekNotSelected ?
-							(<p style={{ color: "red", marginLeft: "5px" }}>
-								Please Select Duration of Your Course
-							</p>) : (<></>)
+						{
+							weekNotSelected ?
+								(<p style={{ color: "red", marginLeft: "5px" }}>
+									Please Select Duration of Your Course
+								</p>) : (<></>)
 						}
 						<Menu
 							open={Boolean(menuOpen)}
@@ -269,20 +293,30 @@ export default function AddCourse({ curUser, editCourse, course }) {
 								</MenuItem>
 							))}
 						</Menu>
-						{selectDurInd !== null ? (
-							// <p>Describe Course Outline...</p>
-							<CourseOutlineComp
-								course={course}
-								selectDurInd={selectDurInd}
-								courseOutlineObj={courseOutlineObj}
-								setCourseOutlineObj={setCourseOutlineObj}
-								coOutErr={coOutErr}
-								editCourse={editCourse}
-								course={course}
-							/>
-						) : (
-							<></>
-						)}
+						{
+							// selectDurInd !== null ? (
+							selectDurInd ? (
+								<CourseOutlineComp
+									// course={course}
+									// selectDurInd={selectDurInd}
+									courseOutlineArr={courseOutlineArr}
+									setCourseOutlineArr={setCourseOutlineArr}
+									coOutErr={coOutErr}
+									onChange={(e, index) => {
+										setCourseOutlineArr(prev => {
+											let tempCourse = [...prev];
+											tempCourse[index].label = e.target.value;
+											return tempCourse;
+										})
+									}}
+								// editCourse={editCourse}
+								/>
+							) : (
+								<></>
+							)
+						}
+
+
 					</form>
 				</DialogContent>
 				<DialogActions>
