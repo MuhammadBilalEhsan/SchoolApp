@@ -87,7 +87,7 @@ const Header = () => {
 					paddingBottom: 2,
 				}}
 			>
-				Course Details
+				Course
 			</MenuItem>
 			<MenuItem
 				component={Link}
@@ -146,7 +146,7 @@ const Header = () => {
 							color="inherit"
 							sx={{ marginLeft: 3 }}
 						>
-							Course Details
+							Course
 						</Button>
 						<Button
 							component={Link}

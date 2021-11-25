@@ -24,12 +24,13 @@ const CourseOutlineComp = ({
 								label={`week ${ind + 1}`}
 								type="text"
 								variant="outlined"
-								value={curObj?.label}
-								// onChange={(e) => handleChange(e,curObj)}
+								value={curObj?.week}
 								onChange={(e) => onChange(e, ind)}
 								autoComplete="off"
 								color={editCourse ? "warning" : "success"}
 								fullWidth
+								maxLength={12}
+								inputProps={{ maxLength: 80 }}
 							/>
 						</span>
 					)

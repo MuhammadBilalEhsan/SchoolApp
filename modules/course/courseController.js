@@ -130,22 +130,36 @@ module.exports.editCourse = async (req, res) => {
 };
 module.exports.coursesForStudents = async (req, res) => {
 	try {
+		const { studentID } = req.body
 		const studentClass = Number(req.body.studentClass)
 		if (!studentClass) {
 			res.status(400).send({ error: "Students Class ??" })
 		} else {
 			const availaleCourses = await Course.find({ teacherClass: studentClass })
-			if (!availaleCourses) {
-				res.status(200).send({ message: `No Courses Available for class ${studentClass}` })
-			} else {
-				res.status(200).send({ courses: availaleCourses, message: `These Courses are Available for class ${studentClass}` })
+			if (availaleCourses) {
+				const studentEnrolled = availaleCourses.map(curElem => curElem.students)
+				// console.log("availablecourses", availaleCourses)
+				// console.log("studentEnrolled", studentEnrolled)
+				const abc = studentEnrolled.map(value => value.find(curElem => curElem.id === studentID))
+				console.log("abc", abc)
+				// console.log("studentID", studentID)
 			}
+			// if (!availaleCourses) {
+			// 	res.status(200).send({ message: `No Courses Available for class ${studentClass}` })
+			// } else {
+			// 	res.status(200).send({ courses: availaleCourses, message: `These Courses are Available for class ${studentClass}` })
+			// }
 		}
 
 	} catch (error) {
 		console.log(error)
 	}
 }
+
+// module.exports.studentAllCourses = async (req, res) => {
+
+// }
+
 module.exports.applyForCourse = async (req, res) => {
 	try {
 		const { course_id, student_id, student_name } = req.body
@@ -155,14 +169,19 @@ module.exports.applyForCourse = async (req, res) => {
 
 			const findCourse = await Course.findOne({ _id: course_id })
 			if (findCourse) {
-				const newStudent = { id: student_id, name: student_name }
-				const addStudent = await Course.findByIdAndUpdate(course_id, {
-					students: [...findCourse.students, newStudent]
-				})
-				if (addStudent) {
-					return res.send({ message: "Student Enrolled" })
+				const isExist = findCourse?.students.find(curObj => curObj.id === student_id)
+				if (isExist) {
+					return res.status(401).send({ error: "Student already Exist" })
 				} else {
-					return res.status(512).send({ error: "Student can't Enrole." })
+					const newStudent = { id: student_id, name: student_name }
+					const addStudent = await Course.findByIdAndUpdate(course_id, {
+						students: [...findCourse.students, newStudent]
+					})
+					if (addStudent) {
+						return res.send({ message: "Student Enrolled" })
+					} else {
+						return res.status(512).send({ error: "Student can't Enrole." })
+					}
 				}
 			} else {
 				return res.status(402).send({ error: "This Course not Exist" })

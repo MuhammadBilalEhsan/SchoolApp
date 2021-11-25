@@ -7,10 +7,12 @@ import {
     Box,
     Button,
     Grid,
-    Chip
+    Chip,
+    Tooltip
 } from '@mui/material';
 import axios from "axios"
 import { MdOutlineExpandMore } from 'react-icons/md';
+import { GrUserAdd } from 'react-icons/gr';
 
 function CourseAcc({ curElem, curUser }) {
     const [expanded, setExpanded] = useState(false);
@@ -27,7 +29,7 @@ function CourseAcc({ curElem, curUser }) {
                 course_id: _id, student_id: uid
             }
             const res = await axios.post("course/applynow", obj)
-            console.log(res)
+            alert(res.data.message || res.data.error)
         } catch (error) {
             console.log(error)
         }
@@ -52,14 +54,14 @@ function CourseAcc({ curElem, curUser }) {
                             <Typography color="black" variant="subtitle2">
                                 Course Name:
                             </Typography>
-                            <Typography ml={5} variant="body2">
+                            <Typography color="green" ml={5} variant="body2">
                                 {courseName}
                             </Typography>
 
                             <Typography color="black" variant="subtitle2">
                                 Description:
                             </Typography>
-                            <Typography ml={5} variant="body2">
+                            <Typography color="green" ml={5} variant="body2">
                                 {courseDesc}
                             </Typography>
 
@@ -94,16 +96,18 @@ function CourseAcc({ curElem, curUser }) {
                             {courseOutline?.map((curElem, ind) => {
                                 return (
                                     <Box key={ind}>
-                                        <Typography color="black" ml={5} variant="body2">
+                                        <Typography color="black" ml={5} variant="body1">
                                             week {ind + 1}:
                                         </Typography>
-                                        <Typography ml={9} variant="body1">
-                                            {curElem}
+                                        <Typography color="green" ml={9} variant="body2">
+                                            {curElem.week}
                                         </Typography>
                                     </Box>
                                 );
                             })}
-                            <Button sx={{ justifySelf: "flex-end" }} color="success" onClick={(e) => applyCourse(e)} variant="contained">Apply Now</Button>
+                            <Tooltip title="Enroll Now">
+                                <Button size="small" color="success" onClick={(e) => applyCourse(e)} variant="contained"><GrUserAdd color="white" size="14px" /></Button>
+                            </Tooltip>
                         </Grid>
                     </Grid>
                 </AccordionDetails>

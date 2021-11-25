@@ -63,10 +63,6 @@ export default function AddTopic({
 			<TextField
 				InputProps={{
 					startAdornment: (
-						// <div style={{
-						// 	// maxWidth: "1000px",
-						// 	flexWrap: "wrap"
-						// }}>
 						<span>
 							{topicChips?.map((data) => {
 								return (
@@ -83,7 +79,6 @@ export default function AddTopic({
 								);
 							})}
 						</span>
-						//yaha </div> tha
 					),
 				}}
 				disabled={topicChips.length >= 10 ? true : false}

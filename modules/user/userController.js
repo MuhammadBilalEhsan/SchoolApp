@@ -171,7 +171,6 @@ module.exports.markAttendance = async (req, res) => {
 						{ monthName: mm_yy, days: [{ todayDate: date, time }] },
 					],
 				});
-				console.log(markAttWithNewMonth);
 				if (!markAttWithNewMonth) {
 					return res
 						.status(500)
@@ -189,7 +188,6 @@ module.exports.markAttendance = async (req, res) => {
 				const markAttWithExistMonth = await User.findByIdAndUpdate(_id, {
 					attendance: newAtt,
 				});
-				console.log(markAttWithExistMonth);
 				if (!markAttWithExistMonth) {
 					return res
 						.status(500)
@@ -217,11 +215,6 @@ module.exports.profile = async (req, res) => {
 	} catch (err) {
 		console.log(err);
 	}
-};
-module.exports.classMaterials = async (req, res) => {
-	// const id = req.params.id;
-	// const id = "61708a8defe0fc8e555e618e";
-	// console.log(id);
 };
 
 module.exports.getData = async (req, res) => {

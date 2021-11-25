@@ -44,8 +44,7 @@ const CDStudent = ({ curUser, courses }) => {
                                 {/* <Box width="100%" display="flex" justifyContent="space-around"> */}
                                 <Box width="100%" >
                                     {
-                                        courses.map((curElem, ind) => {
-                                            // return <CourseCard key={ind} curElem={curElem} />
+                                        courses?.map((curElem, ind) => {
                                             return <CourseAcc key={ind} curElem={curElem} curUser={curUser} />
                                         })
                                     }

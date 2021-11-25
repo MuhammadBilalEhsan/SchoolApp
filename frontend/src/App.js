@@ -42,7 +42,7 @@ const App = () => {
 					}
 					if (currentUser.roll === "student" && currentUser.atClass) {
 
-						axios.post("course/forstudent", { studentClass: currentUser.atClass })
+						axios.post("course/forstudent", { studentClass: currentUser.atClass, studentID: _id })
 							.then((resp) => {
 								const courses = resp.data.courses;
 								dispatch(getStudentCourseFunc(courses))

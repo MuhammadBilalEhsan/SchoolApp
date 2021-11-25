@@ -38,7 +38,15 @@ const Profile = ({ curUser }) => {
 		<>
 			<Box className={`_main`}>
 				<Header />
-				<Box mt={5} width="100%">
+				<Box
+					mt={1}
+					width="99%"
+					display="flex"
+					justifyContent="flex-end"
+				>
+					<EditProfile curUser={curUser} />
+				</Box>
+				<Box width="100%">
 					<Box width="70%" mx="auto" display="flex" justifyContent="center" alignItems="center">
 						<Avatar
 							alt={`${fname} ${lname}`}
@@ -57,14 +65,7 @@ const Profile = ({ curUser }) => {
 					>
 						<ChangeProfilePic curUser={curUser} setImgURL={setImgURL} />
 					</Box>
-					<Box
-						width="90%"
-						display="flex"
-						justifyContent="flex-end" position="relative" bottom="55px"
-					>
-						<EditProfile curUser={curUser} />
-					</Box>
-					<Box width="80%" mx="auto" mt={3} position="relative" bottom="60px">
+					<Box width="80%" mx="auto" mt={3} position="relative" bottom="30px">
 						<Grid container spacing={2} justifyContent="center">
 							<Grid item xs={12} md={6}>
 								<Item>

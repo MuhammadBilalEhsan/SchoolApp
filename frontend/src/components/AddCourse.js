@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
 	Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField,
-	Menu, MenuItem, Button, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel
+	Menu, MenuItem, Button,
 } from "@mui/material/";
 import AddTopic from "./AddTopic";
 import CourseOutlineComp from "./CourseOutlineComp";
@@ -18,10 +18,11 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	const uidFromLocalStorage = localStorage.getItem("uid");
 	const [open, setOpen] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(null);
-	const [selectDurInd, setSelectDurInd] = useState(null);
+	const [selectDurInd, setSelectDurInd] = useState(String(course?.duration) || null);
 	const [topicChips, setTopicChips] = useState([]);
 	const [topicErr, setTopicErr] = useState(null);
 	const [coOutErr, setCoOutErr] = useState(null);
+	const [editEditCourse, setEditEditCourse] = useState(true);
 	const [weekNotSelected, setWeekNotSelected] = useState(null);
 
 	const [courseOutlineArr, setCourseOutlineArr] = useState([]);
@@ -43,20 +44,12 @@ export default function AddCourse({ curUser, editCourse, course }) {
 		setMenuOpen(false);
 	};
 	const handleSelect = (index) => {
-		console.log(index)
-		// if (index === 0) {
-		// 	// courseOutlineArr.push({ week1: "" })
-		// 	setCourseOutlineArr([{ week1: "" }])
-		// } else {
-		const objsOfCOArr = [...Array(index + 1)].map((v, ind) => {
-			// const obj = {
-			// const name = `week${ind + 1}`
-			// const obj = { [name]: "" }
-			const obj = { label: "" }
+		setEditEditCourse(false)
+		const objsOfCOArr = [...Array(index + 1)].map(() => {
+			const obj = { week: "" }
 			return obj;
 		})
 		setCourseOutlineArr(objsOfCOArr)
-		// }
 		setSelectDurInd(String(index));
 		handleMenuClose();
 
@@ -75,10 +68,8 @@ export default function AddCourse({ curUser, editCourse, course }) {
 		},
 		validationSchema: yup.object().shape({
 			courseName: yup.string()
-				.max(12, "Enter Course name less then 12 Characters")
 				.required("Course Name is Required Field."),
 			courseDesc: yup.string()
-				.max(100, "Enter Course Description less then 100 Characters")
 				.required("Course Description is Required Field."),
 		}),
 
@@ -91,40 +82,34 @@ export default function AddCourse({ curUser, editCourse, course }) {
 				} else {
 					if (!selectDurInd) {
 						setWeekNotSelected(true);
-					}
-					console.log(selectDurInd + 1)
-					// if(){
-
-					// }
-					values.topics = topicChips;
-					values.duration = selectDurInd + 1;
-					// values.courseOutline = courseOutline;
-					values.courseOutline = courseOutlineArr;
-					if (
-						values.duration !== values.courseOutline.length ||
-						values.courseOutline.length === 0
-					) {
-						setCoOutErr(true);
 					} else {
-						if (editCourse) {
-							console.log("Edit Course", values)
-							// const res = await axios.post("course/editcourse", values);
-							// if (res.data.message) {
-							// 	alert(res.data.message);
-							// } else {
-							// 	alert(res.data.error);
-							// }
-							// handleClose();
+						const cOutlineFiltered = courseOutlineArr.filter((curElem) => curElem.week !== "")
+						if (cOutlineFiltered.length !== courseOutlineArr.length) {
+							setCoOutErr(true)
 						} else {
-							console.log("Add Course", values)
-							// const res = await axios.post("course/add", values);
-							// if (res.data.message) {
-							// 	alert(res.data.message);
-							// 	console.log(res.data.message);
-							// } else {
-							// 	alert(res.data.error);
-							// }
-							// handleClose();
+							values.topics = topicChips;
+							values.duration = courseOutlineArr.length;
+							values.courseOutline = courseOutlineArr;
+							if (editCourse) {
+								console.log("Edit Course", values)
+								const res = await axios.post("course/editcourse", values);
+								if (res.data.message) {
+									alert(res.data.message);
+								} else {
+									alert(res.data.error);
+								}
+								handleClose();
+							} else {
+								console.log("Add Course", values)
+								const res = await axios.post("course/add", values);
+								if (res.data.message) {
+									alert(res.data.message);
+									console.log(res.data.message);
+								} else {
+									alert(res.data.error);
+								}
+								handleClose();
+							}
 						}
 					}
 				}
@@ -152,11 +137,11 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	};
 	useEffect(() => {
 		if (editCourse) {
-			setSelectDurInd(course?.duration - 1)
 			setCourseOutlineArr(course?.courseOutline)
 		} else {
 			setCourseOutlineArr([])
 		}
+		// console.log(courseOutlineArr)
 	}, [])
 	return (
 		<div>
@@ -164,13 +149,13 @@ export default function AddCourse({ curUser, editCourse, course }) {
 				<>
 					<Tooltip title="Edit Course" arrow>
 						<Button
-							sx={{ marginTop: 3, marginLeft: 2 }}
+							sx={{ marginTop: 3 }}
 							size="small"
 							variant="contained"
 							color="warning"
 							onClick={handleClickOpen}
 						>
-							<RiFileEditFill size="20px" color="#fff" />
+							<RiFileEditFill size="16px" color="#fff" />
 						</Button>
 					</Tooltip>
 					<Tooltip title="Delete Course" arrow>
@@ -181,7 +166,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							color="error"
 							onClick={(e) => delCourseFunc(e)}
 						>
-							<FaRegTrashAlt color="red" size="20px" />
+							<FaRegTrashAlt color="red" size="16px" />
 						</Button>
 					</Tooltip>
 				</>
@@ -220,6 +205,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							autoComplete="off"
 							fullWidth
 							color={editCourse ? "warning" : "success"}
+							inputProps={{ maxLength: 12 }}
 
 						// required
 						/>
@@ -240,6 +226,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							fullWidth
 							multiline
 							color={editCourse ? "warning" : "success"}
+							inputProps={{ maxLength: 100 }}
 						// required
 						/>
 						{formik.errors.courseDesc && formik.touched.courseDesc && (
@@ -262,14 +249,14 @@ export default function AddCourse({ curUser, editCourse, course }) {
 						<Button
 							onClick={(e) => {
 								handleMenuOpen(e);
-								// setCourseOutlineArr([]);
+								setCourseOutlineArr([]);
 							}}
 							color={editCourse ? "warning" : "success"}
 							endIcon={<MdKeyboardArrowDown />}
 						>
 							{/* {durationArr[selectDurInd] || "Duration"} */}
 							{
-								editCourse ? durationArr[course?.duration - 1] : durationArr[selectDurInd] || "Duration"
+								editCourse && editEditCourse ? durationArr[String(selectDurInd - 1)] : durationArr[selectDurInd] || "Duration"
 							}
 						</Button>
 						{
@@ -295,21 +282,18 @@ export default function AddCourse({ curUser, editCourse, course }) {
 						</Menu>
 						{
 							// selectDurInd !== null ? (
-							selectDurInd ? (
+							selectDurInd || editCourse ? (
 								<CourseOutlineComp
-									// course={course}
-									// selectDurInd={selectDurInd}
 									courseOutlineArr={courseOutlineArr}
-									setCourseOutlineArr={setCourseOutlineArr}
+									editCourse={editCourse}
 									coOutErr={coOutErr}
 									onChange={(e, index) => {
 										setCourseOutlineArr(prev => {
 											let tempCourse = [...prev];
-											tempCourse[index].label = e.target.value;
+											tempCourse[index].week = e.target.value;
 											return tempCourse;
 										})
 									}}
-								// editCourse={editCourse}
 								/>
 							) : (
 								<></>
@@ -325,7 +309,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 						variant="contained"
 						onClick={formik.handleSubmit}
 					>
-						Save Edit
+						{editCourse ? "Save Edit" : "Create"}
 					</Button>
 
 					<Button

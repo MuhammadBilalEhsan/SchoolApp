@@ -82,7 +82,7 @@ export default function EditProfileFormik({ curUser }) {
 		<Box>
 			<Tooltip title="Edit Profile" arrow >
 				<Button color="success" variant="contained" size="small" onClick={handleClickOpen}>
-					<FaUserEdit color="inherit" size="28px" />
+					<FaUserEdit color="inherit" size="16px" />
 				</Button>
 			</Tooltip>
 
