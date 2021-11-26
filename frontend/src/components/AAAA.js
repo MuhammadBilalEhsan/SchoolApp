@@ -174,3 +174,5 @@ function TabPanel(props) {
 }
 
 export default CDTeacher;
+
+// <Assignment title="Add Assignment" isTeacher={true} btnIcon={<MdAssignment size="18px" color="white" />} dialogTitle="Sending Assignment to All Students" actionTitle="create" />

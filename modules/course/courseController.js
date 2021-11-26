@@ -136,19 +136,19 @@ module.exports.coursesForStudents = async (req, res) => {
 			res.status(400).send({ error: "Students Class ??" })
 		} else {
 			const availaleCourses = await Course.find({ teacherClass: studentClass })
-			if (availaleCourses) {
-				const studentEnrolled = availaleCourses.map(curElem => curElem.students)
-				// console.log("availablecourses", availaleCourses)
-				// console.log("studentEnrolled", studentEnrolled)
-				const abc = studentEnrolled.map(value => value.find(curElem => curElem.id === studentID))
-				console.log("abc", abc)
-				// console.log("studentID", studentID)
-			}
-			// if (!availaleCourses) {
-			// 	res.status(200).send({ message: `No Courses Available for class ${studentClass}` })
-			// } else {
-			// 	res.status(200).send({ courses: availaleCourses, message: `These Courses are Available for class ${studentClass}` })
+			// if (availaleCourses) {
+			// 	const studentEnrolled = availaleCourses.map(curElem => curElem.students)
+			// console.log("availablecourses", availaleCourses)
+			// console.log("studentEnrolled", studentEnrolled)
+			// const abc = studentEnrolled.map(value => value.find(curElem => curElem.id === studentID))
+			// console.log("abc", abc)
+			// console.log("studentID", studentID)
 			// }
+			if (!availaleCourses) {
+				res.status(200).send({ message: `No Courses Available for class ${studentClass}` })
+			} else {
+				res.status(200).send({ courses: availaleCourses, message: `These Courses are Available for class ${studentClass}` })
+			}
 		}
 
 	} catch (error) {
@@ -162,22 +162,25 @@ module.exports.coursesForStudents = async (req, res) => {
 
 module.exports.applyForCourse = async (req, res) => {
 	try {
-		const { course_id, student_id, student_name } = req.body
+		const { course_id, student_id, student_name, courseName } = req.body
 		if (!course_id || !student_id || !student_name) {
 			return res.status(400).send({ error: "Unautherize Request" })
 		} else {
-
 			const findCourse = await Course.findOne({ _id: course_id })
 			if (findCourse) {
-				const isExist = findCourse?.students.find(curObj => curObj.id === student_id)
-				if (isExist) {
-					return res.status(401).send({ error: "Student already Exist" })
+				const studentInCourse = findCourse.students.find(curObj => curObj.id === student_id)
+				const findStudent = await User.findOne({ _id: student_id })
+				const courseInStudent = findStudent.courses.find(curID => curID === course_id)
+				if (studentInCourse || courseInStudent) {
+					return res.status(401).send({ error: "Student already enrolled.." })
 				} else {
-					const newStudent = { id: student_id, name: student_name }
-					const addStudent = await Course.findByIdAndUpdate(course_id, {
-						students: [...findCourse.students, newStudent]
+					const addCourseIdInStudent = await User.findOneAndUpdate({ _id: student_id }, {
+						courses: [...findStudent.courses, { id: course_id, name: courseName }]
 					})
-					if (addStudent) {
+					const addStudentInCourse = await Course.findByIdAndUpdate(course_id, {
+						students: [...findCourse.students, { id: student_id, name: student_name }]
+					})
+					if (addStudentInCourse && addCourseIdInStudent) {
 						return res.send({ message: "Student Enrolled" })
 					} else {
 						return res.status(512).send({ error: "Student can't Enrole." })
@@ -186,6 +189,23 @@ module.exports.applyForCourse = async (req, res) => {
 			} else {
 				return res.status(402).send({ error: "This Course not Exist" })
 
+			}
+		}
+	} catch (error) {
+		console.log(error)
+	}
+}
+module.exports.getOneCourse = async (req, res) => {
+	try {
+		const { id } = req.body
+		if (!id) {
+			res.status(402).send({ error: "Invalid Request" })
+		} else {
+			const getCourse = await Course.findById(id)
+			if (!getCourse) {
+				res.status(422).send({ error: "Course Not Found" })
+			} else {
+				res.send({ DBcourse: getCourse, message: "this course is available on this id." })
 			}
 		}
 	} catch (error) {

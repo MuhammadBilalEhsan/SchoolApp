@@ -4,13 +4,6 @@ import Header from "./Header";
 import AddCourse from "./AddCourse";
 // import Assignment from "./Assignment"
 // import { MdAssignment } from "react-icons/md"
-{/* <Assignment
-	title="Add Assignment"
-	isTeacher={true}
-	btnIcon={<MdAssignment size="18px" color="white" />}
-	dialogTitle="Sending Assignment to All Students"
-	actionTitle="create"
-/> */}
 
 const CDTeacher = ({ curUser, course }) => {
 
@@ -134,3 +127,4 @@ const CDTeacher = ({ curUser, course }) => {
 };
 
 export default CDTeacher;
+

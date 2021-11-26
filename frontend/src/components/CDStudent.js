@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import Header from './Header'
 import { Box, Typography, Tabs, Tab, } from "@mui/material"
 import CourseAcc from './CourseAcc'
+// import { useSelector } from "react-redux"
+import StudentTab2 from './StudentTab2'
 
 const CDStudent = ({ curUser, courses }) => {
+    // const studentCourse = useSelector(state => state.usersReducer.studentCourse)
     const [value, setValue] = useState(0);
 
     const handleTabs = (event, newValue) => {
@@ -37,8 +40,8 @@ const CDStudent = ({ curUser, courses }) => {
                                 }}
                                 centered
                             >
-                                <Tab label="Available Courses" />
-                                <Tab label="My Courses" />
+                                <Tab label="All Courses" />
+                                <Tab label="Enrolled" />
                             </Tabs>
                             <TabPanel value={value} index={0}>
                                 {/* <Box width="100%" display="flex" justifyContent="space-around"> */}
@@ -51,13 +54,18 @@ const CDStudent = ({ curUser, courses }) => {
                                 </Box>
                             </TabPanel>
                             <TabPanel value={value} index={1}>
-                                <Box>Tab Two</Box>
-
+                                <Box width="100%" >
+                                    {
+                                        curUser?.courses.map((curCor, ind) =>
+                                            <StudentTab2 curCor={curCor} key={ind} ind={ind} />
+                                        )
+                                    }
+                                </Box>
                             </TabPanel>
                         </Box>
                     </Box>
                 </Box>
-            </Box>
+            </Box >
         </>
     )
 }
@@ -65,7 +73,7 @@ function TabPanel(props) {
     const { children, value, index } = props;
     return (
         <Box width="100%" sx={{ marginX: "auto", padding: "5px" }}>
-            {value == index && <> {children} </>}
+            {value === index && <> {children} </>}
         </Box>
     );
 }

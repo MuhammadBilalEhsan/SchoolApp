@@ -5,7 +5,7 @@ import React, { useState } from "react";
 // import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
-import { Box, Avatar, Grid, Paper, Fab, Button, Typography } from "@mui/material";
+import { Box, Avatar, Grid, Paper, Typography } from "@mui/material";
 import EditProfile from "./EditProfile";
 import ChangeProfilePic from "./ChangeProfilePic";
 import "../App.css";
@@ -33,7 +33,7 @@ const Profile = ({ curUser }) => {
 	const [imgURL, setImgURL] = useState(curUser.dp)
 	// const ref = useRef(initialValue)
 
-	let { age, atClass, email, fatherName, fname, lname, phone, roll, dp } = curUser;
+	let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
 	return (
 		<>
 			<Box className={`_main`}>

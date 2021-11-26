@@ -1,7 +1,6 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
-const path = require("path")
 const serviceAccount = require("../../firebase/serviceAccount")
 
 

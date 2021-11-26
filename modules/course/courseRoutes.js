@@ -7,7 +7,7 @@ course.route("/mycourse").post(courseController.getMyCourse);
 course.route("/editcourse").post(courseController.editCourse);
 course.route("/delcourse").post(courseController.delCourseController);
 course.route("/forstudent").post(courseController.coursesForStudents);
-// course.route("/studentallcourses").post(courseController.studentAllCourses)
+course.route("/getcourse").post(courseController.getOneCourse)
 course.route("/applynow").post(courseController.applyForCourse);
 // course.route("/").post(userController.registerUser);
 

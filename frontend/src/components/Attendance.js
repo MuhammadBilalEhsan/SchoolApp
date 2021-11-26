@@ -54,7 +54,7 @@ const Attendance = ({ curUser }) => {
 			const checkTodayAtt = lastMonth.days.find(
 				(curElem) => curElem.todayDate === moment().date(),
 			);
-			const checkHoliday = moment().day == 0 || moment().day == 6
+			const checkHoliday = moment().day === 0 || moment().day === 6
 			if (checkTodayAtt || checkHoliday) {
 				setTodayAttend(true);
 			} else {
