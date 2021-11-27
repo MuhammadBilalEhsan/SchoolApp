@@ -5,7 +5,7 @@ import Profile from "./components/Profile";
 import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
-// import Contact from "./components/Contact";
+import EnrollCoursePreview from "./components/EnrollCoursePreview";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { curUserFun, getUsers, getCourseFunc, getStudentCourseFunc } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,10 +41,10 @@ const App = () => {
 							}).catch(err => console.log(err))
 					}
 					if (currentUser.roll === "student" && currentUser.atClass) {
-
 						axios.post("course/forstudent", { studentClass: currentUser.atClass, studentID: _id })
 							.then((resp) => {
 								const courses = resp.data.courses;
+								console.log("App.js", courses)
 								dispatch(getStudentCourseFunc(courses))
 							}).catch(err => console.log(err))
 					}
@@ -93,12 +93,18 @@ const App = () => {
 						SuccessComp={<ClassMaterials />}
 						FailComp={<Redirect to="/" />}
 					/>
-					{/* <PrivateRoute
+					<PrivateRoute
 						auth={uid}
-						path="/contact"
-						SuccessComp={<Contact />}
+						path="/course/:id"
+						SuccessComp={<EnrollCoursePreview />}
 						FailComp={<Redirect to="/" />}
-					/> */}
+					/>
+					<PrivateRoute
+						auth={uid}
+						path="/*"
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
 				</Switch>
 			</Router>
 		</>

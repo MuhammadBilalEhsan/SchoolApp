@@ -30,6 +30,7 @@ function CourseAcc({ curElem, curUser }) {
                 course_id: _id,
                 student_id: uid
             }
+            console.log(obj)
             const res = await axios.post("course/applynow", obj)
             alert(res.data.message || res.data.error)
         } catch (error) {

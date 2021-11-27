@@ -135,19 +135,22 @@ module.exports.coursesForStudents = async (req, res) => {
 		if (!studentClass) {
 			res.status(400).send({ error: "Students Class ??" })
 		} else {
-			const availaleCourses = await Course.find({ teacherClass: studentClass })
-			// if (availaleCourses) {
-			// 	const studentEnrolled = availaleCourses.map(curElem => curElem.students)
-			// console.log("availablecourses", availaleCourses)
-			// console.log("studentEnrolled", studentEnrolled)
-			// const abc = studentEnrolled.map(value => value.find(curElem => curElem.id === studentID))
-			// console.log("abc", abc)
-			// console.log("studentID", studentID)
-			// }
-			if (!availaleCourses) {
+			const allAvailales = await Course.find({ teacherClass: studentClass })
+			const filtered = allAvailales.filter(currentCourse => {
+				if (currentCourse.students.length) {
+					const abc = currentCourse.students.find((student) => student.id === studentID)
+					if (!abc) {
+						return currentCourse
+					}
+				} else {
+					return currentCourse
+				}
+			})
+			// console.log("filtered", filtered)
+			if (!filtered) {
 				res.status(200).send({ message: `No Courses Available for class ${studentClass}` })
 			} else {
-				res.status(200).send({ courses: availaleCourses, message: `These Courses are Available for class ${studentClass}` })
+				res.status(200).send({ courses: filtered, message: `These Courses are Available for class ${studentClass}` })
 			}
 		}
 
@@ -163,11 +166,14 @@ module.exports.coursesForStudents = async (req, res) => {
 module.exports.applyForCourse = async (req, res) => {
 	try {
 		const { course_id, student_id, student_name, courseName } = req.body
-		if (!course_id || !student_id || !student_name) {
+		if (!course_id || !student_id || !student_name || !courseName) {
 			return res.status(400).send({ error: "Unautherize Request" })
 		} else {
 			const findCourse = await Course.findOne({ _id: course_id })
-			if (findCourse) {
+			console.log("findCourse", findCourse)
+			if (!findCourse) {
+				return res.status(402).send({ error: "This Course not Exist" })
+			} else {
 				const studentInCourse = findCourse.students.find(curObj => curObj.id === student_id)
 				const findStudent = await User.findOne({ _id: student_id })
 				const courseInStudent = findStudent.courses.find(curID => curID === course_id)
@@ -186,9 +192,6 @@ module.exports.applyForCourse = async (req, res) => {
 						return res.status(512).send({ error: "Student can't Enrole." })
 					}
 				}
-			} else {
-				return res.status(402).send({ error: "This Course not Exist" })
-
 			}
 		}
 	} catch (error) {
@@ -200,15 +203,46 @@ module.exports.getOneCourse = async (req, res) => {
 		const { id } = req.body
 		if (!id) {
 			res.status(402).send({ error: "Invalid Request" })
-		} else {
-			const getCourse = await Course.findById(id)
-			if (!getCourse) {
-				res.status(422).send({ error: "Course Not Found" })
-			} else {
-				res.send({ DBcourse: getCourse, message: "this course is available on this id." })
-			}
 		}
+		const getCourse = await Course.findById(id)
+		if (!getCourse) {
+			res.status(422).send({ error: "Course Not Found" })
+		} else {
+
+			res.send({ DBcourse: getCourse, message: "this course is available on this id." })
+		}
+
 	} catch (error) {
 		console.log(error)
+	}
+}
+module.exports.delEnrolledCourse = async (req, res) => {
+	try {
+		const { student_id, course_id } = req.body
+		if (!student_id || !course_id) {
+			res.status(401).send({ error: "Invalid Credentials..." })
+		} else {
+			const findCourse = await Course.findOne({ _id: course_id })
+			const delStuFromCor = findCourse.students.filter(item => item.id !== student_id)
+			const updateCourse = await Course.findByIdAndUpdate({ _id: course_id }, {
+				students: delStuFromCor
+			})
+			const findStudent = await User.findById(student_id)
+			const delCorFromStud = findStudent.courses.filter(item => item.id !== course_id)
+			const updateStudent = await User.findOneAndUpdate({ _id: student_id }, {
+				courses: delCorFromStud
+			})
+			if (updateCourse && updateStudent) {
+				console.log("updateCourse && updateStudent Successfully")
+				res.send({ message: "You Left from this course..." })
+			} else {
+				console.log("Successfull")
+				res.status(502).send({ error: "An Error Occured..." })
+			}
+		}
+
+	} catch (error) {
+		console.log(error)
+
 	}
 }

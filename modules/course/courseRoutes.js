@@ -9,6 +9,7 @@ course.route("/delcourse").post(courseController.delCourseController);
 course.route("/forstudent").post(courseController.coursesForStudents);
 course.route("/getcourse").post(courseController.getOneCourse)
 course.route("/applynow").post(courseController.applyForCourse);
+course.route("/delencourse").post(courseController.delEnrolledCourse);
 // course.route("/").post(userController.registerUser);
 
 module.exports = course;

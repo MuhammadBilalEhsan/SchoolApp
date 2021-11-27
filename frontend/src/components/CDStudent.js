@@ -9,6 +9,7 @@ const CDStudent = ({ curUser, courses }) => {
     // const studentCourse = useSelector(state => state.usersReducer.studentCourse)
     const [value, setValue] = useState(0);
 
+
     const handleTabs = (event, newValue) => {
         setValue(newValue);
     };
@@ -57,7 +58,11 @@ const CDStudent = ({ curUser, courses }) => {
                                 <Box width="100%" >
                                     {
                                         curUser?.courses.map((curCor, ind) =>
-                                            <StudentTab2 curCor={curCor} key={ind} ind={ind} />
+                                            <StudentTab2
+                                                curCor={curCor}
+                                                key={ind}
+                                                ind={ind}
+                                            />
                                         )
                                     }
                                 </Box>
