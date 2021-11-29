@@ -17,3 +17,15 @@ body {
   flex-direction: column !important;
   align-items: flex-start !important;
 }
+.css-heg063-MuiTabs-flexContainer {
+  justify-content: center;
+  min-width: 489px;
+  margin-top: 20px;
+  padding-bottom: 9px;
+}
+.css-19fgf82-MuiInputBase-root-MuiOutlinedInput-root {
+  padding: 8px 16px !important;
+}
+.css-19fgf82-MuiInputBase-root-MuiOutlinedInput-root {
+  border-radius: 25px !important;
+}

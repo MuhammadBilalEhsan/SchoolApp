@@ -40,8 +40,14 @@ const courseSchema = mongoose.Schema({
 		required: true,
 	},
 
-	//
-	students: [],
+	students: {
+		type: Array,
+		required: false,
+	},
+	chat: {
+		type: Array,
+		required: false,
+	},
 });
 
 const Course = mongoose.model("courses", courseSchema);

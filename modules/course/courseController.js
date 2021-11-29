@@ -170,7 +170,6 @@ module.exports.applyForCourse = async (req, res) => {
 			return res.status(400).send({ error: "Unautherize Request" })
 		} else {
 			const findCourse = await Course.findOne({ _id: course_id })
-			console.log("findCourse", findCourse)
 			if (!findCourse) {
 				return res.status(402).send({ error: "This Course not Exist" })
 			} else {
@@ -244,5 +243,13 @@ module.exports.delEnrolledCourse = async (req, res) => {
 	} catch (error) {
 		console.log(error)
 
+	}
+}
+module.exports.getSpecificCourse = async (req, res) => {
+	try {
+		const findCourse = await Course.findById({ _id: req.body.id })
+		console.log(findCourse)
+	} catch (error) {
+		console.log(error)
 	}
 }

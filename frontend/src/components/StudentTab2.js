@@ -16,7 +16,7 @@ import { MdOutlineExpandMore } from 'react-icons/md';
 import { IoTrashBinSharp } from 'react-icons/io5';
 import { VscPreview } from 'react-icons/vsc';
 const uid = localStorage.getItem("uid")
-const StudentTab2 = ({ curCor, ind, }) => {
+const StudentTab2 = ({ curCor, ind }) => {
     const [expanded, setExpanded] = useState(false);
 
     const [thisCourse, setThisCourse] = useState({});

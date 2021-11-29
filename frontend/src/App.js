@@ -44,7 +44,6 @@ const App = () => {
 						axios.post("course/forstudent", { studentClass: currentUser.atClass, studentID: _id })
 							.then((resp) => {
 								const courses = resp.data.courses;
-								console.log("App.js", courses)
 								dispatch(getStudentCourseFunc(courses))
 							}).catch(err => console.log(err))
 					}
@@ -87,16 +86,22 @@ const App = () => {
 						SuccessComp={<CourseDetails curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
-					<PrivateRoute
-						auth={uid}
-						path="/classmaterials"
-						SuccessComp={<ClassMaterials />}
-						FailComp={<Redirect to="/" />}
-					/>
+					{
+						curUser?.roll === "teacher" ? (
+							<PrivateRoute
+								auth={uid}
+								path="/classmaterials"
+								SuccessComp={<ClassMaterials curUser={curUser} />}
+								FailComp={<Redirect to="/" />}
+							/>
+						) : (
+							""
+						)
+					}
 					<PrivateRoute
 						auth={uid}
 						path="/course/:id"
-						SuccessComp={<EnrollCoursePreview />}
+						SuccessComp={<EnrollCoursePreview curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
