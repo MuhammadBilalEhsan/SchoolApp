@@ -29,3 +29,10 @@ body {
 .css-19fgf82-MuiInputBase-root-MuiOutlinedInput-root {
   border-radius: 25px !important;
 }
+.css-o4b71y-MuiAccordionSummary-content {
+  justify-content: space-between;
+}
+.css-187aw2j-MuiPaper-root-MuiAccordion-root:last-of-type {
+  box-shadow: none;
+  border-radius: 10px;
+}

@@ -5,6 +5,8 @@ import Header from "./Header";
 import TabsComp from './TabsComp';
 import Stream from './Stream';
 import Announcement from './Announcement';
+import CourseStudentsComp from './CourseStudentsComp';
+import AssignmentComp from './AssignmentComp';
 
 const useStyles = makeStyles({
 	class_materials: {
@@ -15,14 +17,6 @@ const useStyles = makeStyles({
 
 
 const ClassMaterials = ({ curUser }) => {
-	const [navbar, setNavbar] = useState(false)
-	const toggle = () => {
-		if (navbar === false) {
-			setNavbar(true)
-		} else {
-			setNavbar(false)
-		}
-	}
 	const classes = useStyles()
 	return (
 		<>
@@ -35,8 +29,8 @@ const ClassMaterials = ({ curUser }) => {
 						tab3Label="Students"
 						tab4Label="Announcement"
 						panel1={<Stream curUser={curUser} />}
-						panel2=""
-						panel3=""
+						panel2={<AssignmentComp curUser={curUser} />}
+						panel3={<CourseStudentsComp curUser={curUser} />}
 						panel4={<Announcement curUser={curUser} />}
 					/>
 				</Box>

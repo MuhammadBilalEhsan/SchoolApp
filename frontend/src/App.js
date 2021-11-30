@@ -6,6 +6,7 @@ import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import EnrollCoursePreview from "./components/EnrollCoursePreview";
+import AssignmentResponse from "./components/AssignmentResponse";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { curUserFun, getUsers, getCourseFunc, getStudentCourseFunc } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
@@ -102,6 +103,18 @@ const App = () => {
 						auth={uid}
 						path="/course/:id"
 						SuccessComp={<EnrollCoursePreview curUser={curUser} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={uid}
+						path="/checked/:id"
+						SuccessComp={<AssignmentResponse curUser={curUser} checked={true} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={uid}
+						path="/submitted/:id"
+						SuccessComp={<AssignmentResponse curUser={curUser} checked={false} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
