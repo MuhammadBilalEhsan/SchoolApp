@@ -51,8 +51,9 @@ const AssignmentResponse = ({ checked, curUser }) => {
     const classes = useStyles()
     return (
         <>
+
             <Box className={classes.class_materials} onClick={(e) => doFalse(e)}>
-                <Header />
+                <Header curUser={curUser} />
                 <Box maxWidth="760px" margin="0 auto">
 
                     <Box mt={3} display="flex" justifyContent="space-between" pb={1} mb={1} px={2} borderBottom="1.5px solid #009c0052" width="100%" >

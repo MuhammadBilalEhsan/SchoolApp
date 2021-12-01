@@ -8,45 +8,52 @@ import StudentTab2 from './StudentTab2'
 const CDStudent = ({ curUser, courses }) => {
     // const studentCourse = useSelector(state => state.usersReducer.studentCourse)
     const [value, setValue] = useState(0);
+    const [coursesType, setCoursesType] = useState("All Courses");
 
 
     const handleTabs = (event, newValue) => {
+        // event.stopPropagation()
         setValue(newValue);
     };
     return (
         <>
             <Box className="_main" >
-                <Header />
+                <Header curUser={curUser} />
                 <Box width="100%">
-                    <Box maxWidth="1100px" width="95%" marginX="auto" mt={2}>
-                        <Typography variant="h4">
-                            {`${curUser.fname} ${curUser.lname}(${curUser.roll})`}
-                        </Typography>
+                    <Box mx="auto" mt={2} maxWidth="800px" display="flex" flexDirection="column" justifyContent="center" >
                         <Box
                             sx={{
                                 marginTop: "15px",
                                 width: "100%",
                                 color: "green",
-                                // bgcolor: "background.paper",
                             }}
                         >
                             <Tabs
                                 value={value}
                                 onChange={handleTabs}
                                 textColor="inherit"
+                                scrollButtons='auto'
+                                variant="scrollable"
                                 TabIndicatorProps={{
                                     sx: {
                                         backgroundColor: "green",
+                                        height: "5px",
                                     },
                                 }}
-                                centered
+                                sx={{ marginBottom: 5 }}
                             >
-                                <Tab label="All Courses" />
-                                <Tab label="Enrolled" />
+                                <Tab label="All Courses" onClick={() => setCoursesType("All Courses")} />
+                                <Tab label="Enrolled" onClick={() => setCoursesType("Enrolled Courses")} />
                             </Tabs>
+
+                            <Box display="flex" justifyContent="space-between" pb={1} px={2} borderBottom="1.5px solid #009c0052" width="100%" >
+                                <Typography variant="h4" color="green">
+                                    {coursesType}
+                                </Typography>
+                            </Box>
                             <TabPanel value={value} index={0}>
                                 {/* <Box width="100%" display="flex" justifyContent="space-around"> */}
-                                <Box width="100%" >
+                                <Box width="100%" mt={2.2}>
                                     {
                                         courses?.map((curElem, ind) => {
                                             return <CourseAcc key={ind} curElem={curElem} curUser={curUser} />
@@ -55,7 +62,7 @@ const CDStudent = ({ curUser, courses }) => {
                                 </Box>
                             </TabPanel>
                             <TabPanel value={value} index={1}>
-                                <Box width="100%" >
+                                <Box width="100%">
                                     {
                                         curUser?.courses.map((curCor, ind) =>
                                             <StudentTab2

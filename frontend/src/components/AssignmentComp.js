@@ -1,25 +1,43 @@
 import React, { useState } from 'react'
-import { Box, Typography, Button } from "@mui/material"
+import { Box, Typography, Button, MenuItem, Menu, Tooltip } from "@mui/material"
 import AssignmentAccordion from './AssignmentAccordion'
+import Assignment from './Assignment'
 import { MdAdd } from "react-icons/md"
+// import TabsComp from './TabsComp';
+import { useHistory } from 'react-router-dom'
+// import { curUserFun } from '../redux/actions'
+import { MdOutlineMoreHoriz } from "react-icons/md"
 
-const AssignmentComp = () => {
-    
+const AssignmentComp = ({ curUser }) => {
 
+    const history = useHistory()
     return (
         <>
             <Box sx={{ maxWidth: "760px", margin: "0 auto" }}>
                 <Box display="flex" justifyContent="flex-end" px={2} width="100%" >
-                    <Button startIcon={<MdAdd size="20px" color="white" />} variant="contained" sx={{ borderRadius: 5 }} color="success">
-                        create
-                    </Button>
+                    {curUser?.roll === "teacher" ? (
+                        <Assignment
+                            btnTitle="create" tooltipTitle="Create Assignment"
+                            btnIcon={<MdAdd size="20px" color="white" />}
+                            dialogTitle="Create Assignment or Questions" actionTitle="create"
+                            isTeacher={true}
+                        />
+                    ) : (<>
+                        <Tooltip title="Go to checked Assignments" arrow>
+
+                            <Button startIcon={""} onClick={() => history.push(`/studentchecked`)} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">
+                                Checked
+                            </Button>
+
+                        </Tooltip>
+                    </>)}
                 </Box>
                 <Box display="flex" justifyContent="flex-start" pb={1} px={2} width="100%" >
                     <Typography variant="h4" color="green">
-                        Assignments
+                        {curUser.roll === "teacher" ? "" : "Non Submitted "}Assignments
                     </Typography>
                 </Box>
-                <AssignmentAccordion />
+                <AssignmentAccordion curUser={curUser} />
             </Box>
         </>
     )

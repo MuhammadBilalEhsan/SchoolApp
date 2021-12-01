@@ -51,9 +51,13 @@ const Attendance = ({ curUser }) => {
 			const lastMonth = attArr[attArr?.length - 1];
 
 			// check user have marked his/her attendance of today or not
-			const checkTodayAtt = lastMonth.days.find(
+			const checkTodayAtt = lastMonth?.days?.find(
 				(curElem) => curElem.todayDate === moment().date(),
 			);
+			if (!checkTodayAtt && moment().date() === 1) {
+				handleClick()
+				setTodayAttend(true);
+			}
 			const checkHoliday = moment().day === 0 || moment().day === 6
 			if (checkTodayAtt || checkHoliday) {
 				setTodayAttend(true);
@@ -63,6 +67,64 @@ const Attendance = ({ curUser }) => {
 		}
 		latestMonthAttCalc();
 		overAllAttCalc();
+	};
+
+	// ____________________________________________________________________________________________
+	const latestMonthAttCalc = () => {
+		if (curUser.attendance && curUser.attendance.length > 0) {
+			// getting total working/bussiness days (01-CurMonth-curYear - curr Date)
+			if (
+				moment(curUser.dateOfAddmission).date() === moment().date() &&
+				moment(curUser.dateOfAddmission).month() === moment().month() &&
+				moment(curUser.dateOfAddmission).year() === moment().year()
+			) {
+				// handleClick()
+				setLastMonthPercent(100);
+			} else if (
+				moment(curUser.dateOfAddmission).month() === moment().month() &&
+				moment(curUser.dateOfAddmission).year() === moment().year()
+			) {
+				setFirstDate(moment(curUser.dateOfAddmission).date());
+				setCurMonth(moment(curUser.dateOfAddmission).month() + 1);
+				setCurYear(moment(curUser.dateOfAddmission).year());
+
+				const firstDateOfCurMonth = `${curMonth}-${firstDate}-${curYear}`;
+				const overallTotalDays = moment(
+					firstDateOfCurMonth,
+					"MM-DD-YYYY",
+				).businessDiff(moment(moment(), "MM-DD-YYYY"));
+				// getting total days of current month in which user present
+				const attArr = curUser.attendance;
+				const lastMonth = attArr[attArr?.length - 1];
+				const curMonthTotalPresent = lastMonth.days.length;
+
+				const curMonthOpperation =
+					(curMonthTotalPresent / overallTotalDays) * 100;
+				setLastMonthPercent(curMonthOpperation);
+			} else if (moment().date() === 1) {
+				// handleClick()
+				setLastMonthPercent(100);
+
+			} else {
+				// setFirstDate(1);
+				setCurMonth(moment().month() + 1);
+				setCurYear(moment().year());
+
+				const firstDateOfCurMonth = `${curMonth}-01-${curYear}`;
+				const overallTotalDays = moment(
+					firstDateOfCurMonth,
+					"MM-DD-YYYY",
+				).businessDiff(moment(moment(), "MM-DD-YYYY"));
+				// getting total days of current month in which user present
+				const attArr = curUser?.attendance;
+				const lastMonth = attArr[attArr?.length - 1];
+				const curMonthTotalPresent = lastMonth.days?.length;
+
+				const curMonthOpperation =
+					(curMonthTotalPresent / overallTotalDays) * 100;
+				setLastMonthPercent(curMonthOpperation);
+			}
+		}
 	};
 
 	// ____________________________________________________________________________________________
@@ -97,61 +159,13 @@ const Attendance = ({ curUser }) => {
 				const overAllOpperation = (overallPresentDays / overallTotalDays) * 100;
 				// console.log(overallTotalDays,overallPresentDays);
 				setAttPercent(overAllOpperation);
+				console.log("overallTotalDays", overallTotalDays)
+				console.log("overallPresentDays", overallPresentDays)
+				console.log("overAllOpperation", overAllOpperation)
 			}
 		}
 	};
-	// ____________________________________________________________________________________________
-	const latestMonthAttCalc = () => {
-		if (curUser.attendance && curUser.attendance.length > 0) {
-			// getting total working/bussiness days (01-CurMonth-curYear - curr Date)
-			if (
-				moment(curUser.dateOfAddmission).date() === moment().date() &&
-				moment(curUser.dateOfAddmission).month() === moment().month() &&
-				moment(curUser.dateOfAddmission).year() === moment().year()
-			) {
-				setLastMonthPercent(100);
-			} else if (
-				moment(curUser.dateOfAddmission).month() === moment().month() &&
-				moment(curUser.dateOfAddmission).year() === moment().year()
-			) {
-				setFirstDate(moment(curUser.dateOfAddmission).date());
-				setCurMonth(moment(curUser.dateOfAddmission).month() + 1);
-				setCurYear(moment(curUser.dateOfAddmission).year());
 
-				const firstDateOfCurMonth = `${curMonth}-${firstDate}-${curYear}`;
-				const overallTotalDays = moment(
-					firstDateOfCurMonth,
-					"MM-DD-YYYY",
-				).businessDiff(moment(moment(), "MM-DD-YYYY"));
-				// getting total days of current month in which user present
-				const attArr = curUser.attendance;
-				const lastMonth = attArr[attArr?.length - 1];
-				const curMonthTotalPresent = lastMonth.days.length;
-
-				const curMonthOpperation =
-					(curMonthTotalPresent / overallTotalDays) * 100;
-				setLastMonthPercent(curMonthOpperation);
-			} else {
-				setFirstDate(1);
-				setCurMonth(moment().month() + 1);
-				setCurYear(moment().year());
-
-				const firstDateOfCurMonth = `${curMonth}-${firstDate}-${curYear}`;
-				const overallTotalDays = moment(
-					firstDateOfCurMonth,
-					"MM-DD-YYYY",
-				).businessDiff(moment(moment(), "MM-DD-YYYY"));
-				// getting total days of current month in which user present
-				const attArr = curUser.attendance;
-				const lastMonth = attArr[attArr?.length - 1];
-				const curMonthTotalPresent = lastMonth.days.length;
-
-				const curMonthOpperation =
-					(curMonthTotalPresent / overallTotalDays) * 100;
-				setLastMonthPercent(curMonthOpperation);
-			}
-		}
-	};
 
 	// ____________________________________________________________________________________________
 
@@ -182,10 +196,11 @@ const Attendance = ({ curUser }) => {
 		overAllAttCalc();
 	});
 
+
 	return (
 		<>
 			<Box className={`_main`}>
-				<Header />
+				<Header curUser={curUser} />
 				<Box>
 					<Box className={classes.attendance_top}>
 						<Typography mt={8} mb={2} variant="h4" display="inline-block">

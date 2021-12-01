@@ -10,6 +10,7 @@ import {
 	Tooltip
 } from "@mui/material/";
 import { BsCameraFill } from "react-icons/bs";
+import { FaUserEdit } from "react-icons/fa";
 import axios from "axios";
 
 export default function ChangeProfilePic({ curUser, setImgURL }) {
@@ -53,13 +54,21 @@ export default function ChangeProfilePic({ curUser, setImgURL }) {
 			</Tooltip>
 
 			{/* Openning Dialouge Box */}
-			<Dialog open={open} onClose={handleClose}>
+			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
 				<DialogTitle align="center" backgroundColor="white">
 					Edit Picture
 				</DialogTitle>
 				<DialogContent>
 					<form method="POST">
-						<input name="myImg" type="file" accept="image/png, image/jpeg" onChange={(e) => setImgObj(e.target.files[0])} />
+						<Box display="flex">
+							<Box flexGrow={1} pt={1} px={1} border="1px solid green" borderRadius={1}>
+								{imgObj?.name ? imgObj?.name : "Currently No Image"}
+							</Box>
+							<Button component="label">
+								<FaUserEdit color="green" size="22px" />
+								<input hidden name="myImg" type="file" accept="image/png, image/jpeg" onChange={(e) => setImgObj(e.target.files[0])} />
+							</Button>
+						</Box>
 					</form>
 				</DialogContent>
 				<DialogActions>

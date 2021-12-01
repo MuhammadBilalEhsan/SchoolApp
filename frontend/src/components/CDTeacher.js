@@ -1,18 +1,22 @@
 import React from "react";
-import { Box, Typography, Chip, Grid } from "@mui/material";
+import { Box, Typography, Chip, Grid, Button } from "@mui/material";
 import Header from "./Header";
 import AddCourse from "./AddCourse";
+import { useHistory } from "react-router-dom";
 // import Assignment from "./Assignment"
 // import { MdAssignment } from "react-icons/md"
+
 
 const CDTeacher = ({ curUser, course }) => {
 
 	let { courseName, courseDesc, topics, duration, courseOutline } =
 		course || {};
+
+	const history = useHistory()
 	return (
 		<>
 			<Box className={`_main`}>
-				<Header />
+				<Header curUser={curUser} />
 				<Box width="95%" maxWidth="1100px" marginX="auto">
 					<Box display="flex" justifyContent="space-around" mt={3}>
 						<Typography variant="h4">
@@ -22,7 +26,6 @@ const CDTeacher = ({ curUser, course }) => {
 						{
 							course ? (<></>) : (<AddCourse curUser={curUser} course={course} editCourse={false} />)
 						}
-
 					</Box>
 					<Box
 						width="100%"
@@ -100,6 +103,7 @@ const CDTeacher = ({ curUser, course }) => {
 												editCourse={true}
 												course={course}
 											/>
+											<Button onClick={() => history.push(`/classmaterials/${course?._id}`)}>Preview</Button>
 										</Grid>
 									</Grid>
 								</Grid>

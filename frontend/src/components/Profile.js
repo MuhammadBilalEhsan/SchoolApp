@@ -37,7 +37,7 @@ const Profile = ({ curUser }) => {
 	return (
 		<>
 			<Box className={`_main`}>
-				<Header />
+				<Header curUser={curUser} />
 				<Box
 					mt={1}
 					width="99%"

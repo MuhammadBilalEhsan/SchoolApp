@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom"
 import { AiOutlineExclamationCircle } from "react-icons/ai"
 import { MdOutlineMoreVert } from "react-icons/md"
 
-const AssignmentAccordion = () => {
+const AssignmentAccordion = ({ curUser }) => {
     const [expanded, setExpanded] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -55,29 +55,36 @@ const AssignmentAccordion = () => {
                         </Box>
                     </Box>
                     <Box>
-                        <Button
-                            sx={{ color: "green", borderRadius: 5 }}
-                            size="small"
-                            id="basic-button"
-                            aria-controls="basic-menu"
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
-                        >
-                            <MdOutlineMoreVert size="23px" style={{ margin: "auto 0px" }} />
-                        </Button>
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                                'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            <MenuItem onClick={Submited}>Submited</MenuItem>
-                            <MenuItem onClick={Checked}>Checked</MenuItem>
-                        </Menu>
+                        {curUser?.roll === "teacher" ? (
+                            <>
+                                <Button
+                                    sx={{ color: "green", borderRadius: 5 }}
+                                    size="small"
+                                    id="basic-button"
+                                    aria-controls="basic-menu"
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleClick}
+                                >
+                                    <MdOutlineMoreVert size="23px" style={{ margin: "auto 0px" }} />
+                                </Button>
+                                <Menu
+                                    id="basic-menu"
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    MenuListProps={{
+                                        'aria-labelledby': 'basic-button',
+                                    }}
+                                >
+                                    <MenuItem onClick={Submited}>Submited</MenuItem>
+                                    <MenuItem onClick={Checked}>Checked</MenuItem>
+                                </Menu>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+
                         <Tooltip arrow title="Preview Assignment">
                             <Button
                                 sx={{ color: "black", borderRadius: 5 }}

@@ -3,18 +3,20 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    AccordionActions,
     Typography,
     Box,
     Button,
     Grid,
     Chip,
+    Avatar,
     Tooltip
 } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import axios from "axios"
 import { MdOutlineExpandMore } from 'react-icons/md';
 import { IoTrashBinSharp } from 'react-icons/io5';
-import { VscPreview } from 'react-icons/vsc';
+import { AiOutlineExclamationCircle } from "react-icons/ai"
 const uid = localStorage.getItem("uid")
 const StudentTab2 = ({ curCor, ind }) => {
     const [expanded, setExpanded] = useState(false);
@@ -58,17 +60,22 @@ const StudentTab2 = ({ curCor, ind }) => {
     }
 
     return (
-        <div style={{ marginBottom: 2 }}>
-            <Accordion expanded={expanded === 'panel1'} onClick={curCourseDetails} onChange={handleChange('panel1')}>
+        <div style={{ marginBottom: 2, width: "100%" }}>
+
+            <Accordion expanded={expanded === 'panel1'} onClick={curCourseDetails} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                 <AccordionSummary
                     expandIcon={<MdOutlineExpandMore onClick={curCourseDetails} />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                 >
-                    <Typography sx={{ color: 'text.secondary', width: '40%' }}>Course {ind + 1}</Typography>
-                    <Typography variant="body1" color="green" sx={{ flexShrink: 0, wordWrap: "break-word", paddingX: 0.5 }}>
-                        {curCor?.name}
-                    </Typography>
+                    <Box display="flex" justifyContent="flex-start" alignItems="center">
+                        <Box minWidth="65px" >
+                            <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>{curCor?.name[0]}</Avatar>
+                        </Box>
+                        <Typography ml={3} variant="body1" color="green" sx={{ wordWrap: "break-word", paddingX: 0.5 }}>
+                            {curCor?.name}
+                        </Typography>
+                    </Box>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container display="flex">
@@ -127,12 +134,14 @@ const StudentTab2 = ({ curCor, ind }) => {
                                     </Box>
                                 );
                             })}
-                            <Tooltip title="Delete Course">
-                                <Button size="small" color="error" onClick={(e) => delCourse(e)} variant="contained"> <IoTrashBinSharp color="white" size="16px" /></Button>
-                            </Tooltip>
-                            <Tooltip title="Preview">
-                                <Button size="small" color="success" onClick={(e) => history.push(`/course/${curCor?.id}`)} variant="contained"> <VscPreview color="white" size="16px" /></Button>
-                            </Tooltip>
+                            <AccordionActions>
+                                <Tooltip title="Delete Course">
+                                    <Button color="error" onClick={(e) => delCourse(e)}> <IoTrashBinSharp color="red" size="22px" /></Button>
+                                </Tooltip>
+                                <Tooltip title="Preview">
+                                    <Button color="success" onClick={(e) => history.push(`/classmaterials/${curCor?.id}`)} > <AiOutlineExclamationCircle color="black" size="22px" /></Button>
+                                </Tooltip>
+                            </AccordionActions>
                         </Grid>
                     </Grid>
                 </AccordionDetails>

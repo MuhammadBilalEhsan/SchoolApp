@@ -29,7 +29,7 @@ const MobMenuComp = styled("div")(({ theme }) => ({
 	},
 }));
 // const useStyles = makeStyles((theme) => ({}));
-const Header = () => {
+const Header = ({ curUser }) => {
 	// const classes = useStyles();
 	const [mobMenuAnchor, setMobMenuAnchor] = useState(null);
 	const isMobMenuOpen = Boolean(mobMenuAnchor);
@@ -76,19 +76,26 @@ const Header = () => {
 			>
 				Attendance
 			</MenuItem>
-			<MenuItem
-				component={Link}
-				onClick={closeMobMenu}
-				to="/coursedetails"
-				sx={{
-					backgroundColor: "#fff",
-					color: "green",
-					width: "100%",
-					paddingBottom: 2,
-				}}
-			>
-				Course Details
-			</MenuItem>
+			{/* {
+				curUser?.roll === "teacher" ? (
+					<MenuItem
+						component={Link}
+						onClick={closeMobMenu}
+						to="/coursedetails"
+						sx={{
+							backgroundColor: "#fff",
+							color: "green",
+							width: "100%",
+							paddingBottom: 2,
+						}}
+					>
+						Course Details
+					</MenuItem>
+				) : (
+					""
+				)
+			} */}
+
 			<MenuItem
 				component={Link}
 				onClick={closeMobMenu}
@@ -148,15 +155,22 @@ const Header = () => {
 						>
 							Course Details
 						</Button>
-						<Button
-							component={Link}
-							to="/classmaterials"
-							size="small"
-							color="inherit"
-							sx={{ marginLeft: 3 }}
-						>
-							Class Materials
-						</Button>
+						{/* {
+							curUser?.roll === "teacher" ? (
+								<Button
+									component={Link}
+									to="/classmaterials"
+									size="small"
+									color="inherit"
+									sx={{ marginLeft: 3 }}
+								>
+									Class Materials
+								</Button>
+							) : (
+								""
+							)
+						} */}
+
 						{/* <Button
 							component={Link}
 							to="/contact"

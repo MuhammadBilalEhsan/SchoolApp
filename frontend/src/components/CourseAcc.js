@@ -3,11 +3,13 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    AccordionActions,
     Typography,
     Box,
     Button,
     Grid,
     Chip,
+    Avatar,
     Tooltip
 } from '@mui/material';
 import axios from "axios"
@@ -40,17 +42,23 @@ function CourseAcc({ curElem, curUser }) {
 
     return (
         <div style={{ marginBottom: 2 }}>
-            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                 <AccordionSummary
                     expandIcon={<MdOutlineExpandMore />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                 >
-                    <Typography sx={{ width: '45%', flexShrink: 0, wordWrap: "break-word", paddingX: 0.5 }}>
-                        {courseName}
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary' }}>{`Duration: ${duration} Week / Weeks`}</Typography>
+                    <Box display="flex" justifyContent="flex-start" alignItems="center">
+                        <Box minWidth="65px" >
+                            <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>{courseName[0]}</Avatar>
+                        </Box>
+                        <Typography ml={3} variant="body1" color="green" sx={{ wordWrap: "break-word", paddingX: 0.5 }}>
+                            {courseName}
+                        </Typography>
+                    </Box>
                 </AccordionSummary>
+                {/* <Typography sx={{ color: 'text.secondary' }}>{`Duration: ${duration} Week / Weeks`}</Typography>
+                </AccordionSummary> */}
                 <AccordionDetails>
                     <Grid container>
                         <Grid item xs={12} sm={6} sx={{ wordWrap: "break-word" }}>
@@ -108,12 +116,14 @@ function CourseAcc({ curElem, curUser }) {
                                     </Box>
                                 );
                             })}
-                            <Tooltip title="Enroll Now">
-                                <Button size="small" color="success" onClick={(e) => applyCourse(e)} variant="contained"><GrUserAdd color="white" size="14px" /></Button>
-                            </Tooltip>
                         </Grid>
                     </Grid>
                 </AccordionDetails>
+                <AccordionActions>
+                    <Tooltip title="Enroll Now" arrow>
+                        <Button variant="contained" color="success" onClick={(e) => applyCourse(e)}><GrUserAdd color="green" size="22px" /></Button>
+                    </Tooltip>
+                </AccordionActions>
             </Accordion>
         </div>
     );

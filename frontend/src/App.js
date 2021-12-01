@@ -5,7 +5,6 @@ import Profile from "./components/Profile";
 import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
-import EnrollCoursePreview from "./components/EnrollCoursePreview";
 import AssignmentResponse from "./components/AssignmentResponse";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { curUserFun, getUsers, getCourseFunc, getStudentCourseFunc } from "./redux/actions/index";
@@ -17,7 +16,7 @@ import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
 	const curUser = useSelector((state) => state.usersReducer.curUser);
-
+	console.log("curUser", curUser)
 	const [uid, setUid] = useState(curUser._id);
 	const [spinner, setSpinner] = useState(true);
 
@@ -87,22 +86,23 @@ const App = () => {
 						SuccessComp={<CourseDetails curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
-					{
-						curUser?.roll === "teacher" ? (
-							<PrivateRoute
-								auth={uid}
-								path="/classmaterials"
-								SuccessComp={<ClassMaterials curUser={curUser} />}
-								FailComp={<Redirect to="/" />}
-							/>
-						) : (
-							""
-						)
-					}
+
 					<PrivateRoute
 						auth={uid}
-						path="/course/:id"
-						SuccessComp={<EnrollCoursePreview curUser={curUser} />}
+						path="/classmaterials/:id"
+						SuccessComp={<ClassMaterials curUser={curUser} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					{/* <PrivateRoute
+						auth={uid}
+						path="/classmaterials"
+						SuccessComp={<ClassMaterials curUser={curUser} />}
+						FailComp={<Redirect to="/" />}
+					/> */}
+					<PrivateRoute
+						auth={uid}
+						path="/studentchecked"
+						SuccessComp={<AssignmentResponse curUser={curUser} checked={false} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
@@ -117,6 +117,15 @@ const App = () => {
 						SuccessComp={<AssignmentResponse curUser={curUser} checked={false} />}
 						FailComp={<Redirect to="/" />}
 					/>
+					{/* : curUser?.roll === "student" ? (
+					<PrivateRoute
+						auth={uid}
+						path="/classmaterials/:id"
+						SuccessComp={<ClassMaterials curUser={curUser} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					) */}
+
 					<PrivateRoute
 						auth={uid}
 						path="/*"
