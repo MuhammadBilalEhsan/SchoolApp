@@ -1,15 +1,41 @@
 import React, { useState } from 'react'
-import { Box, Avatar, Typography, TextField } from '@mui/material'
-// import { useSelector } from 'react-redux'
+import { Box } from '@mui/material'
 import SendingMessageInputComp from "./SendingMessageInputComp"
 import streamImg from "../images/stream.jpg"
+import MessageBox from "./MessageBox"
+import moment from 'moment'
+import axios from 'axios'
+import Spinner from './Spinner'
 
-const Stream = ({ curUser }) => {
-    const [comment, setComment] = useState("")
-    const submitFunc = (e) => {
-        console.log("submitFunc running from Stream")
-        console.log("Value", comment)
+
+const Stream = ({ curUser, currentCourse }) => {
+    const [message, setMessage] = useState("")
+    const [errorMsg, setErrorMsg] = useState("")
+
+
+    const { _id, fname, lname } = curUser || {}
+    const submitFunc = async (e) => {
+        try {
+            const newMessage = message.trim()
+
+            if (newMessage) {
+                const name = `${fname} ${lname}`
+                let time = moment().format('hh:mm A')
+                const messageObj = {
+                    id: _id, name, time, message: newMessage, courseID: currentCourse?._id
+                }
+                await axios.post("course/sendmessage", messageObj)
+                setMessage("")
+            } else {
+                setErrorMsg("Please write something")
+                console.log("currentCourse", currentCourse)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     }
+    if (!currentCourse) { return <Spinner /> }
 
     return (
         <>
@@ -17,41 +43,35 @@ const Stream = ({ curUser }) => {
                 <Box sx={{ width: "100%", height: "240px", borderRadius: "10px", marginTop: 3 }}>
                     <img src={streamImg} width="100%" height="100%" style={{ borderRadius: "10px" }} alt="BackGround Image" />
                 </Box>
-                {/* Message Box */}
-                <MessageBox />
+                {
+                    currentCourse?.chat?.map((currentMessage, index) => {
+                        return (
+                            <MessageBox
+                                color={curUser?._id === currentMessage?.id ? "green" : "#ba000d"}
+                                timeColor={curUser?._id === currentMessage?.id ? "#2e7d32de" : "#ba000db8"}
+                                curUser={curUser}
+                                key={index}
+                                nameFirestLetter={currentMessage.name[0]}
+                                name={curUser?._id === currentMessage?.id ? "Me" : currentMessage.name}
+                                time={currentMessage.time}
+                                message={currentMessage.message}
+                            />
+                        )
+                    })
+                }
+
                 <SendingMessageInputComp
-                    name="comment"
-                    autoFocus={false}
-                    value={comment}
-                    setValue={setComment}
-                    placeholder="Add Comment to Your Students"
+                    name="message"
+                    autoFocus={true}
+                    value={message}
+                    setValue={setMessage}
+                    placeholder="Add comment to All Students"
                     color="success"
                     submitFunc={submitFunc}
                     userName={curUser?.fname[0]}
                 />
             </Box >
         </>
-    )
-}
-
-const MessageBox = () => {
-    return (
-        <Box sx={{ width: "100%", borderRadius: "7.5px", marginTop: 3, padding: "1rem 1.5rem", border: "1.8px solid #00000033" }}>
-            <Box width="100%">
-                <Box display="flex" justifyContent="center">
-                    <Box width="65px" >
-                        <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>r</Avatar>
-                    </Box>
-                    <Box flexGrow={1}>
-                        <Typography variant="subtitle1" color="green"><b> kljakfjdsakjfdkjadfskjkasdj</b></Typography>
-                        <Typography variant="body2" color="#2e7d32de"> asdj</Typography>
-                    </Box>
-                </Box>
-            </Box>
-            <Box width="100%" mt={2} sx={{ wordWrap: "break-word", paddingLeft: 5 }}>
-                <Typography variant="subtitle2">WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW</Typography>
-            </Box>
-        </Box>
     )
 }
 

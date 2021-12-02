@@ -32,18 +32,18 @@ const StudentTab2 = ({ curCor, ind }) => {
 
     const { courseName, courseDesc, topics, duration, courseOutline } = thisCourse
 
-    const delCourse = async (e) => {
-        try {
-            const obj = {
-                student_id: uid,
-                course_id: curCor?.id,
-            }
-            const res = await axios.post("course/delencourse", obj)
-            console.log(res.data.message ? res.data.message : res.data.error)
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    // const delCourse = async (e) => {
+    //     try {
+    //         const obj = {
+    //             student_id: uid,
+    //             course_id: curCor?.id,
+    //         }
+    //         const res = await axios.post("course/delencourse", obj)
+    //         console.log(res.data.message ? res.data.message : res.data.error)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
     const curCourseDetails = async () => {
         try {
             const findLocally = allCourses?.find(item => item._id === curCor.id)
@@ -62,19 +62,24 @@ const StudentTab2 = ({ curCor, ind }) => {
     return (
         <div style={{ marginBottom: 2, width: "100%" }}>
 
-            <Accordion expanded={expanded === 'panel1'} onClick={curCourseDetails} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
+            <Accordion width="100%" expanded={expanded === 'panel1'} onClick={curCourseDetails} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                 <AccordionSummary
                     expandIcon={<MdOutlineExpandMore onClick={curCourseDetails} />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                 >
-                    <Box display="flex" justifyContent="flex-start" alignItems="center">
-                        <Box minWidth="65px" >
-                            <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>{curCor?.name[0]}</Avatar>
+                    <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
+                        <Box display="flex" justifyContent="flex-start" alignItems="center" flexGrow={1}>
+                            <Box minWidth="65px" >
+                                <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>{curCor?.name[0]}</Avatar>
+                            </Box>
+                            <Typography ml={3} variant="body1" color="green" sx={{ wordWrap: "break-word", paddingX: 0.5 }}>
+                                {curCor?.name}
+                            </Typography>
                         </Box>
-                        <Typography ml={3} variant="body1" color="green" sx={{ wordWrap: "break-word", paddingX: 0.5 }}>
-                            {curCor?.name}
-                        </Typography>
+                        <Tooltip title="Preview">
+                            <Button color="success" onClick={(e) => history.push(`/${curCor?.id}`)} > <AiOutlineExclamationCircle color="black" size="22px" /></Button>
+                        </Tooltip>
                     </Box>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -134,14 +139,11 @@ const StudentTab2 = ({ curCor, ind }) => {
                                     </Box>
                                 );
                             })}
-                            <AccordionActions>
+                            {/* <AccordionActions>
                                 <Tooltip title="Delete Course">
                                     <Button color="error" onClick={(e) => delCourse(e)}> <IoTrashBinSharp color="red" size="22px" /></Button>
                                 </Tooltip>
-                                <Tooltip title="Preview">
-                                    <Button color="success" onClick={(e) => history.push(`/classmaterials/${curCor?.id}`)} > <AiOutlineExclamationCircle color="black" size="22px" /></Button>
-                                </Tooltip>
-                            </AccordionActions>
+                            </AccordionActions> */}
                         </Grid>
                     </Grid>
                 </AccordionDetails>

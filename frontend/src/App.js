@@ -16,7 +16,6 @@ import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
 	const curUser = useSelector((state) => state.usersReducer.curUser);
-	console.log("curUser", curUser)
 	const [uid, setUid] = useState(curUser._id);
 	const [spinner, setSpinner] = useState(true);
 
@@ -89,7 +88,7 @@ const App = () => {
 
 					<PrivateRoute
 						auth={uid}
-						path="/classmaterials/:id"
+						path="/:id"
 						SuccessComp={<ClassMaterials curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -99,6 +98,12 @@ const App = () => {
 						SuccessComp={<ClassMaterials curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/> */}
+					<PrivateRoute
+						auth={uid}
+						path="/classmaterials"
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
 					<PrivateRoute
 						auth={uid}
 						path="/studentchecked"
@@ -129,7 +134,7 @@ const App = () => {
 					<PrivateRoute
 						auth={uid}
 						path="/*"
-						SuccessComp={<Redirect to="/profile" />}
+						SuccessComp={<Redirect to="/" />}
 						FailComp={<Redirect to="/" />}
 					/>
 				</Switch>

@@ -14,7 +14,7 @@ import {
 import { useFormik } from 'formik'
 import *as yup from "yup"
 
-const Assignment = ({ btnTitle, tooltipTitle, btnIcon, dialogTitle, actionTitle, isTeacher }) => {
+const Assignment = ({ currentCourse, btnTitle, tooltipTitle, btnIcon, dialogTitle, actionTitle, isTeacher, btnStartIcon, btnColor, btnVariant }) => {
     const [openAssignDialog, setOpenAssignDialog] = useState(false)
     const [file, setFile] = useState()
     const handleDialog = () => {
@@ -23,15 +23,11 @@ const Assignment = ({ btnTitle, tooltipTitle, btnIcon, dialogTitle, actionTitle,
     const closeDialog = () => {
         setOpenAssignDialog(false)
     }
-    const actionFunc = (e) => {
-        console.log("actionFunc is Running Softly")
-        closeDialog()
-    }
     const formik = useFormik({
         initialValues: {
+            courseID: currentCourse?._id,
             title: "",
             desc: "",
-            file: file,
         },
         validationSchema: yup.object().shape({
         }),
@@ -49,8 +45,8 @@ const Assignment = ({ btnTitle, tooltipTitle, btnIcon, dialogTitle, actionTitle,
     return (
         <>
             <Tooltip title={tooltipTitle} arrow>
-                <Button startIcon={btnIcon} onClick={handleDialog} color="success"
-                    sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">{btnTitle}</Button>
+                <Button startIcon={btnStartIcon} onClick={handleDialog} color={btnColor}
+                    sx={{ marginTop: 3, borderRadius: 5 }} variant={btnVariant}>{btnTitle || btnIcon}</Button>
             </Tooltip>
             <Dialog open={openAssignDialog} onClose={closeDialog} fullWidth maxWidth="sm">
                 <DialogTitle>{dialogTitle}</DialogTitle>
@@ -86,7 +82,7 @@ const Assignment = ({ btnTitle, tooltipTitle, btnIcon, dialogTitle, actionTitle,
                     />
                     <Box width="100%" display="flex" justifyContent="flex-end" alignItems="center">
                         <Box border="1px solid rgba(0, 0, 0, 0.09)" px={"14px"} mt={1} py={"7px"} flexGrow={1}><Typography variant="subtitle1">
-                            {file ? file.name : "Select File"}
+                            {file ? file.name : "No File Selected"}
                         </Typography></Box>
                         <Tooltip title="Attech File" arrow>
                             <Button

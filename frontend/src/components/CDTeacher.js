@@ -1,10 +1,10 @@
 import React from "react";
-import { Box, Typography, Chip, Grid, Button } from "@mui/material";
+import { Box, Typography, Chip, Grid, Button, Tooltip } from "@mui/material";
 import Header from "./Header";
 import AddCourse from "./AddCourse";
 import { useHistory } from "react-router-dom";
 // import Assignment from "./Assignment"
-// import { MdAssignment } from "react-icons/md"
+import { VscGoToFile } from "react-icons/vsc"
 
 
 const CDTeacher = ({ curUser, course }) => {
@@ -39,76 +39,78 @@ const CDTeacher = ({ curUser, course }) => {
 						}}
 					>
 						{course && Object.entries(course).length > 0 ? (
-							<Grid container>
-								<Grid item mt={1} sm={6} xs={12} sx={{ wordWrap: "break-word" }}>
-									<Typography color="black" variant="subtitle1">
-										Course Name:
-									</Typography>
-									<Typography ml={5} variant="body2">
-										{courseName}
-									</Typography>
+							<>
+								<Grid container>
+									<Grid item mt={1} sm={6} xs={12} sx={{ wordWrap: "break-word" }}>
+										<Typography color="black" variant="subtitle1">
+											Course Name:
+										</Typography>
+										<Typography ml={5} variant="body2">
+											{courseName}
+										</Typography>
 
-									<Typography color="black" variant="subtitle1">
-										Description:
-									</Typography>
-									<Typography ml={5} variant="body2">
-										{courseDesc}
-									</Typography>
+										<Typography color="black" variant="subtitle1">
+											Description:
+										</Typography>
+										<Typography ml={5} variant="body2">
+											{courseDesc}
+										</Typography>
 
-									<Typography color="black" variant="subtitle1">
-										Topics:
-									</Typography>
-									<Box ml={4}>
-										{topics?.map((curElem, ind) => {
+										<Typography color="black" variant="subtitle1">
+											Topics:
+										</Typography>
+										<Box ml={4}>
+											{topics?.map((curElem, ind) => {
+												return (
+													<Chip
+														key={ind}
+														sx={{ marginLeft: 1, marginBottom: 1 }}
+														color="success"
+														size="small"
+														label={curElem.label}
+														variant="outlined"
+													/>
+												);
+											})}
+										</Box>
+										<Typography color="black" variant="subtitle1">
+											Duration:
+										</Typography>
+										<Typography ml={5} variant="body2">
+											{duration} week / weeks
+										</Typography>
+									</Grid>
+									<Grid item mt={1} sm={6} xs={12} sx={{ wordWrap: "break-word" }}>
+										<Typography color="black" variant="subtitle1">
+											Course Outline:
+										</Typography>
+										{courseOutline?.map((curElem, ind) => {
 											return (
-												<Chip
-													key={ind}
-													sx={{ marginLeft: 1, marginBottom: 1 }}
-													color="success"
-													size="small"
-													label={curElem.label}
-													variant="outlined"
-												/>
+												<Box key={ind}>
+													<Typography color="black" ml={5} variant="body2">
+														week {ind + 1}:
+													</Typography>
+													<Typography ml={9} variant="body1">
+														{curElem.week}
+													</Typography>
+												</Box>
 											);
 										})}
-									</Box>
-									<Typography color="black" variant="subtitle1">
-										Duration:
-									</Typography>
-									<Typography ml={5} variant="body2">
-										{duration} week / weeks
-									</Typography>
-								</Grid>
-								<Grid item mt={1} sm={6} xs={12} sx={{ wordWrap: "break-word" }}>
-									<Typography color="black" variant="subtitle1">
-										Course Outline:
-									</Typography>
-									{courseOutline?.map((curElem, ind) => {
-										return (
-											<Box key={ind}>
-												<Typography color="black" ml={5} variant="body2">
-													week {ind + 1}:
-												</Typography>
-												<Typography ml={9} variant="body1">
-													{curElem.week}
-												</Typography>
-											</Box>
-										);
-									})}
-									{/* <EditCourse curUser={curUser} /> */}
-									<Grid container width="100%">
-										<Grid item xs={12}>
-											<AddCourse
-												curUser={curUser}
-												editCourse={true}
-												course={course}
-											/>
-											<Button onClick={() => history.push(`/classmaterials/${course?._id}`)}>Preview</Button>
-										</Grid>
+										{/* <EditCourse curUser={curUser} /> */}
 									</Grid>
-								</Grid>
 
-							</Grid>
+								</Grid>
+								<Box width="100%" display="flex" justifyContent="flex-end">
+									<AddCourse
+										curUser={curUser}
+										editCourse={true}
+										course={course}
+									/>
+									<Tooltip title="Go to This Course" arrow>
+										<Button size="small" sx={{ borderRadius: 5 }} onClick={() => history.push(`/${course?._id}`)}><VscGoToFile size="22px" color="green" /></Button>
+									</Tooltip>
+								</Box>
+							</>
 						) : (
 							<Box
 								sx={{

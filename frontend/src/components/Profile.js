@@ -1,8 +1,4 @@
-// const imageClick = (event) => {
-// 	hiddenFileInput.current.click();
-// };
 import React, { useState } from "react";
-// import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
 import { Box, Avatar, Grid, Paper, Typography } from "@mui/material";
@@ -17,21 +13,8 @@ const Item = styled(Paper)(({ theme }) => ({
 	justifyContent: "space-between",
 	color: "green",
 }));
-// const MyDiv = styled("div")(({ theme }) => ({
-// 	width: "100%",
-// 	[theme.breakpoints.down("xs")]: {
-// 		width: "110%"
-// 	}
-// }))
-
-// const useStyles = makeStyles((theme) => ({
-
-// }));
-
 const Profile = ({ curUser }) => {
-	// const classes = useStyles();
 	const [imgURL, setImgURL] = useState(curUser.dp)
-	// const ref = useRef(initialValue)
 
 	let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
 	return (

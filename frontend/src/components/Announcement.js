@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Box, Avatar, Typography, Button } from "@mui/material"
 import SendingMessageInputComp from "./SendingMessageInputComp"
+import MessageBox from "./MessageBox"
 import { GrAnnounce } from "react-icons/gr"
+import moment from "moment"
+import axios from "axios"
 
-const Announcement = ({ curUser }) => {
+const Announcement = ({ currentCourse, curUser }) => {
     const [showInput, setShowInput] = useState(false)
-    const [announce, setAnnounce] = useState("")
+    const [message, setMessage] = useState("")
     const toggle = () => {
         if (showInput) {
             setShowInput(false)
@@ -13,67 +16,108 @@ const Announcement = ({ curUser }) => {
             setShowInput(true)
         }
     }
-    const submitFunc = (e) => {
-        console.log("submitFunc running from announcement")
-        console.log("Value", announce)
+    const { _id, fname, lname } = curUser || {}
+    const submitFunc = async (e) => {
+        try {
+            const newMessage = message.trim()
+
+            if (newMessage) {
+                const name = `${fname} ${lname}`
+                let time = moment().format('hh:mm A')
+                const announcementObj = {
+                    id: _id, name, time, message: newMessage, courseID: currentCourse?._id
+                }
+                await axios.post("course/announcement", announcementObj)
+                setMessage("")
+                toggle()
+            } else {
+                alert("write something")
+                console.log("currentCourse", currentCourse)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     }
     return (
         <>
-            <Box maxWidth="1100px" minHeight="77vh" display="flex" flexDirection="column" sx={{ marginX: "auto" }}>
-                {showInput ? <SendingMessageInputComp
-                    name="announce"
-                    autoFocus={true}
-                    value={announce}
-                    setValue={setAnnounce}
-                    type="text"
-                    placeholder="Write Announcement"
-                    color="success"
-                    submitFunc={submitFunc}
-                    userName={curUser?.fname[0]}
-                /> : <></>
-                }
-                {/* Announce SomeThing to Your Class */}
-                <Box onClick={toggle} sx={{ width: "100%", "&:hover": { color: "green", cursor: "pointer" }, borderRadius: "12px", backgroundColor: "#00710012", padding: "1rem 1.5rem", boxShadow: 4 }}>
-                    <Box width="100%">
-                        <Box display="flex" justifyContent="center" alignItems="center">
-                            <Box width="65px" >
-                                <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>r</Avatar>
-                            </Box>
-                            <Box flexGrow={1} >
-                                <Typography color="#0000009c" sx={{ fontSize: "14px", "&:hover": { color: "green", cursor: "pointer", textDecoration: "underline" } }}>Announce Something to Your Students</Typography>
-                            </Box>
-                            <Box >
-                                <Button
-                                    sx={{ borderRadius: 5 }}
-                                    size="small"
-                                >
-                                    <GrAnnounce size="23px" />
-                                </Button>
+            <Box
+                maxWidth="1100px" minHeight="77vh"
+                display="flex" flexDirection="column"
+                sx={{ marginX: "auto" }}
+            >
+                {curUser?.roll === "teacher" ? (
+                    <div>
+                        {showInput ? <SendingMessageInputComp
+                            name="announce"
+                            autoFocus={true}
+                            value={message}
+                            setValue={setMessage}
+                            type="text"
+                            placeholder="Write Announcement"
+                            color="success"
+                            submitFunc={submitFunc}
+                            userName={curUser?.fname[0]}
+                        /> : ""
+                        }
+                        {/* Announce SomeThing to Your Class */}
+                        <Box onClick={toggle} sx={{ width: "100%", "&:hover": { color: "green", cursor: "pointer" }, borderRadius: "12px", backgroundColor: "#00710012", padding: "1rem 1.5rem", boxShadow: 4 }}>
+                            <Box width="100%">
+                                <Box display="flex" justifyContent="center" alignItems="center">
+                                    <Box width="65px" >
+                                        <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>r</Avatar>
+                                    </Box>
+                                    <Box flexGrow={1} >
+                                        <Typography color="#0000009c" sx={{ fontSize: "14px", "&:hover": { color: "green", cursor: "pointer", textDecoration: "underline" } }}>Announce Something to Your Students</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Button
+                                            sx={{ borderRadius: 5 }}
+                                            size="small"
+                                        >
+                                            <GrAnnounce size="23px" />
+                                        </Button>
+                                    </Box>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
-                </Box>
+                    </div>
+                ) : (<Box borderBottom="1px solid #00800059" display="flex" justifyContent="flex-start" pb={2} px={2} width="100%" >
+                    <Typography variant="h4" color="green">
+                        Announcements
+                    </Typography>
+                </Box>)
+
+                }
+
+
 
 
                 {/* Announces */}
-                <Box sx={{ width: "100%", borderRadius: "12px", marginTop: 3, padding: "1rem 1.5rem", border: "1.8px solid #00000033" }}>
-                    <Box width="100%">
-                        <Box display="flex" justifyContent="center">
-                            <Box width="65px" >
-                                <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>r</Avatar>
-                            </Box>
-                            <Box flexGrow={1}>
-                                <Typography variant="subtitle1" color="green"><b> kljakfjdsakjfdkjadfskjkasdj</b></Typography>
-                                <Typography variant="body2" color="#2e7d32de"> asdj</Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box width="100%" mt={2} sx={{ wordWrap: "break-word", paddingLeft: 5 }}>
-                        <Typography variant="subtitle2">WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW</Typography>
-                    </Box>
-                </Box>
+                {
+                    currentCourse?.announcement?.map((currentMessage, index) => {
+                        return (
 
+                            <MessageBox
+                                color={"green"}
+                                timeColor={"#2e7d32de"}
+                                curUser={curUser}
+                                key={index}
+                                nameFirestLetter={currentMessage.name[0]}
+                                name={curUser?._id === currentMessage?.id ? "Me" : currentMessage.name}
+                                time={currentMessage.time}
+                                message={currentMessage.message}
+                            />
+                        )
+                    })
+                }
 
+                {/* <MessageBox
+                    nameFirestLetter="A"
+                    name="Teacher"
+                    time="09:45pm"
+                    message="Bilal Ehsasn Is the Best Teacher wohooooo"
+                /> */}
             </Box >
         </>
     )

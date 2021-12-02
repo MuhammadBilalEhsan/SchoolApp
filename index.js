@@ -12,6 +12,7 @@ const bodyParser = require("body-parser");
 const { initializeApp } = require("firebase/app");
 const firebaseConfig = require("./firebase/firebaseConfig");
 const course = require("./modules/course/courseRoutes");
+const assignment = require("./modules/assignment/assignmentRoutes");
 
 require("dotenv").config();
 const port = process.env.PORT || 4040;
@@ -23,6 +24,7 @@ initializeApp(firebaseConfig);
 
 app.use("/user", user);
 app.use("/course", course);
+app.use("/assignment", assignment);
 // with this line of code we will get all the profile images
 app.use(express.static(__dirname + "./public/"));
 

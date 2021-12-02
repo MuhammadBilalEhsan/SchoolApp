@@ -19,7 +19,7 @@ import { GrUserAdd } from 'react-icons/gr';
 function CourseAcc({ curElem, curUser }) {
     const [expanded, setExpanded] = useState(false);
     const { fname, lname } = curUser
-    const { _id, courseDesc, courseName, courseOutline, dateOfCreation, duration, students, teacherClass, teacherEmail, teacher_id, topics } = curElem
+    const { _id, courseDesc, courseName, courseOutline, duration, topics } = curElem
     const uid = localStorage.getItem("uid")
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -32,7 +32,6 @@ function CourseAcc({ curElem, curUser }) {
                 course_id: _id,
                 student_id: uid
             }
-            console.log(obj)
             const res = await axios.post("course/applynow", obj)
             alert(res.data.message || res.data.error)
         } catch (error) {

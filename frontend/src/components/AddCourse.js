@@ -119,22 +119,22 @@ export default function AddCourse({ curUser, editCourse, course }) {
 			}
 		}
 	});
-	const delCourseFunc = async (e) => {
-		try {
-			e.preventDefault();
-			const res = await axios.post("course/delcourse", {
-				teacher_id: uidFromLocalStorage,
-			});
-			if (res.data.message) {
-				alert(res.data.message);
-				console.log(res.data.message);
-			} else {
-				alert(res.data.error);
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	// const delCourseFunc = async (e) => {
+	// 	try {
+	// 		e.preventDefault();
+	// 		const res = await axios.post("course/delcourse", {
+	// 			teacher_id: uidFromLocalStorage,
+	// 		});
+	// 		if (res.data.message) {
+	// 			alert(res.data.message);
+	// 			console.log(res.data.message);
+	// 		} else {
+	// 			alert(res.data.error);
+	// 		}
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// };
 	useEffect(() => {
 		if (editCourse) {
 			setCourseOutlineArr(course?.courseOutline)
@@ -146,30 +146,26 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	return (
 		<div>
 			{editCourse ? (
-				<>
-					<Tooltip title="Edit Course" arrow>
-						<Button
-							sx={{ marginTop: 3 }}
-							size="small"
-							variant="contained"
-							color="warning"
-							onClick={handleClickOpen}
-						>
-							<RiFileEditFill size="16px" color="#fff" />
-						</Button>
-					</Tooltip>
-					<Tooltip title="Delete Course" arrow>
-						<Button
-							sx={{ marginTop: 3, marginLeft: 2 }}
-							size="small"
-							variant="outlined"
-							color="error"
-							onClick={(e) => delCourseFunc(e)}
-						>
-							<FaRegTrashAlt color="red" size="16px" />
-						</Button>
-					</Tooltip>
-				</>
+				// <>
+				<Tooltip title="Edit Course" arrow>
+					<Button
+						size="small"
+						onClick={handleClickOpen}
+						sx={{ borderRadius: 5, }}
+					>
+						<RiFileEditFill size="22px" color="orange" />
+					</Button>
+				</Tooltip>
+				// 	<Tooltip title="Delete Course" arrow>
+				// 		<Button
+				// 			size="small"
+				// 			onClick={(e) => delCourseFunc(e)}
+				// 			sx={{ borderRadius: 5 }}
+				// 		>
+				// 			<FaRegTrashAlt color="red" size="22px" />
+				// 		</Button>
+				// 	</Tooltip>
+				// </>
 			) : (
 				<Tooltip title="Add Course" arrow>
 					<Fab

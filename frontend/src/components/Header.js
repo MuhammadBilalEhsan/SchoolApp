@@ -79,24 +79,6 @@ const Header = ({ curUser }) => {
 			{/* {
 				curUser?.roll === "teacher" ? (
 					<MenuItem
-						component={Link}
-						onClick={closeMobMenu}
-						to="/coursedetails"
-						sx={{
-							backgroundColor: "#fff",
-							color: "green",
-							width: "100%",
-							paddingBottom: 2,
-						}}
-					>
-						Course Details
-					</MenuItem>
-				) : (
-					""
-				)
-			} */}
-
-			<MenuItem
 				component={Link}
 				onClick={closeMobMenu}
 				to="/classmaterials"
@@ -109,6 +91,24 @@ const Header = ({ curUser }) => {
 			>
 				Class Materials
 			</MenuItem>
+				) : (
+					""
+				)
+			} */}
+			<MenuItem
+				component={Link}
+				onClick={closeMobMenu}
+				to="/coursedetails"
+				sx={{
+					backgroundColor: "#fff",
+					color: "green",
+					width: "100%",
+					paddingBottom: 2,
+				}}
+			>
+				Course Details
+			</MenuItem>
+
 			<MenuItem
 				component={Button}
 				onClick={() => {
@@ -131,7 +131,7 @@ const Header = ({ curUser }) => {
 			<AppBar color="success" position="static">
 				<Toolbar>
 					<Typography component={Link} color="inherit" to="/profile" variant="h5" sx={{ flexGrow: 1, textDecoration: "none" }}>
-						BE School
+						School App
 					</Typography>
 					<BtnBox>
 						<Button component={Link} to="/profile" size="small" color="inherit">

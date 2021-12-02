@@ -220,3 +220,11 @@ module.exports.getData = async (req, res) => {
 	const allUsers = await User.find({});
 	res.status(200).send(allUsers);
 };
+
+module.exports.sendMessageController = async (req, res) => {
+	try {
+		console.log("req.body", req.body)
+	} catch (error) {
+		console.log(error)
+	}
+}

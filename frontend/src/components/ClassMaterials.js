@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Header from "./Header";
@@ -20,13 +20,18 @@ const useStyles = makeStyles({
 
 
 const ClassMaterials = ({ curUser }) => {
+	const [currentCourse, setCurrentCourse] = useState({})
 
 	const classes = useStyles()
 	const params = useParams()
 
 	useEffect(async () => {
-		// const res = await axios.post(`/course/specific`, { id: params.id })
-		// console.log(res)
+		const res = await axios.post(`/course/specific`, { id: params.id })
+		if (res.data.currentCourse) {
+			setCurrentCourse(res.data.currentCourse)
+		} else {
+			console.log(res.data.error)
+		}
 	}, [])
 	return (
 		<>
@@ -35,18 +40,16 @@ const ClassMaterials = ({ curUser }) => {
 				<Box>
 					<TabsComp
 						tab1Label="Stream"
-						panel1={<Stream curUser={curUser} />}
+						panel1={<Stream currentCourse={currentCourse} curUser={curUser} />}
 
-						// <DropDownComp />
 						tab2Label={curUser?.roll === "teacher" ? "Class Work" : "Assignments"}
-						// panel2={curUser?.roll === "teacher" ? <AssignmentComp curUser={curUser} /> : ""}
-						panel2={<AssignmentComp curUser={curUser} />}
+						panel2={<AssignmentComp isTeacher={curUser?.roll === "teacher" ? true : false} currentCourse={currentCourse} curUser={curUser} />}
 
-						tab3Label={curUser?.roll === "teacher" ? "Students" : null}
-						panel3={curUser?.roll === "teacher" ? <CourseStudentsComp curUser={curUser} /> : null}
+						tab3Label={curUser?.roll === "teacher" ? "Students" : "Announcement"}
+						panel3={curUser?.roll === "teacher" ? <CourseStudentsComp currentCourse={currentCourse} curUser={curUser} /> : < Announcement currentCourse={currentCourse} curUser={curUser} />}
 
-						tab4Label="Announcement"
-						panel4={<Announcement curUser={curUser} />}
+						tab4Label={curUser?.roll === "teacher" ? "Announcement" : ""}
+						panel4={curUser?.roll === "teacher" ? <Announcement currentCourse={currentCourse} curUser={curUser} /> : ""}
 					/>
 				</Box>
 			</Box>

@@ -22,9 +22,9 @@ const SendingMessageInputComp = ({ userName, autoFocus, placeholder, value, setV
                             fullWidth
                             multiline
                             color={color}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
+                            // InputLabelProps={{
+                            //     // shrink: true,
+                            // }}
                             InputProps={{
                                 endAdornment: (<AiOutlineSend onClick={(e) => submitFunc(e)} size="26px" color="green" style={{ margin: "auto 1 0 0" }} />)
                             }}

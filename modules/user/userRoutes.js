@@ -22,5 +22,6 @@ user.route("/edit-profile").post(userController.EditProfile);
 user.post("/editprofileimg", upload, userController.EditProfileImage);
 user.route("/getdata").get(userController.getData);
 user.route("/attendance").post(userController.markAttendance);
+user.route("/sendmsg").post(userController.sendMessageController);
 
 module.exports = user;

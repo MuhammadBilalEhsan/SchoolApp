@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Typography, Button, MenuItem, Menu, Tooltip } from "@mui/material"
+import { Box, Typography, Button, Tooltip } from "@mui/material"
 import AssignmentAccordion from './AssignmentAccordion'
 import Assignment from './Assignment'
 import { MdAdd } from "react-icons/md"
@@ -8,36 +8,42 @@ import { useHistory } from 'react-router-dom'
 // import { curUserFun } from '../redux/actions'
 import { MdOutlineMoreHoriz } from "react-icons/md"
 
-const AssignmentComp = ({ curUser }) => {
+const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
 
     const history = useHistory()
     return (
         <>
             <Box sx={{ maxWidth: "760px", margin: "0 auto" }}>
                 <Box display="flex" justifyContent="flex-end" px={2} width="100%" >
-                    {curUser?.roll === "teacher" ? (
+                    {isTeacher ? (
                         <Assignment
-                            btnTitle="create" tooltipTitle="Create Assignment"
-                            btnIcon={<MdAdd size="20px" color="white" />}
-                            dialogTitle="Create Assignment or Questions" actionTitle="create"
+                            btnTitle="create"
+                            btnVariant="contained"
+                            btnColor="success"
+                            tooltipTitle="Create Assignment"
+                            btnStartIcon={<MdAdd size="20px" color="white" />}
+                            dialogTitle="Create Assignment or Questions"
+                            actionTitle="create"
+                            currentCourse={currentCourse}
                             isTeacher={true}
                         />
-                    ) : (<>
-                        <Tooltip title="Go to checked Assignments" arrow>
+                    ) : <Tooltip title="Go to checked Assignments" arrow>
 
-                            <Button startIcon={""} onClick={() => history.push(`/studentchecked`)} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">
-                                Checked
-                            </Button>
+                        <Button onClick={() => history.push(`/studentchecked`)} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">
+                            Checked
+                        </Button>
 
-                        </Tooltip>
-                    </>)}
+                    </Tooltip>
+                    }
                 </Box>
                 <Box display="flex" justifyContent="flex-start" pb={1} px={2} width="100%" >
                     <Typography variant="h4" color="green">
-                        {curUser.roll === "teacher" ? "" : "Non Submitted "}Assignments
+                        {isTeacher ? "" : "Non Submitted "}Assignments
                     </Typography>
                 </Box>
-                <AssignmentAccordion curUser={curUser} />
+                <AssignmentAccordion
+                    curUser={curUser}
+                />
             </Box>
         </>
     )
