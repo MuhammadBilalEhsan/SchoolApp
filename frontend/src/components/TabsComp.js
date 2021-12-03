@@ -30,12 +30,12 @@ const TabsComp = ({ tab1Label, tab2Label, tab3Label, tab4Label, panel1, panel2, 
                     {tab3Label ? (
                         <Tab label={tab3Label} />
                     ) : (
-                        <></>
+                        ""
                     )}
                     {tab4Label ? (
                         <Tab label={tab4Label} />
                     ) : (
-                        <></>
+                        ""
                     )}
                 </Tabs>
             </Box>
@@ -44,12 +44,12 @@ const TabsComp = ({ tab1Label, tab2Label, tab3Label, tab4Label, panel1, panel2, 
             {panel3 ? (
                 <TabPanel value={value} index={2}>{panel3}</TabPanel>
             ) : (
-                <></>
+                ""
             )}
             {panel4 ? (
                 <TabPanel value={value} index={3}>{panel4}</TabPanel>
             ) : (
-                <></>
+                ""
             )}
         </>
     )

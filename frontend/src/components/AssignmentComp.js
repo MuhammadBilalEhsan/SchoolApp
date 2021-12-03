@@ -6,7 +6,7 @@ import { MdAdd } from "react-icons/md"
 // import TabsComp from './TabsComp';
 import { useHistory } from 'react-router-dom'
 // import { curUserFun } from '../redux/actions'
-import { MdOutlineMoreHoriz } from "react-icons/md"
+// import { MdOutlineMoreHoriz } from "react-icons/md"
 
 const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
 
@@ -41,9 +41,24 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
                         {isTeacher ? "" : "Non Submitted "}Assignments
                     </Typography>
                 </Box>
-                <AssignmentAccordion
-                    curUser={curUser}
-                />
+                {
+                    currentCourse?.assignments.length > 0 ?
+                        currentCourse?.assignments.map((assignment, index) => {
+                            return (
+                                <AssignmentAccordion
+                                    key={index}
+                                    curUser={curUser}
+                                    assignment={assignment}
+                                />
+                            )
+                        }) : <Box pt={9} borderTop="1px solid green" width="100%"
+                            textAlign="center"
+                        >
+                            <Typography variant="h6" color="green">
+                                Currently No Assignments
+                            </Typography>
+                        </Box>
+                }
             </Box>
         </>
     )

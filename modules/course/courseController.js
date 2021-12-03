@@ -178,13 +178,13 @@ module.exports.applyForCourse = async (req, res) => {
 				if (studentInCourse || courseInStudent) {
 					return res.status(401).send({ error: "Student already enrolled.." })
 				} else {
-					const addCourseIdInStudent = await User.findOneAndUpdate({ _id: student_id }, {
-						courses: [...findStudent.courses, { id: course_id, name: courseName }]
+					const addCourseObjInStudent = await User.findOneAndUpdate({ _id: student_id }, {
+						courses: [...findStudent.courses, { id: course_id, name: courseName, removedByTeacher: false }]
 					})
 					const addStudentInCourse = await Course.findByIdAndUpdate(course_id, {
-						students: [...findCourse.students, { id: student_id, name: student_name }]
+						students: [...findCourse.students, { id: student_id, name: student_name, muted: false }]
 					})
-					if (addStudentInCourse && addCourseIdInStudent) {
+					if (addStudentInCourse && addCourseObjInStudent) {
 						return res.send({ message: "Student Enrolled" })
 					} else {
 						return res.status(512).send({ error: "Student can't Enrole." })
@@ -308,3 +308,62 @@ module.exports.addAnnouncementController = async (req, res) => {
 		console.log(err)
 	}
 }
+module.exports.delSpecificStudentByTeacher = async (req, res) => {
+	try {
+		const { courseID, studentID } = req.body
+		if (!courseID || !studentID) {
+			res.status(400).send({ error: "Invalid Request..." })
+		} else {
+			const findCourse = await Course.findById(courseID)
+			const findStudent = await User.findById(studentID)
+			if (findCourse && findStudent) {
+				const deleteStudentFromCourse = findCourse.students.filter(student => student.id !== studentID)
+				const updateCourseStudents = await Course.findByIdAndUpdate(courseID, {
+					students: deleteStudentFromCourse
+				})
+
+				const findCourseInStudent = findStudent.courses.find(currentCourse => currentCourse.id === courseID)
+				findCourseInStudent.removedByTeacher = true
+				const filterCoursesInStudent = findStudent.courses.filter(currentCourse => currentCourse.id !== courseID)
+				filterCoursesInStudent.push(findCourseInStudent)
+				const updateStudentCourses = await User.findByIdAndUpdate(studentID, {
+					courses: filterCoursesInStudent
+				})
+				if (updateCourseStudents && updateStudentCourses) {
+					res.send({ message: "Student Deleted successfully" })
+				} else {
+					res.status(512).send({ error: "message not send..." })
+				}
+			} else {
+				res.status(404).send({ error: "Course not found..." })
+			}
+		}
+	} catch (error) {
+		console.log(error)
+	}
+}
+module.exports.deleteCourseFromStudent = async (req, res) => {
+	try {
+		const { id } = req.body;
+		if (!id) {
+			res.status(400).send({ error: "Invalid Request..." });
+		} else {
+			const findStudent = await User.findById(id)
+			if (findStudent) {
+				const filtered = findStudent.courses.filter(course => course.removedByTeacher === false)
+				const updateStudentCourses = await User.findByIdAndUpdate(id, {
+					courses: filtered
+				})
+				if (updateStudentCourses) {
+					res.send({ message: "Courses updated Successfully" });
+				} else {
+					res.status(400).send({ error: "Student Not Found..." });
+				}
+			} else {
+				res.status(400).send({ error: "Student Not Found..." });
+			}
+		}
+	} catch (err) {
+		res.status(500).send({ error: "server error" });
+	}
+};

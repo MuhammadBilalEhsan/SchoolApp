@@ -19,7 +19,7 @@ const CDTeacher = ({ curUser, course }) => {
 				<Header curUser={curUser} />
 				<Box width="95%" maxWidth="1100px" marginX="auto">
 					<Box display="flex" justifyContent="space-around" mt={3}>
-						<Typography variant="h4">
+						<Typography variant="h4" sx={{ textTransform: "capitalize" }}>
 							{`${curUser.fname} ${curUser.lname}(${curUser.roll})`}
 						</Typography>
 						{/* course={course} */}

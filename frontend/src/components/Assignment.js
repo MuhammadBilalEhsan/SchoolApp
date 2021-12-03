@@ -13,15 +13,32 @@ import {
 } from "@mui/material"
 import { useFormik } from 'formik'
 import *as yup from "yup"
+import axios from 'axios'
 
-const Assignment = ({ currentCourse, btnTitle, tooltipTitle, btnIcon, dialogTitle, actionTitle, isTeacher, btnStartIcon, btnColor, btnVariant }) => {
+const Assignment = ({
+    currentCourse, btnTitle, tooltipTitle,
+    btnIcon, dialogTitle, actionTitle, isTeacher,
+    btnStartIcon, btnColor, btnVariant
+}) => {
     const [openAssignDialog, setOpenAssignDialog] = useState(false)
-    const [file, setFile] = useState()
+    const [file, setFile] = useState(null)
     const handleDialog = () => {
         setOpenAssignDialog(true)
     }
     const closeDialog = () => {
         setOpenAssignDialog(false)
+    }
+
+    const handleChange = (e) => {
+        const selectedFile = e.target.files[0]
+        if (selectedFile) {
+            const size = ((selectedFile.size / 1024) / 1024)
+            if (size > 10) {
+                alert("file Size is too long")
+            } else {
+                setFile(selectedFile)
+            }
+        }
     }
     const formik = useFormik({
         initialValues: {
@@ -30,12 +47,26 @@ const Assignment = ({ currentCourse, btnTitle, tooltipTitle, btnIcon, dialogTitl
             desc: "",
         },
         validationSchema: yup.object().shape({
+            title: yup.string().required("Title is Required Field..."),
         }),
-
 
         onSubmit: async (values) => {
             try {
-                console.log("values", values)
+                if (!file && !values.desc) {
+                    alert("You cannot leave both files and description blank at the same time")
+                } else {
+                    let assignmentObj
+                    if (!values.desc && file) {
+                        assignmentObj = { courseID: currentCourse?._id, title: values.title, file }
+                    } else if (!file && values.desc) {
+                        assignmentObj = values
+                    } else {
+                        values.file = FormData
+                    }
+                    const res = await axios.post("assignment/add", assignmentObj)
+                    console.log("res", res)
+                    setFile(null)
+                }
             } catch (error) {
                 console.log(error);
                 closeDialog()
@@ -63,8 +94,13 @@ const Assignment = ({ currentCourse, btnTitle, tooltipTitle, btnIcon, dialogTitl
                         autoComplete="off"
                         fullWidth
                         color="success"
-                        inputProps={{ maxLength: 32 }}
+                        inputProps={{ maxLength: 32, required: true }}
                     />
+                    {formik.errors.title && formik.touched.title && (
+                        <p style={{ color: "red", marginLeft: "5px" }}>
+                            {formik.errors.title}
+                        </p>
+                    )}
                     <TextField
                         margin="dense"
                         name="desc"
@@ -92,7 +128,8 @@ const Assignment = ({ currentCourse, btnTitle, tooltipTitle, btnIcon, dialogTitl
                                 <GrAttachment size="20px" color="white" />
                                 <input
                                     type="file"
-                                    onChange={(e) => setFile(e.target.files[0])}
+                                    // value={file}
+                                    onChange={(e) => handleChange(e)}
                                     accept=".zip,.txt,.psd,.pptx,.pptx,.png,.jpeg,.jpg,.pdf,.docx,.doc"
                                     hidden
                                 />

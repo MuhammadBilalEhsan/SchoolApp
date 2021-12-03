@@ -6,8 +6,9 @@ const serviceAccount = require("../../firebase/serviceAccount")
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
-	databaseURL: "https://schoolapp-4ee60-default-rtdb.europe-west1.firebasedatabase.app/"
+	databaseURL: process.env.FIREBASEURL
 });
+// databaseURL: "https://schoolapp-4ee60-default-rtdb.europe-west1.firebasedatabase.app/"
 
 const bucket = admin.storage().bucket("gs://schoolapp-4ee60.appspot.com/");
 
@@ -201,20 +202,20 @@ module.exports.markAttendance = async (req, res) => {
 		console.error(err);
 	}
 };
-module.exports.profile = async (req, res) => {
-	try {
-		const _id = "61708a8defe0fc8e555e618e";
-		const userData = await User.findOne({ _id }, (err, user) => {
-			if (err) {
-				console.log(err);
-				res.send({ status: false, error: err });
-			}
-			res.send({ status: true, userDetails: userData });
-		});
-	} catch (err) {
-		console.log(err);
-	}
-};
+// module.exports.profile = async (req, res) => {
+// 	try {
+// 		const _id = "61708a8defe0fc8e555e618e";
+// 		const userData = await User.findOne({ _id }, (err, user) => {
+// 			if (err) {
+// 				console.log(err);
+// 				res.send({ status: false, error: err });
+// 			}
+// 			res.send({ status: true, userDetails: userData });
+// 		});
+// 	} catch (err) {
+// 		console.log(err);
+// 	}
+// };
 
 module.exports.getData = async (req, res) => {
 	const allUsers = await User.find({});
@@ -223,7 +224,25 @@ module.exports.getData = async (req, res) => {
 
 module.exports.sendMessageController = async (req, res) => {
 	try {
-		console.log("req.body", req.body)
+		const { senderID, name, time, message, recieverID } = req.body
+		if (!senderID || !name || !time || !message || !recieverID) {
+			res.status(400).send({ error: "Invalid Request" })
+
+		} else {
+			const findReciever = await User.findById(recieverID)
+			if (findReciever) {
+				const updateMessages = await User.findByIdAndUpdate(recieverID, {
+					messages: [...findReciever.messages, { senderID, name, time, message }]
+				})
+				if (updateMessages) {
+					res.send({ message: "Message Sent" })
+				} else {
+					res.status(504).send({ error: "Message not Send" })
+				}
+			} else {
+				res.status(404).send({ error: "Not Found..." })
+			}
+		}
 	} catch (error) {
 		console.log(error)
 	}

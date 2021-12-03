@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import { styled } from "@mui/material/styles";
-import { Chip, TextField,} from "@mui/material";
+import { Chip, TextField, } from "@mui/material";
 
 export default function AddTopic({
 	topicChips,
@@ -24,14 +24,14 @@ export default function AddTopic({
 	};
 	const addChip = () => {
 		const topicLabelTrim = topicLabel.trim();
-		if (topicLabelTrim.length == "") {
+		if (topicLabelTrim.length === "") {
 			setTopicLabel("");
 		} else {
 			const topicObj = {
 				key: new Date().getTime().toString(),
 				label: topicLabelTrim,
 			};
-			if (editCourse == true) {
+			if (editCourse === true) {
 				setTopicChips([
 
 					...topicChips,

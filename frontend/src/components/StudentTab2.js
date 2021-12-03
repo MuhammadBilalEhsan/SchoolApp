@@ -61,7 +61,6 @@ const StudentTab2 = ({ curCor, ind }) => {
 
     return (
         <div style={{ marginBottom: 2, width: "100%" }}>
-
             <Accordion width="100%" expanded={expanded === 'panel1'} onClick={curCourseDetails} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                 <AccordionSummary
                     expandIcon={<MdOutlineExpandMore onClick={curCourseDetails} />}
@@ -148,7 +147,6 @@ const StudentTab2 = ({ curCor, ind }) => {
                     </Grid>
                 </AccordionDetails>
             </Accordion>
-
         </div >
     )
 }

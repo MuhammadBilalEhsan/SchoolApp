@@ -12,7 +12,10 @@ course.route("/applynow").post(courseController.applyForCourse);
 // course.route("/delencourse").post(courseController.delEnrolledCourse);
 course.route("/specific").post(courseController.getSpecificCourse);
 course.route("/sendmessage").post(courseController.sendMessageController);
+course.route("/delspecificstudent").post(courseController.delSpecificStudentByTeacher);
 course.route("/announcement").post(courseController.addAnnouncementController);
+course.route("/delcoursefromstudent").post(courseController.deleteCourseFromStudent);
+
 // course.route("/").post(userController.registerUser);
 
 module.exports = course;
