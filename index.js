@@ -19,7 +19,7 @@ require("dotenv").config();
 const port = process.env.PORT || 4040;
 
 if (process.env.NODE_ENV == "production") {
-	app.use("/", express.static(path.resolve(path.join(__dirname, "frontend/build"))))
+	app.use("/*", express.static(path.resolve(path.join(__dirname, "frontend/build"))))
 }
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
