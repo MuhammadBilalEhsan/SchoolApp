@@ -2,6 +2,7 @@ const http = require("http");
 const express = require("express");
 const cors = require("cors");
 const socketIO = require("socket.io");
+const path = require("path")
 
 const app = express();
 
@@ -17,6 +18,9 @@ const assignment = require("./modules/assignment/assignmentRoutes");
 require("dotenv").config();
 const port = process.env.PORT || 4040;
 
+if (process.env.NODE_ENV == "production") {
+	app.use("/", express.static(path.resolve(path.join(__dirname, "frontend/build"))))
+}
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
