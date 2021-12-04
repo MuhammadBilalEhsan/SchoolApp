@@ -15,6 +15,7 @@ course.route("/sendmessage").post(courseController.sendMessageController);
 course.route("/delspecificstudent").post(courseController.delSpecificStudentByTeacher);
 course.route("/announcement").post(courseController.addAnnouncementController);
 course.route("/delcoursefromstudent").post(courseController.deleteCourseFromStudent);
+course.route("/mutestudent").post(courseController.muteStudentController);
 
 // course.route("/").post(userController.registerUser);
 

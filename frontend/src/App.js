@@ -5,6 +5,7 @@ import Profile from "./components/Profile";
 import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
+// import Submitted from "./components/Submitted";
 import AssignmentResponse from "./components/AssignmentResponse";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { curUserFun, getUsers, getCourseFunc, getStudentCourseFunc } from "./redux/actions/index";
@@ -104,24 +105,24 @@ const App = () => {
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
-					<PrivateRoute
+					{/* <PrivateRoute
 						auth={uid}
 						path="/studentchecked"
 						SuccessComp={<AssignmentResponse curUser={curUser} checked={false} />}
 						FailComp={<Redirect to="/" />}
-					/>
-					<PrivateRoute
-						auth={uid}
+					/> */}
+					{/* <PrivateRoute
+						auth={uid} exact
 						path="/checked/:id"
 						SuccessComp={<AssignmentResponse curUser={curUser} checked={true} />}
 						FailComp={<Redirect to="/" />}
-					/>
-					<PrivateRoute
-						auth={uid}
+					/> */}
+					{/* <PrivateRoute
+						auth={uid} exact
 						path="/submitted/:id"
-						SuccessComp={<AssignmentResponse curUser={curUser} checked={false} />}
+						SuccessComp={<Submitted curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
-					/>
+					/> */}
 					{/* : curUser?.roll === "student" ? (
 					<PrivateRoute
 						auth={uid}

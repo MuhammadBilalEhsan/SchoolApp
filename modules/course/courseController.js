@@ -367,3 +367,36 @@ module.exports.deleteCourseFromStudent = async (req, res) => {
 		res.status(500).send({ error: "server error" });
 	}
 };
+module.exports.muteStudentController = async (req, res) => {
+	try {
+		const { courseID, studentID } = req.body
+		if (!courseID || !studentID) {
+			res.status(400).send({ error: "Invalid Request..." })
+		} else {
+			const findCourse = await Course.findById(courseID)
+			const findStudent = findCourse.students.find(student => student.id === studentID)
+			if (findCourse && findStudent) {
+				if (findStudent.muted) {
+					findStudent.muted = false
+				} else {
+					findStudent.muted = true
+				}
+				const filterOthers = findCourse.students.filter(student => student.id !== studentID)
+				const updateCourseStudents = await Course.findByIdAndUpdate(courseID, {
+					students: [...filterOthers, findStudent]
+				})
+				if (updateCourseStudents) {
+					res.send({ message: "Student Muted..." })
+				} else {
+					res.status(505).send({ error: "Student Not Mute..." })
+				}
+			} else {
+				res.status(404).send({ error: "Student Or Course Not Found..." })
+			}
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(300).send({ error })
+
+	}
+}

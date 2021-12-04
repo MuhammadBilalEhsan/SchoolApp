@@ -14,14 +14,16 @@ import {
 import { useFormik } from 'formik'
 import *as yup from "yup"
 import axios from 'axios'
+import moment from 'moment'
 
 const Assignment = ({
-    currentCourse, btnTitle, tooltipTitle,
+    currentCourse, btnTitle, tooltipTitle, curUser,
     btnIcon, dialogTitle, actionTitle, isTeacher,
-    btnStartIcon, btnColor, btnVariant
+    btnStartIcon, btnColor, btnVariant, currentAssignment, input2label
 }) => {
     const [openAssignDialog, setOpenAssignDialog] = useState(false)
     const [file, setFile] = useState(null)
+
     const handleDialog = () => {
         setOpenAssignDialog(true)
     }
@@ -42,8 +44,7 @@ const Assignment = ({
     }
     const formik = useFormik({
         initialValues: {
-            courseID: currentCourse?._id,
-            title: "",
+            title: isTeacher ? "" : currentAssignment?.title,
             desc: "",
         },
         validationSchema: yup.object().shape({
@@ -55,17 +56,40 @@ const Assignment = ({
                 if (!file && !values.desc) {
                     alert("You cannot leave both files and description blank at the same time")
                 } else {
-                    let assignmentObj
+                    let formData = new FormData();
                     if (!values.desc && file) {
-                        assignmentObj = { courseID: currentCourse?._id, title: values.title, file }
+                        formData.append("myFile", file)
                     } else if (!file && values.desc) {
-                        assignmentObj = values
+                        formData.append("desc", values.desc)
                     } else {
-                        values.file = FormData
+                        formData.append("desc", values.desc)
+                        formData.append("myFile", file)
                     }
-                    const res = await axios.post("assignment/add", assignmentObj)
-                    console.log("res", res)
-                    setFile(null)
+                    const config = {
+                        headers: { "content-type": "multipart/form-data" },
+                    };
+                    if (isTeacher) {
+                        formData.append("title", values.title)
+                        formData.append("courseID", currentCourse?._id)
+                        const res = await axios.post("assignment/add", formData, config)
+                        if (res) {
+                            console.log(res.data.message || res.data.error)
+                            setFile(null)
+                            values = {}
+                            closeDialog()
+                        }
+                    } else {
+                        formData.append("assignmentID", currentAssignment?._id)
+                        formData.append("id", `${curUser?._id}`)
+                        formData.append("name", `${curUser?.fname} ${curUser?.lname}`)
+                        formData.append("time", moment().format("hh:mm:ss A"))
+                        const res = await axios.post("assignment/submit", formData, config)
+                        if (res) {
+                            console.log(res.data.message || res.data.error)
+                            setFile(null)
+                            closeDialog()
+                        }
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -73,69 +97,73 @@ const Assignment = ({
             }
         }
     });
+
     return (
         <>
             <Tooltip title={tooltipTitle} arrow>
                 <Button startIcon={btnStartIcon} onClick={handleDialog} color={btnColor}
-                    sx={{ marginTop: 3, borderRadius: 5 }} variant={btnVariant}>{btnTitle || btnIcon}</Button>
+                    sx={{ marginTop: isTeacher ? 3 : 0, borderRadius: 5 }} variant={btnVariant}>{btnTitle || btnIcon}</Button>
             </Tooltip>
             <Dialog open={openAssignDialog} onClose={closeDialog} fullWidth maxWidth="sm">
                 <DialogTitle>{dialogTitle}</DialogTitle>
                 <DialogContent >
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        name="title"
-                        label="Title"
-                        type="text"
-                        variant="filled"
-                        value={formik.values.title}
-                        onChange={formik.handleChange("title")}
-                        autoComplete="off"
-                        fullWidth
-                        color="success"
-                        inputProps={{ maxLength: 32, required: true }}
-                    />
-                    {formik.errors.title && formik.touched.title && (
-                        <p style={{ color: "red", marginLeft: "5px" }}>
-                            {formik.errors.title}
-                        </p>
-                    )}
-                    <TextField
-                        margin="dense"
-                        name="desc"
-                        label="Description"
-                        type="text"
-                        variant="filled"
-                        value={formik.values.desc}
-                        onChange={formik.handleChange("desc")}
-                        autoComplete="off"
-                        fullWidth
-                        color="success"
-                        multiline
-                        minRows={2}
-                        inputProps={{ maxLength: 500 }}
-                    />
-                    <Box width="100%" display="flex" justifyContent="flex-end" alignItems="center">
-                        <Box border="1px solid rgba(0, 0, 0, 0.09)" px={"14px"} mt={1} py={"7px"} flexGrow={1}><Typography variant="subtitle1">
-                            {file ? file.name : "No File Selected"}
-                        </Typography></Box>
-                        <Tooltip title="Attech File" arrow>
-                            <Button
-                                component="label"
-                                sx={{ borderRadius: 5 }}
-                            >
-                                <GrAttachment size="20px" color="white" />
-                                <input
-                                    type="file"
-                                    // value={file}
-                                    onChange={(e) => handleChange(e)}
-                                    accept=".zip,.txt,.psd,.pptx,.pptx,.png,.jpeg,.jpg,.pdf,.docx,.doc"
-                                    hidden
-                                />
-                            </Button>
-                        </Tooltip>
-                    </Box>
+                    <form method="POST">
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="title"
+                            label="Title"
+                            type="text"
+                            variant="filled"
+                            value={isTeacher ? formik.values.title : currentAssignment?.title}
+                            onChange={formik.handleChange("title")}
+                            autoComplete="off"
+                            disabled={isTeacher ? false : true}
+                            fullWidth
+                            color="success"
+                            inputProps={{ maxLength: 32, required: true }}
+                        />
+                        {formik.errors.title && formik.touched.title && (
+                            <p style={{ color: "red", marginLeft: "5px" }}>
+                                {formik.errors.title}
+                            </p>
+                        )}
+                        <TextField
+                            margin="dense"
+                            name="desc"
+                            label={input2label}
+                            type="text"
+                            variant="filled"
+                            value={formik.values.desc}
+                            onChange={formik.handleChange("desc")}
+                            autoComplete="off"
+                            fullWidth
+                            color="success"
+                            multiline
+                            minRows={2}
+                            inputProps={{ maxLength: 500 }}
+                        />
+                        <Box width="100%" display="flex" justifyContent="flex-end" alignItems="center">
+                            <Box border="1px solid rgba(0, 0, 0, 0.09)" px={"14px"} mt={1} py={"7px"} flexGrow={1}><Typography variant="subtitle1">
+                                {file ? file.name : "No File Selected"}
+                            </Typography></Box>
+                            <Tooltip title="Attech File" arrow>
+                                <Button
+                                    component="label"
+                                    sx={{ borderRadius: 5 }}
+                                >
+                                    <GrAttachment size="20px" color="white" />
+                                    <input
+                                        type="file"
+                                        // value={file}
+                                        onChange={(e) => handleChange(e)}
+                                        accept=".zip,.txt,.psd,.pptx,.pptx,.png,.jpeg,.jpg,.pdf,.docx,.doc"
+                                        hidden
+                                    />
+                                </Button>
+                            </Tooltip>
+                        </Box>
+                    </form>
 
                 </DialogContent>
                 <DialogActions>

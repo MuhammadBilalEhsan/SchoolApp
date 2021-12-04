@@ -29,8 +29,17 @@ const CourseStudentsComp = ({ currentCourse, curUser }) => {
             handleClose()
         }
     }
-    const muteStudentFunc = (id) => {
-        handleClose()
+    const muteStudentFunc = async (id) => {
+        try {
+            const res = await axios.post("course/mutestudent", { courseID: currentCourse?._id, studentID: id })
+            if (res) {
+                console.log(res?.data?.message || res?.data.error)
+                handleClose()
+            }
+        } catch (error) {
+            console.log(error)
+            handleClose()
+        }
     }
 
     const handleClose = () => {
@@ -104,9 +113,9 @@ const CourseStudentsComp = ({ currentCourse, curUser }) => {
                                         'aria-labelledby': 'basic-button',
                                     }}
                                 >
-                                    <MenuItem onClick={() => setStudentID(currentStudent.id)}>Send Message</MenuItem>
+                                    <MenuItem onClick={() => setStudentID(currentStudent.id)}>Send Message to {currentStudent?.name}</MenuItem>
                                     <MenuItem onClick={() => removeStudentFunc(currentStudent.id)}>Remove</MenuItem>
-                                    <MenuItem onClick={() => muteStudentFunc(currentStudent.id)}>Mute</MenuItem>
+                                    <MenuItem onClick={() => muteStudentFunc(currentStudent.id)}>{currentStudent?.muted ? "Unmute" : "Mute"}</MenuItem>
                                 </Menu>
                             </Box>
                             {studentID ? <SendingMessageInputComp

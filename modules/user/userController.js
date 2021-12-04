@@ -2,15 +2,16 @@ const User = require("./userModel");
 const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
 const serviceAccount = require("../../firebase/serviceAccount")
+const fs = require("fs")
 
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
-	databaseURL: process.env.FIREBASEURL
+	databaseURL: "https://schoolapp-4ee60-default-rtdb.europe-west1.firebasedatabase.app/"
+	// databaseURL: process.env.FIREBASEURL
 });
-// databaseURL: "https://schoolapp-4ee60-default-rtdb.europe-west1.firebasedatabase.app/"
-
 const bucket = admin.storage().bucket("gs://schoolapp-4ee60.appspot.com/");
+// const bucket = admin.storage().bucket(process.env.BUCKET);
 
 // REGISTER USER ROUTE
 module.exports.registerUser = async (req, res) => {
@@ -99,6 +100,7 @@ module.exports.EditProfileImage = async (req, res) => {
 							const pPic = await User.findByIdAndUpdate(_id, {
 								dp: pubURL
 							})
+							fs.unlinkSync(dp.path)
 							if (pPic) {
 								res.send({ message: "Profile Picture Updated", pPic })
 							} else {
@@ -112,8 +114,6 @@ module.exports.EditProfileImage = async (req, res) => {
 			}
 		}
 	)
-
-
 }
 
 // USER LOGIN ROUTE

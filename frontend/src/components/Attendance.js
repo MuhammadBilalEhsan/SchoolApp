@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 
 import { styled } from "@mui/material/styles";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, } from "@mui/material";
 import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress";
 import moment from "moment-business-days";
 import Header from "./Header";
@@ -31,14 +31,13 @@ const Attendance = ({ curUser }) => {
 	const classes = useStyles();
 
 	const [todayAttend, setTodayAttend] = useState(true);
+	const [holiday, setHoliday] = useState(null);
 	const [newState, setNewState] = useState(false);
 	const [firstDate, setFirstDate] = useState();
 	const [curMonth, setCurMonth] = useState();
 	const [curYear, setCurYear] = useState();
 	const [attPercent, setAttPercent] = useState(0);
 	const [lastMonthPercent, setLastMonthPercent] = useState(0);
-
-
 
 
 	const _id = localStorage.getItem("uid");
@@ -58,9 +57,11 @@ const Attendance = ({ curUser }) => {
 				handleClick()
 				setTodayAttend(true);
 			}
-			const checkHoliday = moment().day === 0 || moment().day === 6
-			if (checkTodayAtt || checkHoliday) {
+			const checkHoliday = moment().day() === 0 || moment().day() === 6
+			if (checkTodayAtt) {
 				setTodayAttend(true);
+			} else if (checkHoliday) {
+				setHoliday(true)
 			} else {
 				setTodayAttend(false);
 			}
@@ -159,9 +160,6 @@ const Attendance = ({ curUser }) => {
 				const overAllOpperation = (overallPresentDays / overallTotalDays) * 100;
 				// console.log(overallTotalDays,overallPresentDays);
 				setAttPercent(overAllOpperation);
-				console.log("overallTotalDays", overallTotalDays)
-				console.log("overallPresentDays", overallPresentDays)
-				console.log("overAllOpperation", overAllOpperation)
 			}
 		}
 	};
@@ -203,22 +201,28 @@ const Attendance = ({ curUser }) => {
 				<Header curUser={curUser} />
 				<Box>
 					<Box className={classes.attendance_top}>
-						<Typography mt={8} mb={2} variant="h4" display="inline-block">
-							Mark Today's Attendance
-						</Typography>
+						{
+							holiday ? <Box mt={8} maxWidth="80%" mx="auto" py={2} textAlign="center">
+								<Typography color="green" variant="h4">Today is Holiday</Typography>
+							</Box> : <>
+								<Typography mt={8} mb={2} variant="h4" display="inline-block">
+									Mark Today's Attendance
+								</Typography>
 
-						<Box>
-							<Button
-								size="small"
-								variant="contained"
-								color="success"
-								onClick={(e) => handleClick(e)}
-								disabled={todayAttend || newState}
-							>
-								{todayAttend ? "Marked" : "Mark"}
-							</Button>
-							{/* )} */}
-						</Box>
+								<Box>
+									<Button
+										size="small"
+										variant="contained"
+										color="success"
+										onClick={(e) => handleClick(e)}
+										disabled={todayAttend || newState}
+									>
+										{todayAttend ? "Marked" : "Mark"}
+									</Button>
+								</Box>
+							</>
+						}
+
 					</Box>
 					<Box my={5} mx="auto" sx={{ width: "80%" }} display="block">
 						<Typography variant="h6">This Month Attendance</Typography>

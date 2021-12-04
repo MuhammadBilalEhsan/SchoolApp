@@ -25,7 +25,6 @@ export default function ChangeProfilePic({ curUser, setImgURL }) {
 		setOpen(false);
 	};
 
-
 	const saveImg = async (e) => {
 		e.preventDefault()
 		try {

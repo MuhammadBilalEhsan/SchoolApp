@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const assignmentSchema = mongoose.Schema({
-    course_id: {
+    courseID: {
         type: String,
         required: true
     },
@@ -11,7 +11,7 @@ const assignmentSchema = mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     file: {
         type: String,
@@ -25,10 +25,10 @@ const assignmentSchema = mongoose.Schema({
     // Updateable Fields
     submitted: {
         type: Array,
-        required: true
+        required: false
     },
 });
 
-const Assignment = mongoose.model("assignments", assignmentSchema);
+const Assignment = mongoose.model("assignment", assignmentSchema);
 
 module.exports = Assignment;

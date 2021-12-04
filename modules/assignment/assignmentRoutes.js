@@ -11,9 +11,10 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + "_" + file.originalname);
     },
 });
-
-var upload = multer({ storage: storage }).any("myFile");
+var upload = multer({ storage: storage }).single("myFile");
 
 assignment.post("/add", upload, assignmentController.addAssignmentController)
+assignment.post("/submit", upload, assignmentController.submitAssignmentController)
+assignment.route("/allassignments").post(assignmentController.getAllAssignments)
 
 module.exports = assignment;

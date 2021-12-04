@@ -1,31 +1,36 @@
-import React, { useState } from 'react'
-import { Box, Typography, Button, Tooltip } from "@mui/material"
-import AssignmentAccordion from './AssignmentAccordion'
-import Assignment from './Assignment'
-import { MdAdd } from "react-icons/md"
-// import TabsComp from './TabsComp';
-import { useHistory } from 'react-router-dom'
-// import { curUserFun } from '../redux/actions'
-// import { MdOutlineMoreHoriz } from "react-icons/md"
+import React, { useEffect, useState } from 'react';
+import { Box, Typography, Button, Tooltip } from "@mui/material";
+import AssignmentAccordion from './AssignmentAccordion';
+import Assignment from './Assignment';
+import { MdAdd } from "react-icons/md";
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
 const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
+    const [allAssignments, setAllAssignments] = useState(null)
 
+    useEffect(async () => {
+        const res = await axios.post("assignment/allassignments", { courseID: currentCourse?._id })
+        setAllAssignments(res.data.allAssignments)
+    }, [])
     const history = useHistory()
     return (
         <>
             <Box sx={{ maxWidth: "760px", margin: "0 auto" }}>
                 <Box display="flex" justifyContent="flex-end" px={2} width="100%" >
+
                     {isTeacher ? (
                         <Assignment
                             btnTitle="create"
                             btnVariant="contained"
                             btnColor="success"
+                            input2label="Questions and Instructions"
                             tooltipTitle="Create Assignment"
                             btnStartIcon={<MdAdd size="20px" color="white" />}
                             dialogTitle="Create Assignment or Questions"
                             actionTitle="create"
                             currentCourse={currentCourse}
-                            isTeacher={true}
+                            isTeacher={isTeacher}
                         />
                     ) : <Tooltip title="Go to checked Assignments" arrow>
 
@@ -36,18 +41,20 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
                     </Tooltip>
                     }
                 </Box>
+
                 <Box display="flex" justifyContent="flex-start" pb={1} px={2} width="100%" >
                     <Typography variant="h4" color="green">
                         {isTeacher ? "" : "Non Submitted "}Assignments
                     </Typography>
                 </Box>
                 {
-                    currentCourse?.assignments.length > 0 ?
-                        currentCourse?.assignments.map((assignment, index) => {
+                    allAssignments?.length > 0 ?
+                        allAssignments?.map((assignment, index) => {
                             return (
                                 <AssignmentAccordion
                                     key={index}
                                     curUser={curUser}
+                                    isTeacher={isTeacher}
                                     assignment={assignment}
                                 />
                             )

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Box } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Box, Typography } from '@mui/material'
 import SendingMessageInputComp from "./SendingMessageInputComp"
 import streamImg from "../images/stream.jpg"
 import MessageBox from "./MessageBox"
@@ -11,13 +11,22 @@ import Spinner from './Spinner'
 const Stream = ({ curUser, currentCourse }) => {
     const [message, setMessage] = useState("")
     const [errorMsg, setErrorMsg] = useState("")
+    const [isMuted, setIsMuted] = useState(false)
 
+    useEffect(() => {
+        if (currentCourse && curUser) {
+            const findStudentInCourse = currentCourse?.students?.find(student => student.id === curUser?._id)
+            if (findStudentInCourse?.muted) {
+                console.log(findStudentInCourse)
+                setIsMuted(true)
+            }
+        }
+    })
 
     const { _id, fname, lname } = curUser || {}
     const submitFunc = async (e) => {
         try {
             const newMessage = message.trim()
-
             if (newMessage) {
                 const name = `${fname} ${lname}`
                 let time = moment().format('hh:mm A')
@@ -30,7 +39,6 @@ const Stream = ({ curUser, currentCourse }) => {
                 setErrorMsg("Please write something")
                 console.log("currentCourse", currentCourse)
             }
-
         } catch (error) {
             console.log(error)
         }
@@ -59,17 +67,21 @@ const Stream = ({ curUser, currentCourse }) => {
                         )
                     })
                 }
+                {
+                    isMuted ? <Box mt={3} border="1px solid red" borderRadius={2} width="100%" py={3} textAlign="center">
+                        <Typography variant="h6" color="red">You Can't send Message Because You are Muted...</Typography>
+                    </Box> : <SendingMessageInputComp
+                        name="message"
+                        autoFocus={true}
+                        value={message}
+                        setValue={setMessage}
+                        placeholder="Add comment to All Students"
+                        color="success"
+                        submitFunc={submitFunc}
+                        userName={curUser?.fname[0]}
+                    />
+                }
 
-                <SendingMessageInputComp
-                    name="message"
-                    autoFocus={true}
-                    value={message}
-                    setValue={setMessage}
-                    placeholder="Add comment to All Students"
-                    color="success"
-                    submitFunc={submitFunc}
-                    userName={curUser?.fname[0]}
-                />
             </Box >
         </>
     )
