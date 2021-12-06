@@ -6,7 +6,6 @@ import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import Spinner from "./Spinner";
 import "../css/login.css";
-// import { MdChangeHistory } from "react-icons/md";
 
 const Login = () => {
 	const [loginData, setLoginData] = useState({
@@ -48,20 +47,6 @@ const Login = () => {
 					alert("Invalid Credentials");
 					setLoader(false);
 				});
-			// try {
-			//   const res = await axios.post("user/login", loginData);
-			//   if (res.status === 200) {
-			//     localStorage.setItem("uid", res.data.curUser._id);
-			//     dispatch(curUserFun(res.data.curUser));
-			//     // alert("User Login Successfully");
-			//     if (uid) {
-			//       history.push("/profile");
-			//     }
-			//   }
-			// } catch (err) {
-			//   alert("Invalid Credentials");
-			//   console.log(err);
-			// }
 		}
 	};
 
@@ -111,7 +96,6 @@ const Login = () => {
 							className="btn btn-submit"
 							type="submit"
 							value="LOGIN"
-						// onSubmit={e => handleSubmit(e)}
 						/>
 					</form>
 				</div>

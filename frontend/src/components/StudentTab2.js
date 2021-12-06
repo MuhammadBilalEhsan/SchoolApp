@@ -3,7 +3,6 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-    AccordionActions,
     Typography,
     Box,
     Button,
@@ -15,9 +14,8 @@ import {
 import { useHistory } from 'react-router-dom';
 import axios from "axios"
 import { MdOutlineExpandMore } from 'react-icons/md';
-import { IoTrashBinSharp } from 'react-icons/io5';
+// import { IoTrashBinSharp } from 'react-icons/io5';
 import { AiOutlineExclamationCircle } from "react-icons/ai"
-const uid = localStorage.getItem("uid")
 const StudentTab2 = ({ curCor, ind }) => {
     const [expanded, setExpanded] = useState(false);
 

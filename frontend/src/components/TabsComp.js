@@ -10,7 +10,7 @@ const TabsComp = ({ tab1Label, tab2Label, tab3Label, tab4Label, panel1, panel2, 
         setValue(newValue);
     };
     return (
-        <>
+        <Box>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
                     value={value}
@@ -51,7 +51,7 @@ const TabsComp = ({ tab1Label, tab2Label, tab3Label, tab4Label, panel1, panel2, 
             ) : (
                 ""
             )}
-        </>
+        </Box>
     )
 }
 

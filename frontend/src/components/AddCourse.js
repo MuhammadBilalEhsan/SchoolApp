@@ -26,8 +26,6 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	const [weekNotSelected, setWeekNotSelected] = useState(null);
 
 	const [courseOutlineArr, setCourseOutlineArr] = useState([]);
-	// let { courseName, courseDesc, topics, duration, courseOutline } = course;
-	// console.log(course);
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -223,7 +221,6 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							multiline
 							color={editCourse ? "warning" : "success"}
 							inputProps={{ maxLength: 100 }}
-						// required
 						/>
 						{formik.errors.courseDesc && formik.touched.courseDesc && (
 							<p style={{ color: "red", marginLeft: "5px" }}>
@@ -277,7 +274,6 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							))}
 						</Menu>
 						{
-							// selectDurInd !== null ? (
 							selectDurInd || editCourse ? (
 								<CourseOutlineComp
 									courseOutlineArr={courseOutlineArr}

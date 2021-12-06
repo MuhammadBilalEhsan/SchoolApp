@@ -3,7 +3,6 @@ import { Box, Typography, Chip, Grid, Button, Tooltip } from "@mui/material";
 import Header from "./Header";
 import AddCourse from "./AddCourse";
 import { useHistory } from "react-router-dom";
-// import Assignment from "./Assignment"
 import { VscGoToFile } from "react-icons/vsc"
 
 
@@ -24,7 +23,7 @@ const CDTeacher = ({ curUser, course }) => {
 						</Typography>
 						{/* course={course} */}
 						{
-							course ? (<></>) : (<AddCourse curUser={curUser} course={course} editCourse={false} />)
+							course ? ("") : (<AddCourse curUser={curUser} course={course} editCourse={false} />)
 						}
 					</Box>
 					<Box

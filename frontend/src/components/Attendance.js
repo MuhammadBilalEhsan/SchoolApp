@@ -21,7 +21,7 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 		backgroundColor: theme.palette.mode === "light" ? "green" : "#30e833",
 	},
 }));
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((/*theme */) => ({
 	attendance_top: {
 		textAlign: "center",
 	},

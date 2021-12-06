@@ -8,8 +8,7 @@ import axios from 'axios'
 
 const CDStudent = ({ curUser, courses }) => {
     const [removedByTeacherState, setRemovedByTeacherState] = useState(true)
-
-    useEffect(async () => {
+    const CDstudentStartFunction = async () => {
         try {
             const deleteCoursesIDsArr = curUser?.courses?.filter(course =>
                 course.removedByTeacher === true).map(course => course.id)
@@ -23,6 +22,10 @@ const CDStudent = ({ curUser, courses }) => {
         } catch (err) {
             console.log(err)
         }
+    }
+    useEffect(() => {
+        CDstudentStartFunction()
+
 
     }, [])
     return (
@@ -31,11 +34,11 @@ const CDStudent = ({ curUser, courses }) => {
             <Box width="100%">
                 <Box mx="auto" mt={2} maxWidth="800px" display="flex" flexDirection="column" justifyContent="center" >
                     <TabsComp
-                        tab1Label="All Courses"
+                        tab1Label="Available Courses"
                         panel1={<Box width="100%" mt={4.2}>
                             <Box mb={2} display="flex" justifyContent="space-between" pb={1} px={2} borderBottom="1.5px solid #009c0052" width="100%" >
                                 <Typography variant="h4" color="green">
-                                    All Courses
+                                    Available Courses
                                 </Typography>
                             </Box>
                             {
@@ -65,8 +68,7 @@ const CDStudent = ({ curUser, courses }) => {
                                                     key={ind}
                                                     width="100%"
                                                     textAlign="center"
-                                                    mt={1}
-                                                    py={2}
+                                                    mt={1} py={2}
                                                     sx={{
                                                         borderRadius: 1,
                                                         backgroundColor: "#ff0000d1",

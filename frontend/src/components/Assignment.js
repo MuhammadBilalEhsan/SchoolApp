@@ -155,7 +155,6 @@ const Assignment = ({
                                     <GrAttachment size="20px" color="white" />
                                     <input
                                         type="file"
-                                        // value={file}
                                         onChange={(e) => handleChange(e)}
                                         accept=".zip,.txt,.psd,.pptx,.pptx,.png,.jpeg,.jpg,.pdf,.docx,.doc"
                                         hidden

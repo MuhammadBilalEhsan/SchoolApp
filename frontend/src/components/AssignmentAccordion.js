@@ -1,21 +1,16 @@
 import React, { useState } from 'react'
 import { Box, Typography, Avatar, Button, Accordion, AccordionDetails, Tooltip, Menu, MenuItem, AccordionSummary } from "@mui/material"
 import { MdAssignment } from "react-icons/md"
-import { useHistory } from "react-router-dom"
 import { AiOutlineExclamationCircle } from "react-icons/ai"
 import { MdOutlineMoreVert, MdUpload } from "react-icons/md"
 import Assignment from './Assignment'
 
-// import Submitted from './Submitted'
 
-
-const AssignmentAccordion = ({ curUser, isTeacher, assignment }) => {
+const AssignmentAccordion = ({ curUser, isTeacher, assignment, setCurrentAssignmentID, setChecked }) => {
     const [expanded, setExpanded] = useState(false);
-    const [openSubmitted, setOpenSubmitted] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
-    const history = useHistory()
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -30,20 +25,19 @@ const AssignmentAccordion = ({ curUser, isTeacher, assignment }) => {
     };
     const previewAssignment = (e) => {
         e.stopPropagation();
-        // console.log(assignment.file)
     }
-    const Submited = (event) => {
+    const submittedAssignments = (event) => {
         event.stopPropagation();
-        // history.push(`submitted/${assignment?._id}`)
-        // console.log(`submitted/${assignment?._id}`)
+        setCurrentAssignmentID(assignment?._id)
+        setChecked(false)
         handleClose()
     }
     const Checked = (event) => {
         event.stopPropagation();
-        // history.push(`checked/${assignment._id}`)
+        setCurrentAssignmentID(assignment?._id)
+        setChecked(true)
         handleClose()
     }
-
     return (
         <div>
             <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
@@ -60,7 +54,7 @@ const AssignmentAccordion = ({ curUser, isTeacher, assignment }) => {
                             <Typography sx={{ fontSize: "16px", }}>{assignment?.title}</Typography>
                         </Box>
                     </Box>
-                    <Box>
+                    <Box display="flex" alignItems="center">
                         {
                             assignment?.file ? <Tooltip arrow title={"View file"}>
                                 <Button
@@ -100,7 +94,7 @@ const AssignmentAccordion = ({ curUser, isTeacher, assignment }) => {
 
                                     {/* <MenuItem onClick={() => history.push(`submitted/${assignment?._id}`)}>Submited</MenuItem> */}
                                     {/* <MenuItem href={`submitted/${assignment?._id}`}>Submited</MenuItem> */}
-                                    <MenuItem onClick={Submited}>Submited</MenuItem>
+                                    <MenuItem onClick={submittedAssignments}>Submited</MenuItem>
                                     <MenuItem onClick={Checked}>Checked</MenuItem>
                                 </Menu>
                             </Box>

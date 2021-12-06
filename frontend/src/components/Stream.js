@@ -10,7 +10,6 @@ import Spinner from './Spinner'
 
 const Stream = ({ curUser, currentCourse }) => {
     const [message, setMessage] = useState("")
-    const [errorMsg, setErrorMsg] = useState("")
     const [isMuted, setIsMuted] = useState(false)
 
     useEffect(() => {
@@ -36,7 +35,7 @@ const Stream = ({ curUser, currentCourse }) => {
                 await axios.post("course/sendmessage", messageObj)
                 setMessage("")
             } else {
-                setErrorMsg("Please write something")
+                alert("Please write something")
                 console.log("currentCourse", currentCourse)
             }
         } catch (error) {

@@ -12,6 +12,11 @@ body {
   min-height: 100vh;
   padding-bottom: 20px;
 }
+.msgs {
+  width: 100vw;
+  min-height: 100vh;
+  padding-bottom: 20px;
+}
 .css-v60gti-MuiInputBase-root-MuiOutlinedInput-root {
   display: flex !important;
   flex-direction: column !important;

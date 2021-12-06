@@ -16,5 +16,8 @@ var upload = multer({ storage: storage }).single("myFile");
 assignment.post("/add", upload, assignmentController.addAssignmentController)
 assignment.post("/submit", upload, assignmentController.submitAssignmentController)
 assignment.route("/allassignments").post(assignmentController.getAllAssignments)
+assignment.route("/submitted/:id").get(assignmentController.getSubmittedStudents)
+assignment.route("/studentallchecked").post(assignmentController.allCheckedAssignmentsOfStudent)
+assignment.route("/givemarks").post(assignmentController.giveMarksController)
 
 module.exports = assignment;

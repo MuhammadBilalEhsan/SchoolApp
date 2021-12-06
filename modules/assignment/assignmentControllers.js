@@ -213,3 +213,73 @@ module.exports.getAllAssignments = async (req, res) => {
         console.log(error)
     }
 }
+module.exports.getSubmittedStudents = async (req, res) => {
+    try {
+        const id = req.params.id
+        if (!id) {
+            res.status(400).send({ error: "Invalid Request..." })
+        } else {
+            const findAssignment = await Assignment.findById(id)
+            if (findAssignment) {
+                res.send({ assignment: findAssignment })
+            } else {
+                res.status(404).send({ error: "Assignment Not Found..." })
+            }
+        }
+    } catch (error) {
+        res.status(450).send({ error })
+    }
+}
+module.exports.giveMarksController = async (req, res) => {
+    try {
+        const { studentID, assignmentID, marks } = req.body
+        if (!studentID || !assignmentID || !marks) {
+            res.status(400).send({ error: "Invalid Request..." })
+        } else {
+            const findAssignment = await Assignment.findById(assignmentID)
+            if (findAssignment) {
+                const findSubmit = await findAssignment.submitted.find(student => student.id === studentID)
+                findSubmit.marks = Math.round(marks)
+                const filtered = await findAssignment.submitted.filter(student => student.id !== studentID)
+                const updateSubmitted = await Assignment.findByIdAndUpdate(assignmentID, {
+                    submitted: [...filtered, findSubmit]
+                })
+                if (updateSubmitted) {
+                    res.send({ message: "Marks Given..." })
+                } else {
+                    res.status(505).send({ error: "Student Marks not Updating..." })
+                }
+            } else {
+                res.status(404).send({ error: "Assignment Not Found..." })
+            }
+        }
+    } catch (error) {
+        res.status(450).send({ error })
+    }
+}
+module.exports.allCheckedAssignmentsOfStudent = async (req, res) => {
+    try {
+        const { courseID, studentID } = req.body
+        if (!courseID || !studentID) {
+            res.status(400).send({ error: "Invalid Request..." })
+        } else {
+            const findAllAssignments = await Assignment.find({ courseID })
+            const filtered = findAllAssignments?.filter(assignment => {
+                const findStudentInSubmitted = assignment.submitted?.find(student => student.id === studentID)
+                if (findStudentInSubmitted) {
+                    const checkMarks = Number(findStudentInSubmitted.marks)
+                    if (checkMarks) {
+                        return assignment
+                    }
+                }
+            })
+            if (filtered) {
+                res.send({ checked: filtered })
+            } else {
+                res.send({ checked: [] })
+            }
+        }
+    } catch (error) {
+        res.status(450).send({ error })
+    }
+}

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Box, Avatar, Typography } from "@mui/material"
 
-const MessageBox = ({ color, timeColor, curUser, nameFirestLetter, name, time, message, currentUserID }) => {
+const MessageBox = ({ color, timeColor, nameFirestLetter, name, time, message }) => {
 
     return (
         <Box sx={{ width: "100%", borderRadius: "7.5px", marginTop: 3, padding: "1rem 1.5rem", border: "1.8px solid #00000033" }}>

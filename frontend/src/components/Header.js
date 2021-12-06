@@ -10,7 +10,6 @@ import {
 	MenuItem,
 	Tooltip
 } from "@mui/material";
-// import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import { CgMoreVertical, CgLogOff } from "react-icons/cg";
 
@@ -28,9 +27,7 @@ const MobMenuComp = styled("div")(({ theme }) => ({
 		display: "flex",
 	},
 }));
-// const useStyles = makeStyles((theme) => ({}));
-const Header = ({ curUser }) => {
-	// const classes = useStyles();
+const Header = () => {
 	const [mobMenuAnchor, setMobMenuAnchor] = useState(null);
 	const isMobMenuOpen = Boolean(mobMenuAnchor);
 
@@ -76,25 +73,6 @@ const Header = ({ curUser }) => {
 			>
 				Attendance
 			</MenuItem>
-			{/* {
-				curUser?.roll === "teacher" ? (
-					<MenuItem
-				component={Link}
-				onClick={closeMobMenu}
-				to="/classmaterials"
-				sx={{
-					backgroundColor: "#fff",
-					color: "green",
-					width: "100%",
-					paddingBottom: 2,
-				}}
-			>
-				Class Materials
-			</MenuItem>
-				) : (
-					""
-				)
-			} */}
 			<MenuItem
 				component={Link}
 				onClick={closeMobMenu}
@@ -107,6 +85,19 @@ const Header = ({ curUser }) => {
 				}}
 			>
 				Course Details
+			</MenuItem>
+			<MenuItem
+				component={Link}
+				onClick={closeMobMenu}
+				to="/messages"
+				sx={{
+					backgroundColor: "#fff",
+					color: "green",
+					width: "100%",
+					paddingBottom: 2,
+				}}
+			>
+				Messages
 			</MenuItem>
 
 			<MenuItem
@@ -155,35 +146,17 @@ const Header = ({ curUser }) => {
 						>
 							Course Details
 						</Button>
-						{/* {
-							curUser?.roll === "teacher" ? (
-								<Button
-									component={Link}
-									to="/classmaterials"
-									size="small"
-									color="inherit"
-									sx={{ marginLeft: 3 }}
-								>
-									Class Materials
-								</Button>
-							) : (
-								""
-							)
-						} */}
-
-						{/* <Button
+						<Button
 							component={Link}
-							to="/contact"
+							to="/messages"
 							size="small"
 							color="inherit"
 							sx={{ marginLeft: 3 }}
 						>
-							Contact Us
-						</Button> */}
+							Messages
+						</Button>
 						<Tooltip title="Log Out" arrow>
 							<Button
-								// size="small"
-								// color="success"
 								sx={{ marginLeft: 3 }}
 								onClick={() => {
 									localStorage.removeItem("uid");
