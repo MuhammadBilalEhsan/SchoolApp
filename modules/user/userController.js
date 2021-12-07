@@ -1,8 +1,10 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
+// const jwt = require("jsonwebtoken")
 const serviceAccount = require("../../firebase/serviceAccount")
 const fs = require("fs")
+// const io = require("../../index").io
 
 
 admin.initializeApp({
@@ -68,9 +70,13 @@ module.exports.EditProfile = async (req, res) => {
 			});
 
 			if (!userUpdate) {
+				io.on("connection", (socket) => {
+					console.log("IN UserController Connection")
+					socket.emit("EDIT_PROFILE", { updated: userUpdate })
+				});
 				res.status(400).send({ error: "User not Update" });
 			} else {
-				res.status(200).send({ message: "User Update Successfully" });
+				res.status(200).send({ message: "User Update Successfully", updated: userUpdate });
 			}
 		}
 	} catch (error) {
@@ -131,6 +137,8 @@ module.exports.loginUser = async (req, res) => {
 				res.cookie("jwtoken", token, {
 					httpOnly: true,
 				});
+
+
 				if (!isMatch) {
 					return res.status(401).json({ error: "Invalid Credentials" });
 				} else {
@@ -219,6 +227,7 @@ module.exports.markAttendance = async (req, res) => {
 
 module.exports.getData = async (req, res) => {
 	const allUsers = await User.find({});
+	console.log(allUsers)
 	res.status(200).send(allUsers);
 };
 
@@ -247,3 +256,7 @@ module.exports.sendMessageController = async (req, res) => {
 		console.log(error)
 	}
 }
+// module.exports.logOutController = (req, res) => {
+// 	res.clearCookie('jwtoken')
+// 	res.send("clear")
+// }

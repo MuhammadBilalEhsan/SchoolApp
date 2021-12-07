@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import socketIO from "socket.io-client"
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
 import { Box, Avatar, Grid, Paper, Typography } from "@mui/material";
 import EditProfile from "./EditProfile";
 import ChangeProfilePic from "./ChangeProfilePic";
+import MuiSnacks from "./MuiSnacks"
 import "../App.css";
+import { useDispatch } from "react-redux";
+import { curUserFun } from "../redux/actions";
+const ENDPOINT = "http://localhost:4040"
+const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
+
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body1,
@@ -13,14 +20,23 @@ const Item = styled(Paper)(({ theme }) => ({
 	justifyContent: "space-between",
 	color: "green",
 }));
-const Profile = ({ curUser }) => {
-	const [imgURL, setImgURL] = useState(curUser.dp)
+const Profile = ({ curUser, setAuth }) => {
+	const [imgURL, setImgURL] = useState("")
+	const [openSnack, setOpenSnack] = useState(false);
 
+	const dispatch = useDispatch()
+	socket.on("EDIT_PROFILE", ({ data }) => {
+		// dispatch(curUserFun(data))
+		console.log("data", data)
+	})
+	useEffect(() => {
+		setImgURL(curUser?.dp)
+	})
 	let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
 	return (
 		<>
 			<Box className={`_main`}>
-				<Header curUser={curUser} />
+				<Header curUser={curUser} setAuth={setAuth} />
 				<Box
 					mt={1}
 					width="99%"
@@ -29,7 +45,10 @@ const Profile = ({ curUser }) => {
 				>
 					<EditProfile curUser={curUser} />
 				</Box>
-				<Box width="100%">
+				<Box width="100%" my="auto">
+
+					{/* {openSnack ? <MuiSnacks openSnack={openSnack} severity = { severity} text = { text} setOpenSnack = { setOpenSnack}  /> : ""} */}
+
 					<Box width="70%" mx="auto" display="flex" justifyContent="center" alignItems="center">
 						<Avatar
 							alt={`${fname} ${lname}`}
@@ -48,7 +67,7 @@ const Profile = ({ curUser }) => {
 					>
 						<ChangeProfilePic curUser={curUser} setImgURL={setImgURL} />
 					</Box>
-					<Box width="80%" mx="auto" mt={3} position="relative" bottom="30px">
+					<Box maxWidth="900px" mx="auto" mt={3} px={5} position="relative" bottom="30px">
 						<Grid container spacing={2} justifyContent="center">
 							<Grid item xs={12} md={6}>
 								<Item>

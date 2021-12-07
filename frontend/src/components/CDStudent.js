@@ -6,7 +6,7 @@ import TabsComp from './TabsComp'
 import StudentTab2 from './StudentTab2'
 import axios from 'axios'
 
-const CDStudent = ({ curUser, courses }) => {
+const CDStudent = ({ curUser, courses, setAuth }) => {
     const [removedByTeacherState, setRemovedByTeacherState] = useState(true)
     const CDstudentStartFunction = async () => {
         try {
@@ -30,7 +30,7 @@ const CDStudent = ({ curUser, courses }) => {
     }, [])
     return (
         <Box className="_main" >
-            <Header curUser={curUser} />
+            <Header curUser={curUser} setAuth={setAuth} />
             <Box width="100%">
                 <Box mx="auto" mt={2} maxWidth="800px" display="flex" flexDirection="column" justifyContent="center" >
                     <TabsComp

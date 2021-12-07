@@ -22,3 +22,8 @@ export const getStudentCourseFunc = data => {
     payload: data,
   };
 };
+export const logoutFunc = () => {
+  return {
+    type: "LOG_OUT"
+  }
+}

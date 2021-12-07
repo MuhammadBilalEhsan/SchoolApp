@@ -27,7 +27,7 @@ const useStyles = makeStyles((/*theme */) => ({
 	},
 }));
 
-const Attendance = ({ curUser }) => {
+const Attendance = ({ curUser, setAuth }) => {
 	const classes = useStyles();
 
 	const [todayAttend, setTodayAttend] = useState(true);
@@ -198,7 +198,7 @@ const Attendance = ({ curUser }) => {
 	return (
 		<>
 			<Box className={`_main`}>
-				<Header curUser={curUser} />
+				<Header curUser={curUser} setAuth={setAuth} />
 				<Box>
 					<Box className={classes.attendance_top}>
 						{

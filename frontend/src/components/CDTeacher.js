@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { VscGoToFile } from "react-icons/vsc"
 
 
-const CDTeacher = ({ curUser, course }) => {
+const CDTeacher = ({ curUser, course, setAuth }) => {
 
 	let { courseName, courseDesc, topics, duration, courseOutline } =
 		course || {};
@@ -15,7 +15,7 @@ const CDTeacher = ({ curUser, course }) => {
 	return (
 		<>
 			<Box className={`_main`}>
-				<Header curUser={curUser} />
+				<Header curUser={curUser} setAuth={setAuth} />
 				<Box width="95%" maxWidth="1100px" marginX="auto">
 					<Box display="flex" justifyContent="space-around" mt={3}>
 						<Typography variant="h4" sx={{ textTransform: "capitalize" }}>

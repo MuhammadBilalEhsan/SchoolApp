@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 })
 
 
-const ClassMaterials = ({ curUser }) => {
+const ClassMaterials = ({ curUser, setAuth }) => {
 	const [currentCourse, setCurrentCourse] = useState({})
 
 	const classes = useStyles()
@@ -36,7 +36,7 @@ const ClassMaterials = ({ curUser }) => {
 	return (
 		<>
 			<Box className={classes.class_materials}>
-				<Header curUser={curUser} />
+				<Header curUser={curUser} setAuth={setAuth} />
 				<Box>
 					<TabsComp
 						tab1Label="Stream"

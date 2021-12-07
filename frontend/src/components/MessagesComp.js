@@ -6,7 +6,7 @@ import MessageBox from './MessageBox'
 import moment from 'moment'
 import axios from 'axios'
 
-const MessagesComp = ({ curUser }) => {
+const MessagesComp = ({ curUser, setAuth }) => {
     const [message, setMessage] = useState("")
     const [recieverID, setRecieverID] = useState("")
     const [recieverName, setRecieverName] = useState("")
@@ -43,7 +43,7 @@ const MessagesComp = ({ curUser }) => {
     }
     return (
         <Box className={`msgs`}>
-            <Header curUser={curUser} />
+            <Header curUser={curUser} setAuth={setAuth} />
             <Box mx="auto" px={2} maxHeight="85vh" sx={{ overflowY: "auto" }} maxWidth="900px" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
                 <Box mt={5} display="flex" borderBottom="1px solid #00800085" justifyContent="space-between" pb={1} px={2} width="100%" >
                     <Typography variant="h4" color="green">

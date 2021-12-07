@@ -14,6 +14,10 @@ import { styled } from "@mui/material/styles";
 import { CgMoreVertical, CgLogOff } from "react-icons/cg";
 
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { logoutFunc } from "../redux/actions/index"
+
 const BtnBox = styled("div")(({ theme }) => ({
 	padding: theme.spacing(1),
 	display: "none",
@@ -27,11 +31,12 @@ const MobMenuComp = styled("div")(({ theme }) => ({
 		display: "flex",
 	},
 }));
-const Header = () => {
+const Header = ({ setAuth }) => {
 	const [mobMenuAnchor, setMobMenuAnchor] = useState(null);
 	const isMobMenuOpen = Boolean(mobMenuAnchor);
 
 	const history = useHistory();
+	const dispatch = useDispatch()
 
 	const openMobMenu = (e) => {
 		setMobMenuAnchor(e.currentTarget);
@@ -39,6 +44,12 @@ const Header = () => {
 	const closeMobMenu = () => {
 		setMobMenuAnchor(null);
 	};
+	const logoutFunction = () => {
+		dispatch(logoutFunc())
+		localStorage.removeItem("uid");
+		setAuth(false)
+		history.push("/");
+	}
 	const mobileMenu = (
 		<Menu
 			anchorEl={mobMenuAnchor}
@@ -102,10 +113,8 @@ const Header = () => {
 
 			<MenuItem
 				component={Button}
-				onClick={() => {
-					localStorage.removeItem("uid");
-					history.push("/");
-				}}
+				onClick={logoutFunction}
+				// to="/logout"
 				sx={{
 					backgroundColor: "#fff",
 					color: "red",
@@ -157,11 +166,10 @@ const Header = () => {
 						</Button>
 						<Tooltip title="Log Out" arrow>
 							<Button
+								component={Link}
+								to="/logout"
 								sx={{ marginLeft: 3 }}
-								onClick={() => {
-									localStorage.removeItem("uid");
-									history.push("/");
-								}}
+								onClick={logoutFunction}
 							>
 								<CgLogOff color="#fff" size="25px" />
 							</Button>

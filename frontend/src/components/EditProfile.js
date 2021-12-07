@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	DialogTitle,
 	DialogContent,
@@ -13,7 +13,13 @@ import { FaUserEdit } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
+
 export default function EditProfileFormik({ curUser }) {
+	// const curUser = useSelector(state => state.usersReducer.curUser)
+	// const curUser = useSelector((state) => state.usersReducer.curUser);
+
 	const [open, setOpen] = useState(false);
 	const uidFromLocalStorage = localStorage.getItem("uid");
 	const handleClickOpen = () => {
@@ -26,12 +32,12 @@ export default function EditProfileFormik({ curUser }) {
 	const formik = useFormik({
 		initialValues: {
 			id: uidFromLocalStorage,
-			fname: curUser.fname,
-			lname: curUser.lname,
-			fatherName: curUser.fatherName,
-			atClass: curUser.atClass,
-			age: curUser.age,
-			phone: curUser.phone,
+			fname: curUser?.fname,
+			lname: curUser?.lname,
+			fatherName: curUser?.fatherName,
+			atClass: curUser?.atClass,
+			age: curUser?.age,
+			phone: curUser?.phone,
 		},
 		validateOnChange: true,
 
