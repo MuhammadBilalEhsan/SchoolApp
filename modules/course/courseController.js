@@ -72,7 +72,8 @@ module.exports.addCourse = async (req, res) => {
 			});
 			const courseSave = await course.save();
 			if (courseSave) {
-				res.status(200).send({ message: "Course added Successfully" });
+				// const newCourse = await Course.findOne({ teacher_id });
+				res.status(200).send({ message: "Course added Successfully", newCourse });
 			}
 		} else {
 			res.send({
@@ -121,7 +122,10 @@ module.exports.editCourse = async (req, res) => {
 		if (!editCourse) {
 			return res.status(512).send({ error: "Course not Updating" })
 		} else {
-			return res.status(200).send({ message: "Successfully Course Updated" })
+			const editted = await Course.findOne({ teacher_id });
+			if (editted) {
+				res.status(200).send({ message: "Successfully Course Updated", editted })
+			}
 		}
 	} catch (error) {
 		console.log(error);
@@ -272,7 +276,10 @@ module.exports.sendMessageController = async (req, res) => {
 					chat: [...findCourse.chat, { id, name, time, message }]
 				})
 				if (updateChats) {
-					res.send({ message: "message send successfully" })
+					const course = await Course.findOne({ _id: courseID })
+					if (course) {
+						res.send({ message: "message sent successfully", course })
+					}
 				} else {
 					res.status(512).send({ error: "message not send..." })
 				}

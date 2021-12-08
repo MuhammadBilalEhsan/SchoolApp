@@ -6,20 +6,38 @@ import { MdAdd } from "react-icons/md";
 import axios from 'axios';
 import SubmittedAndChecked from './SubmittedAndChecked'
 import CheckedAssignments from './CheckedAssignments'
+import { useDispatch, useSelector } from 'react-redux';
+import { settingAssignments } from '../redux/actions';
+import MuiSnacks from './MuiSnacks';
+
 
 const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
-    const [allAssignments, setAllAssignments] = useState(null)
+    const assignments = useSelector(state => state.usersReducer.allAssignments)
+
+    const [allAssignments, setAllAssignments] = useState(assignments)
     const [currentAssignmentID, setCurrentAssignmentID] = useState("");
     const [currentCourseID, setCurrentCourseID] = useState("");
     const [checked, setChecked] = useState(null);
 
-    console.log("checkedInAccordionCOmp", checked)
+    const [openSnack, setOpenSnack] = useState("");
+    const [severity, setSeverity] = useState("");
+
+    const dispatch = useDispatch()
+
     useEffect(async () => {
-        const res = await axios.post("assignment/allassignments", { courseID: currentCourse?._id })
-        setAllAssignments(res.data.allAssignments)
-    }, [])
+        try {
+            const res = await axios.post("assignment/allassignments", { courseID: currentCourse?._id })
+            if (res) {
+                dispatch(settingAssignments(res.data.allAssignments))
+                setAllAssignments(res.data.allAssignments)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }, [allAssignments])
     return (
         <Box sx={{ maxWidth: "760px", margin: "0 auto" }}>
+            {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
             {currentAssignmentID && isTeacher ? <SubmittedAndChecked checked={checked} currentAssignmentID={currentAssignmentID} />
                 : !isTeacher && currentCourseID ? <CheckedAssignments currentCourseID={currentCourseID} />
                     : <Box>
@@ -36,6 +54,9 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
                                     actionTitle="create"
                                     currentCourse={currentCourse}
                                     isTeacher={isTeacher}
+                                    setOpenSnack={setOpenSnack}
+                                    setSeverity={setSeverity}
+                                    setAllAssignments={setAllAssignments}
                                 />
                             ) : <Tooltip title="Go to checked Assignments" arrow>
                                 <Button onClick={() => setCurrentCourseID(currentCourse?._id)} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">

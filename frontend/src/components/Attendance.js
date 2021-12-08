@@ -8,6 +8,9 @@ import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgr
 import moment from "moment-business-days";
 import Header from "./Header";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { curUserFun } from "../redux/actions";
+import MuiSnacks from "./MuiSnacks";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	height: 10,
@@ -39,9 +42,12 @@ const Attendance = ({ curUser, setAuth }) => {
 	const [attPercent, setAttPercent] = useState(0);
 	const [lastMonthPercent, setLastMonthPercent] = useState(0);
 
+	const [openSnack, setOpenSnack] = useState("");
+	const [severity, setSeverity] = useState("");
+
 
 	const _id = localStorage.getItem("uid");
-
+	const dispatch = useDispatch()
 	// ____________________________________________________________________________________________
 
 	const checkTodayAtt = () => {
@@ -182,10 +188,15 @@ const Attendance = ({ curUser, setAuth }) => {
 
 			const attObj = { _id, year, month, date, time };
 			const res = await axios.post("/user/attendance", attObj);
-			alert(res.data.message)
+			if (res) {
+				dispatch(curUserFun(res.data.updated))
+				setOpenSnack(res.data.message);
+				setSeverity("success")
+			}
 		} catch (err) {
 			console.error(err);
-			alert("Your Attendance not marked");
+			setOpenSnack("Your Attendance not marked");
+			setSeverity("error")
 		}
 	};
 	useEffect(() => {
@@ -196,60 +207,60 @@ const Attendance = ({ curUser, setAuth }) => {
 
 
 	return (
-		<>
-			<Box className={`_main`}>
-				<Header curUser={curUser} setAuth={setAuth} />
-				<Box>
-					<Box className={classes.attendance_top}>
-						{
-							holiday ? <Box mt={8} maxWidth="80%" mx="auto" py={2} textAlign="center">
-								<Typography color="green" variant="h4">Today is Holiday</Typography>
-							</Box> : <>
-								<Typography mt={8} mb={2} variant="h4" display="inline-block">
-									Mark Today's Attendance
-								</Typography>
+		<Box className={`_main`}>
+			<Header curUser={curUser} setAuth={setAuth} />
+			<Box>
+				{openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
 
-								<Box>
-									<Button
-										size="small"
-										variant="contained"
-										color="success"
-										onClick={(e) => handleClick(e)}
-										disabled={todayAttend || newState}
-									>
-										{todayAttend ? "Marked" : "Mark"}
-									</Button>
-								</Box>
-							</>
-						}
+				<Box className={classes.attendance_top}>
+					{
+						holiday ? <Box mt={8} maxWidth="80%" mx="auto" py={2} textAlign="center">
+							<Typography color="green" variant="h4">Today is Holiday</Typography>
+						</Box> : <>
+							<Typography mt={8} mb={2} variant="h4" display="inline-block">
+								Mark Today's Attendance
+							</Typography>
 
-					</Box>
-					<Box my={5} mx="auto" sx={{ width: "80%" }} display="block">
-						<Typography variant="h6">This Month Attendance</Typography>
-						<BorderLinearProgress
-							thickness={2}
-							color="success"
-							variant="determinate"
-							value={Math.round(lastMonthPercent)}
-						/>
-						<Typography variant="h6">
-							{Math.round(lastMonthPercent)}%
-						</Typography>
-					</Box>{" "}
-					<br />
-					<br />
-					<Box mx="auto" sx={{ width: "80%" }}>
-						<Typography variant="h6">Overall Attendance</Typography>
-						<BorderLinearProgress
-							color="success"
-							variant="determinate"
-							value={Math.round(attPercent)}
-						/>
-						<Typography variant="h6">{Math.round(attPercent)}%</Typography>
-					</Box>
+							<Box>
+								<Button
+									size="small"
+									variant="contained"
+									color="success"
+									onClick={(e) => handleClick(e)}
+									disabled={todayAttend || newState}
+								>
+									{todayAttend ? "Marked" : "Mark"}
+								</Button>
+							</Box>
+						</>
+					}
+
+				</Box>
+				<Box my={5} mx="auto" sx={{ width: "80%" }} display="block">
+					<Typography variant="h6">This Month Attendance</Typography>
+					<BorderLinearProgress
+						thickness={2}
+						color="success"
+						variant="determinate"
+						value={Math.round(lastMonthPercent)}
+					/>
+					<Typography variant="h6">
+						{Math.round(lastMonthPercent)}%
+					</Typography>
+				</Box>{" "}
+				<br />
+				<br />
+				<Box mx="auto" sx={{ width: "80%" }}>
+					<Typography variant="h6">Overall Attendance</Typography>
+					<BorderLinearProgress
+						color="success"
+						variant="determinate"
+						value={Math.round(attPercent)}
+					/>
+					<Typography variant="h6">{Math.round(attPercent)}%</Typography>
 				</Box>
 			</Box>
-		</>
+		</Box>
 	);
 };
 

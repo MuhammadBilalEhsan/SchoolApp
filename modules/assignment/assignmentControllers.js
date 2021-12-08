@@ -18,7 +18,10 @@ module.exports.addAssignmentController = async (req, res) => {
                 const assignment = new Assignment({ title, courseID, description: desc, createdAt })
                 const saveWithoutFile = await assignment.save()
                 if (saveWithoutFile) {
-                    res.send({ message: "Assignment Added Successfully..." })
+                    const allAssignment = await Assignment.find({ courseID })
+                    if (allAssignment) {
+                        res.send({ message: "Assignment Added Successfully...", allAssignment })
+                    }
                 } else {
                     res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
                 }
@@ -40,7 +43,10 @@ module.exports.addAssignmentController = async (req, res) => {
                                         const saveWithoutDescription = await assignment.save()
                                         fs.unlinkSync(req.file.path);
                                         if (saveWithoutDescription) {
-                                            res.send({ message: "Assignment Added Successfully..." })
+                                            const allAssignment = await Assignment.find({ courseID })
+                                            if (allAssignment) {
+                                                res.send({ message: "Assignment Added Successfully...", allAssignment })
+                                            }
                                         } else {
                                             res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
                                         }
@@ -71,7 +77,10 @@ module.exports.addAssignmentController = async (req, res) => {
                                         const saveWithBoth = await assignment.save()
                                         fs.unlinkSync(req.file.path);
                                         if (saveWithBoth) {
-                                            res.send({ message: "Assignment Added Successfully..." })
+                                            const allAssignment = await Assignment.find({ courseID })
+                                            if (allAssignment) {
+                                                res.send({ message: "Assignment Added Successfully...", allAssignment })
+                                            }
                                         } else {
                                             res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
                                         }

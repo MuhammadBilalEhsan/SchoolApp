@@ -8,13 +8,12 @@ import {
 	DialogTitle,
 	Box,
 	Tooltip,
-	Snackbar
 } from "@mui/material/";
 import { BsCameraFill } from "react-icons/bs";
 import { FaUserEdit } from "react-icons/fa";
 import axios from "axios";
 
-export default function ChangeProfilePic({ curUser, setImgURL }) {
+export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setOpenSnack }) {
 	const [open, setOpen] = useState(false);
 	const [imgObj, setImgObj] = useState(null);
 	const uidFromLocalStorage = localStorage.getItem("uid");
@@ -29,15 +28,18 @@ export default function ChangeProfilePic({ curUser, setImgURL }) {
 		const size = img?.size
 		const type = img?.type
 		if (!img) {
-			alert("please Select an image")
+			setOpenSnack("please Select an image")
+			setSeverity("error")
 		}
 		else if (Boolean(type === "image/png") || Boolean(type === "image/jpeg") || Boolean(type === "image/jpg")) {
 			setImgObj(img)
 		}
 		else if (size > 5000000) {
-			alert("please Select an image of size less then 5 mb")
+			setOpenSnack("please Select an image of size less then 5 mb")
+			setSeverity("error")
 		} else {
-			alert("you can select only image...")
+			setOpenSnack("you can select only image...")
+			setSeverity("error")
 		}
 	}
 
@@ -51,14 +53,17 @@ export default function ChangeProfilePic({ curUser, setImgURL }) {
 				const config = {
 					headers: { "content-type": "multipart/form-data" },
 				};
+				handleClose()
 				const res = await axios.post("/user/editprofileimg", formData, config);
 				if (res) {
-					setImgURL(res.data.pPic.dp)
-					handleClose()
-					alert(res.data.message);
+					console.log("pPic", res.data.pPic)
+					setImgURL(res.data.pPic)
+					setOpenSnack(res.data.message)
+					setSeverity("success");
 				}
 			} else {
-				alert("Please Select an Image")
+				setOpenSnack("Please Select an Image")
+				setSeverity("error")
 			}
 		} catch (err) {
 			console.log(err);
@@ -80,7 +85,7 @@ export default function ChangeProfilePic({ curUser, setImgURL }) {
 					Edit Picture
 				</DialogTitle>
 				<DialogContent>
-					
+
 					<form method="POST">
 						<Box display="flex">
 							<Box flexGrow={1} pt={1} px={1} border="1px solid green" borderRadius={1}>

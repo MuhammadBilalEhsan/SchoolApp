@@ -1,4 +1,4 @@
-import socketIO from "socket.io-client"
+import socketIO from 'socket.io-client';
 import React, { useState, useEffect } from "react";
 import Spinner from "./components/Spinner";
 import Login from "./components/Login";
@@ -7,51 +7,48 @@ import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
+import appSetting from "./appSetting/appSetting"
 import { BrowserRouter as Router, Switch, Redirect, useHistory } from "react-router-dom";
-import { curUserFun,/* getUsers,*/ getCourseFunc, getStudentCourseFunc } from "./redux/actions/index";
+import {
+	curUserFun,/* getUsers,*/ getCourseFunc, getStudentCourseFunc, updateCourses,
+	updateCurrentCourse, updateAllAssignments,
+} from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./App.css";
 
 import PrivateRoute from "./PrivateRoute";
 
-const ENDPOINT = "http://localhost:4040"
-const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
+const ENDPOINT = appSetting.severHostedUrl
+export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
 const App = () => {
-
+	// let socket = io(appSetting.severHostedUrl);
 	const [auth, setAuth] = useState(null)
 	const _id = localStorage.getItem("uid");
 	const history = useHistory()
-	// 	const currentUserID = localStorage.getItem("uid");
-	// 	if (currentUserID){
-	// console.log
-	// 	}
-	socket.on("connect", () => {
-		console.log("New Connection In Frontend...")
-	})
-
 
 	const curUser = useSelector((state) => state.usersReducer.curUser);
 	const [uid, setUid] = useState(_id || curUser._id);
-	const [spinner, setSpinner] = useState(false);
+	const [spinner, setSpinner] = useState(true);
 
 	const dispatch = useDispatch();
+
 	useEffect(() => {
 		if (!auth && !uid) {
 			// setAuth(false)
-			// setUid(false)
-			// history.push("/")
+			setSpinner(false)
 			console.log("please create LogOut Function")
 		}
 		if (uid || auth) {
+			setSpinner(true)
 			setAuth(true)
-			setSpinner(false)
+			var currentUser;
 			axios
 				.get("/user/getdata")
 				.then((response) => {
 					const data = response.data;
 					// console.log("data", response)
-					const currentUser = data.find((user) => user._id === _id);
+					currentUser = data.find((user) => user._id === _id);
 					if (!currentUser) {
 						setSpinner(false);
 						setUid(false);
@@ -77,8 +74,30 @@ const App = () => {
 					// dispatch(getUsers(data));
 				})
 				.catch((error) => console.log(error));
+			socket.on("connect", () => {
+				console.log("Backend Connected..!!")
+			})
+			socket.on("courseEditedByTeacher", (course) => {
+				if (currentUser?.roll === "student" && currentUser?.atClass == course?.teacherClass) {
+					dispatch(updateCourses(course))
+				}
+			})
+			socket.on("messageAddedStream", (course) => {
+				dispatch(updateCurrentCourse(course))
+			})
+			socket.on("ASSIGNMENT_ADDED", (allAssignment) => {
+				dispatch(updateAllAssignments(allAssignment))
+			})
 		}
-	}, [auth]);
+		// setSpinner(false)
+	}, [auth, ENDPOINT]);
+	// useEffect(() => {
+	// 	socket.on("COURSE_EDITTED", () => {
+	// 		console.log("abc")
+	// 	})
+	// }, [uid])
+
+
 
 	if (spinner) return <Spinner />;
 	return (

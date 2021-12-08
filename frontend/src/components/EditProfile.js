@@ -13,18 +13,18 @@ import { FaUserEdit } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { curUserFun } from "../redux/actions/index";
+// import { socket } from "../App";
 
 
-export default function EditProfileFormik({ curUser }) {
-	// const curUser = useSelector(state => state.usersReducer.curUser)
-	// const curUser = useSelector((state) => state.usersReducer.curUser);
-
+export default function EditProfileFormik({ curUser, setOpenSnack, setSeverity, setCurrentUser }) {
 	const [open, setOpen] = useState(false);
 	const uidFromLocalStorage = localStorage.getItem("uid");
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
+	const dispatch = useDispatch()
 
 	const handleClose = () => {
 		setOpen(false);
@@ -55,25 +55,28 @@ export default function EditProfileFormik({ curUser }) {
 			age: yup.number().required("It is not a good habit to hide your age.")
 				.positive("That doesn't look like a human's age.")
 				.integer("Don't use decimal point")
-				.min(10, "You are not egligible for this school, your age a baby,")
+				.min(10, "You are not egligible for this school, you are a baby,")
 				.max(199, "A noble human cannot live so long"),
 			phone: yup.number()
 				.typeError("That doesn't look like a phone number")
 				.positive("A phone number can't start with a minus")
 				.integer("A phone number can't include a decimal point")
-				.min(3000000000, "That doesn't look like a phone number")
-				.max(3499999999, "That doesn't look like a phone number")
+				.min(3000000000, "It doesn't looks like a phone number")
+				.max(3499999999, "It doesn't looks like a phone number")
 				.required('A phone number is required')
 		}),
 		onSubmit: async (values) => {
 			try {
-				console.log(values)
+				handleClose();
 				const res = await axios.post("user/edit-profile", values);
-				if (res.data.message) {
-					alert(res.data.message);
-					handleClose();
+				if (res) {
+					setCurrentUser(res.data.updated)
+					dispatch(curUserFun(res.data.updated))
+					setOpenSnack(res.data.message)
+					setSeverity("success")
 				} else {
-					alert("User not update!");
+					setOpenSnack("User not update!")
+					setSeverity("error")
 					handleClose();
 				}
 			} catch (error) {
@@ -83,7 +86,6 @@ export default function EditProfileFormik({ curUser }) {
 		}
 
 	})
-
 	return (
 		<Box>
 			<Tooltip title="Edit Profile" arrow >
@@ -93,7 +95,7 @@ export default function EditProfileFormik({ curUser }) {
 			</Tooltip>
 
 			{/* Openning Dialouge Box */}
-			<Dialog Dialog open={open} onClose={handleClose} >
+			<Dialog Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" >
 				<DialogTitle align="center" backgroundColor="white">
 					Edit Profile
 				</DialogTitle>

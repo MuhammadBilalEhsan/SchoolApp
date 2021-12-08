@@ -73,24 +73,17 @@ let socket = require('socket.io')(server);
 socket.on('connection', (socket) => {
 	console.log('Client Connected ...!')
 
-	socket.on('newUserCreated', (user) => {
-		socket.broadcast.emit('newUserAdded', user)
+	socket.on('courseEditted', (course) => {
+		socket.broadcast.emit("courseEditedByTeacher", course)
 	})
-	// socket.on('userDeleted', (uid) => {
-	// 	socket.broadcast.emit('userDeletedNotifyToUser', uid)
-	// })
-	// socket.on('newParkingAreaAdded', (newParking) => {
-	// 	socket.broadcast.emit('newParkingArea', newParking)
-	// })
-	// socket.on('parkingAreaRemoved', (removedParkingAreaDet) => {
-	// 	socket.broadcast.emit('parkingAreaRemovedByAdmin', removedParkingAreaDet)
-	// })
-	// socket.on('add-new-booking', newBooking => {
-	// 	socket.broadcast.emit('new-booking-added', newBooking)
-	// })
-	// socket.on('upcomingBookingDeleted', (bookingID) => {
-	// 	socket.broadcast.emit('bookingDeleted', bookingID)
-	// })
+	// socket.on()
+
+	socket.on("msgSentInStream", (course) => {
+		socket.broadcast.emit("messageAddedStream", course)
+	})
+	socket.on("assignmentAdd", (allAssignment) => {
+		socket.broadcast.emit("ASSIGNMENT_ADDED", allAssignment)
+	})
 })
 
 

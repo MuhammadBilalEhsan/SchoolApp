@@ -10,6 +10,8 @@ import AssignmentComp from './AssignmentComp';
 import { useParams } from 'react-router-dom'
 
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux';
+import { currentCourseFunc } from '../redux/actions';
 
 const useStyles = makeStyles({
 	class_materials: {
@@ -20,40 +22,42 @@ const useStyles = makeStyles({
 
 
 const ClassMaterials = ({ curUser, setAuth }) => {
-	const [currentCourse, setCurrentCourse] = useState({})
+	const currentCourse = useSelector((state) => state.usersReducer.currentCourse);
+	// const [currentCourse, setCurrentCourse] = useState(currentCourseFunc)
 
 	const classes = useStyles()
 	const params = useParams()
 
+	const dispatch = useDispatch()
+
 	useEffect(async () => {
 		const res = await axios.post(`/course/specific`, { id: params.id })
 		if (res.data.currentCourse) {
-			setCurrentCourse(res.data.currentCourse)
+			dispatch(currentCourseFunc(res.data.currentCourse))
 		} else {
 			console.log(res.data.error)
 		}
 	}, [])
+	
 	return (
-		<>
-			<Box className={classes.class_materials}>
-				<Header curUser={curUser} setAuth={setAuth} />
-				<Box>
-					<TabsComp
-						tab1Label="Stream"
-						panel1={<Stream currentCourse={currentCourse} curUser={curUser} />}
+		<Box className={classes.class_materials}>
+			<Header curUser={curUser} setAuth={setAuth} />
+			<Box>
+				<TabsComp
+					tab1Label="Stream"
+					panel1={<Stream currentCourse={currentCourse} curUser={curUser} />}
 
-						tab2Label={curUser?.roll === "teacher" ? "Class Work" : "Assignments"}
-						panel2={<AssignmentComp isTeacher={curUser?.roll === "teacher" ? true : false} currentCourse={currentCourse} curUser={curUser} />}
+					tab2Label={curUser?.roll === "teacher" ? "Class Work" : "Assignments"}
+					panel2={<AssignmentComp isTeacher={curUser?.roll === "teacher" ? true : false} currentCourse={currentCourse} curUser={curUser} />}
 
-						tab3Label={curUser?.roll === "teacher" ? "Students" : "Announcement"}
-						panel3={curUser?.roll === "teacher" ? <CourseStudentsComp currentCourse={currentCourse} curUser={curUser} /> : < Announcement currentCourse={currentCourse} curUser={curUser} />}
+					tab3Label={curUser?.roll === "teacher" ? "Students" : "Announcement"}
+					panel3={curUser?.roll === "teacher" ? <CourseStudentsComp currentCourse={currentCourse} curUser={curUser} /> : < Announcement currentCourse={currentCourse} curUser={curUser} />}
 
-						tab4Label={curUser?.roll === "teacher" ? "Announcement" : ""}
-						panel4={curUser?.roll === "teacher" ? <Announcement currentCourse={currentCourse} curUser={curUser} /> : ""}
-					/>
-				</Box>
+					tab4Label={curUser?.roll === "teacher" ? "Announcement" : ""}
+					panel4={curUser?.roll === "teacher" ? <Announcement currentCourse={currentCourse} curUser={curUser} /> : ""}
+				/>
 			</Box>
-		</>
+		</Box>
 	);
 };
 

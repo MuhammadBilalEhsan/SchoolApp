@@ -1,4 +1,4 @@
-import socketIO from "socket.io-client"
+// import socketIO from "socket.io-client"
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
@@ -6,11 +6,10 @@ import { Box, Avatar, Grid, Paper, Typography } from "@mui/material";
 import EditProfile from "./EditProfile";
 import ChangeProfilePic from "./ChangeProfilePic";
 import MuiSnacks from "./MuiSnacks"
+// import Spinner from "./Spinner";
 import "../App.css";
-import { useDispatch } from "react-redux";
-import { curUserFun } from "../redux/actions";
-const ENDPOINT = "http://localhost:4040"
-const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
+// import { socket } from "../App"
+// import { useDispatch } from "react-redux";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -21,18 +20,16 @@ const Item = styled(Paper)(({ theme }) => ({
 	color: "green",
 }));
 const Profile = ({ curUser, setAuth }) => {
-	const [imgURL, setImgURL] = useState("")
-	const [openSnack, setOpenSnack] = useState(false);
+	const [imgURL, setImgURL] = useState(curUser?.dp)
+	const [openSnack, setOpenSnack] = useState("");
+	const [severity, setSeverity] = useState("");
+	const [currentUser, setCurrentUser] = useState(curUser);
 
-	const dispatch = useDispatch()
-	socket.on("EDIT_PROFILE", ({ data }) => {
-		// dispatch(curUserFun(data))
-		console.log("data", data)
-	})
-	useEffect(() => {
-		setImgURL(curUser?.dp)
-	})
-	let { age, atClass, email, fatherName, fname, lname, phone, roll } = curUser;
+
+	// useEffect(() => {
+	// 	setImgURL(curUser?.dp)
+	// })
+	let { age, atClass, email, fatherName, fname, lname, phone, roll } = currentUser;
 	return (
 		<>
 			<Box className={`_main`}>
@@ -43,11 +40,16 @@ const Profile = ({ curUser, setAuth }) => {
 					display="flex"
 					justifyContent="flex-end"
 				>
-					<EditProfile curUser={curUser} />
+					<EditProfile
+						curUser={curUser}
+						setSeverity={setSeverity}
+						setOpenSnack={setOpenSnack}
+						setCurrentUser={setCurrentUser}
+					/>
 				</Box>
 				<Box width="100%" my="auto">
 
-					{/* {openSnack ? <MuiSnacks openSnack={openSnack} severity = { severity} text = { text} setOpenSnack = { setOpenSnack}  /> : ""} */}
+					{openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
 
 					<Box width="70%" mx="auto" display="flex" justifyContent="center" alignItems="center">
 						<Avatar
@@ -65,7 +67,12 @@ const Profile = ({ curUser, setAuth }) => {
 						bottom="13px"
 						zIndex={1}
 					>
-						<ChangeProfilePic curUser={curUser} setImgURL={setImgURL} />
+						<ChangeProfilePic
+							curUser={curUser}
+							setImgURL={setImgURL}
+							setSeverity={setSeverity}
+							setOpenSnack={setOpenSnack}
+						/>
 					</Box>
 					<Box maxWidth="900px" mx="auto" mt={3} px={5} position="relative" bottom="30px">
 						<Grid container spacing={2} justifyContent="center">

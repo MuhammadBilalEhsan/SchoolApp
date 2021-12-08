@@ -4,7 +4,6 @@ const admin = require("firebase-admin");
 // const jwt = require("jsonwebtoken")
 const serviceAccount = require("../../firebase/serviceAccount")
 const fs = require("fs")
-// const io = require("../../index").io
 
 
 admin.initializeApp({
@@ -69,14 +68,11 @@ module.exports.EditProfile = async (req, res) => {
 				phone,
 			});
 
-			if (!userUpdate) {
-				io.on("connection", (socket) => {
-					console.log("IN UserController Connection")
-					socket.emit("EDIT_PROFILE", { updated: userUpdate })
-				});
-				res.status(400).send({ error: "User not Update" });
+			if (userUpdate) {
+				const updated = await User.findById(id)
+				res.status(200).send({ message: "User Update Successfully", updated });
 			} else {
-				res.status(200).send({ message: "User Update Successfully", updated: userUpdate });
+				res.status(400).send({ error: "User not Update" });
 			}
 		}
 	} catch (error) {
@@ -108,7 +104,7 @@ module.exports.EditProfileImage = async (req, res) => {
 							})
 							fs.unlinkSync(dp.path)
 							if (pPic) {
-								res.send({ message: "Profile Picture Updated", pPic })
+								res.send({ message: "Profile Picture Updated", pPic: pubURL })
 							} else {
 								res.status(512).send({ error: "Profile Picture Not Updated" })
 							}
@@ -202,9 +198,10 @@ module.exports.markAttendance = async (req, res) => {
 						.send({ error: "Mark Attendance with Existing Month failed!" });
 				}
 			}
+			const updated = await User.findById(_id)
 			return res
 				.status(200)
-				.send({ message: "Todays attendance have been marked." });
+				.send({ message: "Todays attendance have been marked.", updated });
 		}
 	} catch (err) {
 		console.error(err);
@@ -227,7 +224,6 @@ module.exports.markAttendance = async (req, res) => {
 
 module.exports.getData = async (req, res) => {
 	const allUsers = await User.find({});
-	console.log(allUsers)
 	res.status(200).send(allUsers);
 };
 

@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
 import {
-	Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField,
-	Menu, MenuItem, Button,
+	Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField, Menu,
+	MenuItem, Button,
 } from "@mui/material/";
 import AddTopic from "./AddTopic";
 import CourseOutlineComp from "./CourseOutlineComp";
 import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
-import { FaRegTrashAlt } from "react-icons/fa";
+// import { FaRegTrashAlt } from "react-icons/fa";
 import { RiFileEditFill } from "react-icons/ri";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { socket } from "../App";
+
+// import { io } from 'socket.io-client';
+// import appSetting from "../appSetting/appSetting";
+import { getCourseFunc } from "../redux/actions";
+import { useDispatch } from "react-redux";
 
 const durationArr = ["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"];
 
-export default function AddCourse({ curUser, editCourse, course }) {
+export default function AddCourse({ curUser, editCourse, course, setSeverity, setOpenSnack }) {
+	// let socket = io(appSetting.severHostedUrl)
 	const uidFromLocalStorage = localStorage.getItem("uid");
 	const [open, setOpen] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(null);
@@ -26,6 +33,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 	const [weekNotSelected, setWeekNotSelected] = useState(null);
 
 	const [courseOutlineArr, setCourseOutlineArr] = useState([]);
+	const dispatch = useDispatch()
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -89,24 +97,33 @@ export default function AddCourse({ curUser, editCourse, course }) {
 							values.duration = courseOutlineArr.length;
 							values.courseOutline = courseOutlineArr;
 							if (editCourse) {
-								console.log("Edit Course", values)
+								handleClose();
 								const res = await axios.post("course/editcourse", values);
-								if (res.data.message) {
-									alert(res.data.message);
-								} else {
-									alert(res.data.error);
+								if (res) {
+									if (res.data.editted) {
+										socket.emit("courseEditted", res.data.editted)
+										dispatch(getCourseFunc(res.data.editted))
+									} if (res.data.message) {
+										setOpenSnack(res.data.message)
+										setSeverity("success")
+									} else {
+										setOpenSnack(res.data.error)
+										setSeverity("error")
+									}
 								}
-								handleClose();
 							} else {
-								console.log("Add Course", values)
-								const res = await axios.post("course/add", values);
-								if (res.data.message) {
-									alert(res.data.message);
-									console.log(res.data.message);
-								} else {
-									alert(res.data.error);
-								}
 								handleClose();
+								const res = await axios.post("course/add", values);
+								if (res) {
+
+									if (res.data.message) {
+										setOpenSnack(res.data.message)
+										setSeverity("success")
+									} else {
+										setOpenSnack(res.data.error)
+										setSeverity("error")
+									}
+								}
 							}
 						}
 					}
@@ -306,6 +323,7 @@ export default function AddCourse({ curUser, editCourse, course }) {
 
 					<Button
 						color={editCourse ? "warning" : "success"}
+						variant="outlined"
 						onClick={handleClose}
 					>
 						Cancel

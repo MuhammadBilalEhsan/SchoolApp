@@ -15,11 +15,14 @@ import { useFormik } from 'formik'
 import *as yup from "yup"
 import axios from 'axios'
 import moment from 'moment'
+import { socket } from '../App'
+import { useDispatch } from 'react-redux'
+import { settingAssignments } from '../redux/actions'
 
 const Assignment = ({
-    currentCourse, btnTitle, tooltipTitle, curUser,
-    btnIcon, dialogTitle, actionTitle, isTeacher,
-    btnStartIcon, btnColor, btnVariant, currentAssignment, input2label
+    currentCourse, btnTitle, tooltipTitle, curUser, btnIcon, dialogTitle, actionTitle,
+    isTeacher, btnStartIcon, btnColor, btnVariant, currentAssignment, input2label,
+    setOpenSnack, setSeverity, setAllAssignments
 }) => {
     const [openAssignDialog, setOpenAssignDialog] = useState(false)
     const [file, setFile] = useState(null)
@@ -30,13 +33,14 @@ const Assignment = ({
     const closeDialog = () => {
         setOpenAssignDialog(false)
     }
-
+    const dispatch = useDispatch()
     const handleChange = (e) => {
         const selectedFile = e.target.files[0]
         if (selectedFile) {
             const size = ((selectedFile.size / 1024) / 1024)
             if (size > 10) {
-                alert("file Size is too long")
+                setOpenSnack("file Size is too long")
+                setSeverity("error")
             } else {
                 setFile(selectedFile)
             }
@@ -54,7 +58,8 @@ const Assignment = ({
         onSubmit: async (values) => {
             try {
                 if (!file && !values.desc) {
-                    alert("You cannot leave both files and description blank at the same time")
+                    setOpenSnack("You cannot leave both files and description blank at the same time")
+                    setSeverity("error")
                 } else {
                     let formData = new FormData();
                     if (!values.desc && file) {
@@ -73,21 +78,37 @@ const Assignment = ({
                         formData.append("courseID", currentCourse?._id)
                         const res = await axios.post("assignment/add", formData, config)
                         if (res) {
-                            console.log(res.data.message || res.data.error)
+                            closeDialog()
                             setFile(null)
                             values = {}
-                            closeDialog()
+                            if (res.data.message) {
+                                setAllAssignments(res.data.allAssignment)
+                                console.log("res.data.assignment", res.data.allAssignment)
+                                socket.emit("assignmentAdd", res.data.allAssignment)
+                                dispatch(settingAssignments(res.data.allAssignment))
+                                setOpenSnack(res.data.message)
+                                setSeverity("success")
+                            } else {
+                                setOpenSnack(res.data.error)
+                                setSeverity("error")
+                            }
                         }
                     } else {
                         formData.append("assignmentID", currentAssignment?._id)
                         formData.append("id", `${curUser?._id}`)
                         formData.append("name", `${curUser?.fname} ${curUser?.lname}`)
                         formData.append("time", moment().format("hh:mm:ss A"))
+                        closeDialog()
                         const res = await axios.post("assignment/submit", formData, config)
                         if (res) {
-                            console.log(res.data.message || res.data.error)
                             setFile(null)
-                            closeDialog()
+                            if (res.data.message) {
+                                setOpenSnack(res.data.message)
+                                setSeverity("success")
+                            } else {
+                                setOpenSnack(res.data.error)
+                                setSeverity("error")
+                            }
                         }
                     }
                 }
