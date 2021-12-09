@@ -56,29 +56,33 @@ module.exports.addCourse = async (req, res) => {
 			!dateOfCreation
 		) {
 			res.status(400).send({ error: "You Should fill all fields properly..!" });
-		}
-		const secondCourse = await Course.findOne({ teacher_id });
-		if (!secondCourse) {
-			const course = new Course({
-				teacher_id,
-				teacherEmail,
-				teacherClass,
-				courseName,
-				courseDesc,
-				topics,
-				duration,
-				courseOutline,
-				dateOfCreation,
-			});
-			const courseSave = await course.save();
-			if (courseSave) {
-				// const newCourse = await Course.findOne({ teacher_id });
-				res.status(200).send({ message: "Course added Successfully", newCourse });
-			}
 		} else {
-			res.send({
-				error: "A Teacher can create only one Course..",
-			});
+			const secondCourse = await Course.findOne({ teacher_id });
+			if (!secondCourse) {
+				const course = new Course({
+					teacher_id,
+					teacherEmail,
+					teacherClass,
+					courseName,
+					courseDesc,
+					topics,
+					duration,
+					courseOutline,
+					dateOfCreation,
+				});
+				const courseSave = await course.save();
+				if (courseSave) {
+					const newCourse = await Course.findOne({ teacher_id });
+					if (newCourse) {
+						console.log("new ")
+						res.status(200).send({ message: "Course added Successfully", newCourse });
+					}
+				}
+			} else {
+				res.send({
+					error: "A Teacher can create only one Course..",
+				});
+			}
 		}
 	} catch (error) {
 		console.log(error);

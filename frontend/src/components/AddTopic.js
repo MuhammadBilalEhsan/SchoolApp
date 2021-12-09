@@ -99,7 +99,7 @@ export default function AddTopic({
 						Please Add at least 1 Topic
 					</p >
 				) : (
-					<></>
+					""
 				)}
 		</div >
 	);

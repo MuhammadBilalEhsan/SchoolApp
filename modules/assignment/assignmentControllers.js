@@ -118,7 +118,10 @@ module.exports.submitAssignmentController = async (req, res) => {
                             submitted: [...findAssignment.submitted, assignmentObj]
                         })
                         if (submitWithoutFile) {
-                            res.send({ message: "Assignment Submitted Successfully..." })
+                            const editted = await Assignment.findById(assignmentID)
+                            if (editted) {
+                                res.send({ message: "Assignment Submitted Successfully...", editted })
+                            }
                         } else {
                             res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
                         }
@@ -142,7 +145,10 @@ module.exports.submitAssignmentController = async (req, res) => {
                                                 })
                                                 fs.unlinkSync(req.file.path);
                                                 if (submitWithoutDesc) {
-                                                    res.send({ message: "Assignment Submitted Successfully..." })
+                                                    const editted = await Assignment.findById(assignmentID)
+                                                    if (editted) {
+                                                        res.send({ message: "Assignment Submitted Successfully...", editted })
+                                                    }
                                                 } else {
                                                     res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
                                                 }
@@ -170,12 +176,15 @@ module.exports.submitAssignmentController = async (req, res) => {
                                                 const pubURL = urlData[0]
 
                                                 const assignmentObj = { id, name, file: pubURL, desc, sumitAt: time, marks: 0 }
-                                                const submitWithoutDesc = await Assignment.findByIdAndUpdate(assignmentID, {
+                                                const submitWithBoth = await Assignment.findByIdAndUpdate(assignmentID, {
                                                     submitted: [...findAssignment.submitted, assignmentObj]
                                                 })
                                                 fs.unlinkSync(req.file.path);
-                                                if (submitWithoutDesc) {
-                                                    res.send({ message: "Assignment Submitted Successfully..." })
+                                                if (submitWithBoth) {
+                                                    const editted = await Assignment.findById(assignmentID)
+                                                    if (editted) {
+                                                        res.send({ message: "Assignment Submitted Successfully...", editted })
+                                                    }
                                                 } else {
                                                     res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
                                                 }
@@ -190,7 +199,7 @@ module.exports.submitAssignmentController = async (req, res) => {
                         )
                     }
                 } else {
-                    res.status(400).send({ error: "You have already submitted the assignment.." })
+                    res.status(400).send({ error: "You have already submitted this assignment.." })
                 }
             } else {
                 res.status(404).send({ error: "Assignment not Found.." })
@@ -274,11 +283,13 @@ module.exports.allCheckedAssignmentsOfStudent = async (req, res) => {
         } else {
             const findAllAssignments = await Assignment.find({ courseID })
             const filtered = findAllAssignments?.filter(assignment => {
-                const findStudentInSubmitted = assignment.submitted?.find(student => student.id === studentID)
-                if (findStudentInSubmitted) {
-                    const checkMarks = Number(findStudentInSubmitted.marks)
-                    if (checkMarks) {
-                        return assignment
+                if (assignment.submitted.length) {
+                    const findStudentInSubmitted = assignment.submitted?.find(student => student.id === studentID)
+                    if (findStudentInSubmitted) {
+                        const checkMarks = Number(findStudentInSubmitted.marks)
+                        if (checkMarks) {
+                            return assignment
+                        }
                     }
                 }
             })

@@ -104,7 +104,7 @@ module.exports.EditProfileImage = async (req, res) => {
 							})
 							fs.unlinkSync(dp.path)
 							if (pPic) {
-								res.send({ message: "Profile Picture Updated", pPic: pubURL })
+								res.send({ message: "Profile Picture will be updated in a few moments.", pPic: pubURL })
 							} else {
 								res.status(512).send({ error: "Profile Picture Not Updated" })
 							}

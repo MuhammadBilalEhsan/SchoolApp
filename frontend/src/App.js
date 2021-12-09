@@ -8,10 +8,10 @@ import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
 import appSetting from "./appSetting/appSetting"
-import { BrowserRouter as Router, Switch, Redirect, useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import {
 	curUserFun,/* getUsers,*/ getCourseFunc, getStudentCourseFunc, updateCourses,
-	updateCurrentCourse, updateAllAssignments,
+	updateCurrentCourse, updateAllAssignments, editAvailAbleCourses
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -25,7 +25,6 @@ const App = () => {
 	// let socket = io(appSetting.severHostedUrl);
 	const [auth, setAuth] = useState(null)
 	const _id = localStorage.getItem("uid");
-	const history = useHistory()
 
 	const curUser = useSelector((state) => state.usersReducer.curUser);
 	const [uid, setUid] = useState(_id || curUser._id);
@@ -75,8 +74,14 @@ const App = () => {
 				})
 				.catch((error) => console.log(error));
 			socket.on("connect", () => {
-				console.log("Backend Connected..!!")
+				// console.log("Backend Connected..!!")
 			})
+			socket.on("courseADDEDByTeacher", (newCourse) => {
+				if (currentUser?.roll === "student" && currentUser?.atClass == newCourse?.teacherClass) {
+					dispatch(editAvailAbleCourses(newCourse))
+				}
+			})
+
 			socket.on("courseEditedByTeacher", (course) => {
 				if (currentUser?.roll === "student" && currentUser?.atClass == course?.teacherClass) {
 					dispatch(updateCourses(course))

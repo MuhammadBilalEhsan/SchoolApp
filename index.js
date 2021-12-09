@@ -1,7 +1,7 @@
-const http = require("http");
+// const http = require("http");
 const express = require("express");
 const cors = require("cors");
-const socketIO = require("socket.io");
+// const socketIO = require("socket.io");
 const path = require("path")
 // const jwt = require('jsonwebtoken');
 // const User = require("./modules/user/userModel")
@@ -28,16 +28,17 @@ app.use(bodyParser.json());
 
 
 
-app.use(express.static(path.join(__dirname, "frontend/build")))
+// app.use(express.static(path.join(__dirname, "frontend/build")))
 
 
 // app.get("*", (req, res) => {
 // 	res.sendFile(path.join(__dirname + "/frontend/build/index.html"))
 // })
-// if (process.env.NODE_ENV == "production") {
-// }
+if (process.env.NODE_ENV == "production") {
+	app.use(express.static("frontend/build"))
+}
 // initializeApp(firebaseConfig);
-app.use(express.static(__dirname + "./public/"));
+// app.use(express.static(__dirname + "./public/"));
 
 app.use("/user", user);
 app.use("/course", course);
@@ -71,7 +72,11 @@ let server = app.listen(port, () => {
 
 let socket = require('socket.io')(server);
 socket.on('connection', (socket) => {
-	console.log('Client Connected ...!')
+	// console.log('Client Connected ...!')
+
+	socket.on('newCoursesAdded', (newCourse) => {
+		socket.broadcast.emit("courseADDEDByTeacher", newCourse)
+	})
 
 	socket.on('courseEditted', (course) => {
 		socket.broadcast.emit("courseEditedByTeacher", course)

@@ -57,3 +57,9 @@ export const updateAllAssignments = (data) => {
     payload: data
   }
 }
+// export const editAvailAbleCourses = (data) => {
+//   return {
+//     type: "UPDATE_ALL_ASSIGNMENTS",
+//     payload: data
+//   }
+// }
