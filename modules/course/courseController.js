@@ -74,7 +74,6 @@ module.exports.addCourse = async (req, res) => {
 				if (courseSave) {
 					const newCourse = await Course.findOne({ teacher_id });
 					if (newCourse) {
-						console.log("new ")
 						res.status(200).send({ message: "Course added Successfully", newCourse });
 					}
 				}
@@ -193,7 +192,11 @@ module.exports.applyForCourse = async (req, res) => {
 						students: [...findCourse.students, { id: student_id, name: student_name, muted: false }]
 					})
 					if (addStudentInCourse && addCourseObjInStudent) {
-						return res.send({ message: "Student Enrolled" })
+						const student = await User.findById(student_id)
+						const course = await Course.findById(course_id)
+						if (student && course) {
+							return res.send({ message: "Student Enrolled", student, course })
+						}
 					} else {
 						return res.status(512).send({ error: "Student can't Enrole." })
 					}
@@ -341,7 +344,10 @@ module.exports.delSpecificStudentByTeacher = async (req, res) => {
 					courses: filterCoursesInStudent
 				})
 				if (updateCourseStudents && updateStudentCourses) {
-					res.send({ message: "Student Deleted successfully" })
+					const course = await Course.findById(courseID)
+					if (course) {
+						res.send({ message: "Student Deleted...", course })
+					}
 				} else {
 					res.status(512).send({ error: "message not send..." })
 				}
@@ -386,18 +392,25 @@ module.exports.muteStudentController = async (req, res) => {
 		} else {
 			const findCourse = await Course.findById(courseID)
 			const findStudent = findCourse.students.find(student => student.id === studentID)
+			var message;
 			if (findCourse && findStudent) {
 				if (findStudent.muted) {
 					findStudent.muted = false
+					message = "Unmuted..."
 				} else {
 					findStudent.muted = true
+					message = "Student Muted..."
 				}
 				const filterOthers = findCourse.students.filter(student => student.id !== studentID)
 				const updateCourseStudents = await Course.findByIdAndUpdate(courseID, {
 					students: [...filterOthers, findStudent]
 				})
 				if (updateCourseStudents) {
-					res.send({ message: "Student Muted..." })
+					const course = await Course.findById(courseID)
+					if (course) {
+						res.send({ message, course })
+						message = "";
+					}
 				} else {
 					res.status(505).send({ error: "Student Not Mute..." })
 				}

@@ -48,6 +48,7 @@ const Header = ({ setAuth }) => {
 		dispatch(logoutFunc())
 		localStorage.removeItem("uid");
 		setAuth(false)
+		window.location.reload(false);
 		history.push("/");
 	}
 	const mobileMenu = (

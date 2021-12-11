@@ -23,7 +23,7 @@ export default function AddTopic({
 	};
 	const addChip = () => {
 		const topicLabelTrim = topicLabel.trim();
-		if (topicLabelTrim.length === "") {
+		if (!topicLabelTrim) {
 			setTopicLabel("");
 		} else {
 			const topicObj = {

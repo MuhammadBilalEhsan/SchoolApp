@@ -7,11 +7,13 @@ import Stream from './Stream';
 import Announcement from './Announcement';
 import CourseStudentsComp from './CourseStudentsComp';
 import AssignmentComp from './AssignmentComp';
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { currentCourseFunc } from '../redux/actions';
+import { socket } from '../App';
+import MuiSnacks from './MuiSnacks';
 
 const useStyles = makeStyles({
 	class_materials: {
@@ -24,13 +26,27 @@ const useStyles = makeStyles({
 const ClassMaterials = ({ curUser, setAuth }) => {
 	const currentCourse = useSelector((state) => state.usersReducer.currentCourse);
 	// const [currentCourse, setCurrentCourse] = useState(currentCourseFunc)
+	const [openSnack, setOpenSnack] = useState("");
+	const [severity, setSeverity] = useState("");
+
+	const enrolledStudent = currentCourse?.students?.find(student => student.id !== curUser?._id);
 
 	const classes = useStyles()
 	const params = useParams()
 
+	const history = useHistory()
 	const dispatch = useDispatch()
 
+	useEffect(() => {
+		socket.on("CHANGE_IN_COURSE", (course) => {
+			if (currentCourse?._id === course._id) {
+				dispatch(currentCourseFunc(course))
+			}
+		})
+	})
+
 	useEffect(async () => {
+
 		const res = await axios.post(`/course/specific`, { id: params.id })
 		if (res.data.currentCourse) {
 			dispatch(currentCourseFunc(res.data.currentCourse))
@@ -38,25 +54,32 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 			console.log(res.data.error)
 		}
 	}, [])
-	
+
 	return (
 		<Box className={classes.class_materials}>
 			<Header curUser={curUser} setAuth={setAuth} />
-			<Box>
-				<TabsComp
-					tab1Label="Stream"
-					panel1={<Stream currentCourse={currentCourse} curUser={curUser} />}
+			{
 
-					tab2Label={curUser?.roll === "teacher" ? "Class Work" : "Assignments"}
-					panel2={<AssignmentComp isTeacher={curUser?.roll === "teacher" ? true : false} currentCourse={currentCourse} curUser={curUser} />}
+				curUser?.roll === "student" && !enrolledStudent ||
+					curUser?.roll === "teacher" && currentCourse?.teacher_id === curUser?._id ?
+					<Box>
+						{openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
+						<TabsComp
+							tab1Label="Stream"
+							panel1={<Stream currentCourse={currentCourse} curUser={curUser} />}
 
-					tab3Label={curUser?.roll === "teacher" ? "Students" : "Announcement"}
-					panel3={curUser?.roll === "teacher" ? <CourseStudentsComp currentCourse={currentCourse} curUser={curUser} /> : < Announcement currentCourse={currentCourse} curUser={curUser} />}
+							tab2Label={curUser?.roll === "teacher" ? "Class Work" : "Assignments"}
+							panel2={<AssignmentComp isTeacher={curUser?.roll === "teacher" ? true : false} currentCourse={currentCourse} curUser={curUser} />}
 
-					tab4Label={curUser?.roll === "teacher" ? "Announcement" : ""}
-					panel4={curUser?.roll === "teacher" ? <Announcement currentCourse={currentCourse} curUser={curUser} /> : ""}
-				/>
-			</Box>
+							tab3Label={curUser?.roll === "teacher" ? "Students" : "Announcement"}
+							panel3={curUser?.roll === "teacher" ? <CourseStudentsComp setOpenSnack={setOpenSnack} setSeverity={setSeverity} currentCourse={currentCourse} curUser={curUser} /> : < Announcement currentCourse={currentCourse} curUser={curUser} />}
+
+							tab4Label={curUser?.roll === "teacher" ? "Announcement" : ""}
+							panel4={curUser?.roll === "teacher" ? <Announcement currentCourse={currentCourse} curUser={curUser} /> : ""}
+						/>
+					</Box> : history.push('/')
+
+			}
 		</Box>
 	);
 };

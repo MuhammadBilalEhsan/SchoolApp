@@ -102,6 +102,7 @@ const Assignment = ({
                         const res = await axios.post("assignment/submit", formData, config)
                         if (res) {
                             setFile(null)
+                            socket.emit("changeInAssignment", res.data.assignment)
                             if (res.data.message) {
                                 setOpenSnack(res.data.message)
                                 setSeverity("success")

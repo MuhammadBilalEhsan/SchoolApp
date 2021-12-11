@@ -4,8 +4,10 @@ import { FiMoreVertical } from "react-icons/fi";
 import SendingMessageInputComp from "./SendingMessageInputComp";
 import moment from "moment";
 import axios from "axios";
+import { socket } from '../App';
 
-const CourseStudentsComp = ({ currentCourse, curUser }) => {
+const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity }) => {
+    const [courseStudents, setCourseStudents] = useState(currentCourse?.students);
     const [anchorEl, setAnchorEl] = useState(null);
     const [message, setMessage] = useState("");
     const [studentID, setStudentID] = useState("");
@@ -22,7 +24,17 @@ const CourseStudentsComp = ({ currentCourse, curUser }) => {
         try {
             const reqObj = { studentID: id, courseID: currentCourse?._id }
             const res = await axios.post("course/delspecificstudent", reqObj)
-            console.log("delspecificstudent", res)
+            if (res) {
+                if (res.data.message) {
+                    socket.emit("changeInCourse", res.data.course)
+                    // setCourseStudents(res.data.course.students)
+                    setOpenSnack(res.data.message)
+                    setSeverity("success")
+                } else {
+                    setOpenSnack(res.data.error)
+                    setSeverity("error")
+                }
+            }
             handleClose()
         } catch (error) {
             console.log(error)
@@ -31,10 +43,18 @@ const CourseStudentsComp = ({ currentCourse, curUser }) => {
     }
     const muteStudentFunc = async (id) => {
         try {
+            handleClose()
             const res = await axios.post("course/mutestudent", { courseID: currentCourse?._id, studentID: id })
             if (res) {
-                console.log(res?.data?.message || res?.data.error)
-                handleClose()
+                socket.emit("changeInCourse", res.data.course)
+                setCourseStudents(res.data.course.students)
+                if (res.data.message) {
+                    setOpenSnack(res.data.message)
+                    setSeverity("success")
+                } else {
+                    setOpenSnack(res.data.error)
+                    setSeverity("error")
+                }
             }
         } catch (error) {
             console.log(error)
@@ -55,11 +75,22 @@ const CourseStudentsComp = ({ currentCourse, curUser }) => {
                 const messageObj = {
                     senderID: _id, name, time, message: newMessage, recieverID: studentID
                 }
-                await axios.post("user/sendmsg", messageObj)
+                const res = await axios.post("user/sendmsg", messageObj)
                 setMessage("")
                 setStudentID("")
+                if (res) {
+
+                    if (res.data.message) {
+                        setOpenSnack(res.data.message)
+                        setSeverity("success")
+                    } else {
+                        setOpenSnack(res.data.error)
+                        setSeverity("error")
+                    }
+                }
             } else {
-                alert("write something")
+                setOpenSnack("write something")
+                setSeverity("error")
             }
 
         } catch (error) {
@@ -76,63 +107,70 @@ const CourseStudentsComp = ({ currentCourse, curUser }) => {
                         Students
                     </Typography>
                     <Typography variant="body1" mt={3} color="green">
-                        {currentCourse?.students?.length > 0 ? currentCourse.students.length : "No"} students
+                        {currentCourse?.students?.length > 0 ? courseStudents.length : "No"} students
                     </Typography>
                 </Box>
 
-                {currentCourse?.students?.length > 0 ? currentCourse.students.map((currentStudent, index) => {
-                    return (
-                        <Box key={index}>
-                            <Box p="10px 20px" mt={1} width="85%" display="flex" justifyContent="space-between" sx={{ borderRadius: "10px", "&:hover": { backgroundColor: "#009c0026", boxShadow: 3, cursor: "pointer" } }} width="100%" >
-                                <Box display="flex" justifyContent="center" alignItems="center">
-                                    <Box minWidth="65px" >
-                                        <Avatar sizes="50px" sx={{ bgcolor: "green", textTransform: "capitalize" }}>{currentStudent.name[0]}</Avatar>
+                {currentCourse?.students?.length > 0 ?
+                    courseStudents.map((currentStudent, index) => {
+                        return (
+                            <Box key={index}>
+                                <Box p="10px 20px" mt={1} width="85%" display="flex" justifyContent="space-between" sx={{ borderRadius: "10px", "&:hover": { backgroundColor: "#009c0026", boxShadow: 3, cursor: "pointer" } }} width="100%" >
+                                    <Box display="flex" justifyContent="center" alignItems="center">
+                                        <Box minWidth="65px" >
+                                            <Avatar sizes="50px" sx={{ bgcolor: "green", textTransform: "capitalize" }}>{currentStudent.name[0]}</Avatar>
+                                        </Box>
+                                        <Box>
+                                            <Typography sx={{ fontSize: "16px", }}>{currentStudent.name}</Typography>
+                                        </Box>
                                     </Box>
-                                    <Box>
-                                        <Typography sx={{ fontSize: "16px", }}>{currentStudent.name}</Typography>
-                                    </Box>
+                                    {/* 3 dots */}
+                                    <Button
+                                        id="basic-button"
+                                        sx={{ color: "black", borderRadius: 5 }}
+                                        aria-controls="basic-menu"
+                                        aria-haspopup="true"
+                                        aria-expanded={open ? 'true' : undefined}
+                                        onClick={handleClick}
+                                        size="small"
+                                    >
+                                        <FiMoreVertical size="23px" style={{ margin: "auto 0px" }} />
+                                    </Button>
+                                    <Menu
+                                        id="basic-menu"
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                        MenuListProps={{
+                                            'aria-labelledby': 'basic-button',
+                                        }}
+                                    >
+                                        <MenuItem onClick={() => setStudentID(currentStudent.id)}>Send Message to {currentStudent?.name}</MenuItem>
+                                        <MenuItem onClick={() => removeStudentFunc(currentStudent.id)}>Remove</MenuItem>
+                                        <MenuItem onClick={() => muteStudentFunc(currentStudent.id)}>{currentStudent.muted ? "Unmute" : "Mute"}</MenuItem>
+                                    </Menu>
                                 </Box>
-                                {/* 3 dots */}
-                                <Button
-                                    id="basic-button"
-                                    sx={{ color: "black", borderRadius: 5 }}
-                                    aria-controls="basic-menu"
-                                    aria-haspopup="true"
-                                    aria-expanded={open ? 'true' : undefined}
-                                    onClick={handleClick}
-                                    size="small"
-                                >
-                                    <FiMoreVertical size="23px" style={{ margin: "auto 0px" }} />
-                                </Button>
-                                <Menu
-                                    id="basic-menu"
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleClose}
-                                    MenuListProps={{
-                                        'aria-labelledby': 'basic-button',
-                                    }}
-                                >
-                                    <MenuItem onClick={() => setStudentID(currentStudent.id)}>Send Message to {currentStudent?.name}</MenuItem>
-                                    <MenuItem onClick={() => removeStudentFunc(currentStudent.id)}>Remove</MenuItem>
-                                    <MenuItem onClick={() => muteStudentFunc(currentStudent.id)}>{currentStudent?.muted ? "Unmute" : "Mute"}</MenuItem>
-                                </Menu>
+                                {studentID ? <SendingMessageInputComp
+                                    name="message"
+                                    autoFocus={true}
+                                    value={message}
+                                    setValue={setMessage}
+                                    type="text"
+                                    placeholder={`Write Message for this student`}
+                                    color="success"
+                                    submitFunc={sendMsgFunc}
+                                    userName={curUser?.fname[0]}
+                                /> : ""
+                                }
                             </Box>
-                            {studentID ? <SendingMessageInputComp
-                                name="message"
-                                autoFocus={true}
-                                value={message}
-                                setValue={setMessage}
-                                type="text"
-                                placeholder={`Write Message for this student`}
-                                color="success"
-                                submitFunc={sendMsgFunc}
-                                userName={curUser?.fname[0]}
-                            /> : ""
-                            }
-                        </Box>
-                    )
-                }) : ""
+                        )
+                    }) : <Box pt={9} width="100%"
+                        textAlign="center"
+                    >
+                        <Typography variant="h6" color="green">
+                            Currently No Students...
+                        </Typography>
+                    </Box>
                 }
 
             </Box>

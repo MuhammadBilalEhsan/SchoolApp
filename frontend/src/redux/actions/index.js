@@ -57,9 +57,21 @@ export const updateAllAssignments = (data) => {
     payload: data
   }
 }
-// export const editAvailAbleCourses = (data) => {
-//   return {
-//     type: "UPDATE_ALL_ASSIGNMENTS",
-//     payload: data
-//   }
-// }
+export const editAvailAbleCourses = (data) => {
+  return {
+    type: "EDIT_AVAILABLE_COURSES",
+    payload: data
+  }
+}
+export const currentAssignmentRedux = (data) => {
+  return {
+    type: "CURRENT_ASSIGNMENT",
+    payload: data
+  }
+}
+export const checkedAssignmentsRedux = (data) => {
+  return {
+    type: "CHECKED_ASSIGNMENTS",
+    payload: data
+  }
+}

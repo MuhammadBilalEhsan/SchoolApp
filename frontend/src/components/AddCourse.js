@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
 	Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField, Menu,
-	MenuItem, Button,
+	MenuItem, Button, Typography
 } from "@mui/material/";
 import AddTopic from "./AddTopic";
 import CourseOutlineComp from "./CourseOutlineComp";
@@ -25,7 +25,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 	const uidFromLocalStorage = localStorage.getItem("uid");
 	const [open, setOpen] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(null);
-	const [selectDurInd, setSelectDurInd] = useState(String(course?.duration) || null);
+	const [selectDurInd, setSelectDurInd] = useState(course?.duration || null);
 	const [topicChips, setTopicChips] = useState([]);
 	const [topicErr, setTopicErr] = useState(null);
 	const [coOutErr, setCoOutErr] = useState(null);
@@ -113,9 +113,11 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 								}
 							} else {
 								handleClose();
+								console.log("Added", values)
 								const res = await axios.post("course/add", values);
 								if (res) {
-
+									socket.emit("newCoursesAdded", res.data.newCourse)
+									dispatch(getCourseFunc(res.data.newCourse))
 									if (res.data.message) {
 										setOpenSnack(res.data.message)
 										setSeverity("success")
@@ -221,9 +223,9 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 						// required
 						/>
 						{formik.errors.courseName && formik.touched.courseName && (
-							<p style={{ color: "red", marginLeft: "5px" }}>
+							<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
 								{formik.errors.courseName}
-							</p>
+							</Typography>
 						)}
 						<TextField
 							margin="dense"
@@ -240,9 +242,9 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							inputProps={{ maxLength: 100 }}
 						/>
 						{formik.errors.courseDesc && formik.touched.courseDesc && (
-							<p style={{ color: "red", marginLeft: "5px" }}>
+							<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
 								{formik.errors.courseDesc}
-							</p>
+							</Typography>
 						)}
 						{/* add Topic field */}
 						<AddTopic
@@ -271,9 +273,9 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 						</Button>
 						{
 							weekNotSelected ?
-								(<p style={{ color: "red", marginLeft: "5px" }}>
+								(<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
 									Please Select Duration of Your Course
-								</p>) : (<></>)
+								</Typography>) : (<></>)
 						}
 						<Menu
 							open={Boolean(menuOpen)}

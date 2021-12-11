@@ -82,6 +82,13 @@ const App = () => {
 				}
 			})
 
+			// socket.on("ENROLLEDiNcOURSE", (course) => {
+			// 	if (currentUser?._id === course.teacher_id) {
+			// 		console.log("enrolled")
+			// 		dispatch(getCourseFunc(course))
+			// 	} else { console.log("not Enrolled") }
+			// 	console.log("course", course)
+			// })
 			socket.on("courseEditedByTeacher", (course) => {
 				if (currentUser?.roll === "student" && currentUser?.atClass == course?.teacherClass) {
 					dispatch(updateCourses(course))

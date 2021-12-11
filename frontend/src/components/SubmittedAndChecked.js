@@ -5,25 +5,41 @@ import { useHistory } from 'react-router-dom'
 import StudentForThreeComp from './StudentForThreeComp'
 import SubmittedAccordion from './SubmittedAccordion'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { currentAssignmentRedux } from '../redux/actions'
+import { socket } from '../App'
+import MuiSnacks from './MuiSnacks'
 
 const SubmittedAndChecked = ({ currentAssignmentID, checked }) => {
+    const currentAssignment = useSelector(state => state.usersReducer.currentAssignment)
+    const [assignment, setAssignment] = useState(currentAssignment)
 
-    console.log("checkedInSubmittedAndChecked", checked)
+    const [openSnack, setOpenSnack] = useState("");
+    const [severity, setSeverity] = useState("");
 
-    const [assignment, setAssignment] = useState(null)
-
-
+    const dispatch = useDispatch()
     const history = useHistory()
+
+    useEffect(() => {
+        socket.on("CHANGE_IN_ASSIGNMENT", (assignment) => {
+            if (currentAssignment?._id === assignment._id) {
+                setAssignment(assignment)
+                dispatch(currentAssignmentRedux(assignment))
+            }
+        })
+    })
 
     useEffect(async () => {
         const res = await axios.get(`assignment/submitted/${currentAssignmentID}`)
         if (res) {
+            dispatch(currentAssignmentRedux(res.data.assignment))
             setAssignment(res.data.assignment)
         } else {
         }
     }, [])
     return (
         <Box>
+            {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
 
             <Box display="flex" justifyContent="flex-end" px={2} width="100%" >
                 <Tooltip title="Go to checked Assignments" arrow>
@@ -60,6 +76,8 @@ const SubmittedAndChecked = ({ currentAssignmentID, checked }) => {
                                         key={ind}
                                         submitted={student}
                                         assignmentID={assignment?._id}
+                                        setOpenSnack={setOpenSnack}
+                                        setSeverity={setSeverity}
                                     />
                             )
                         }) : <Box pt={9} borderTop="1px solid green" width="100%"

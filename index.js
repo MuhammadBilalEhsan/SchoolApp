@@ -81,6 +81,12 @@ socket.on('connection', (socket) => {
 	socket.on('courseEditted', (course) => {
 		socket.broadcast.emit("courseEditedByTeacher", course)
 	})
+	socket.on('changeInCourse', (course) => {
+		socket.broadcast.emit("CHANGE_IN_COURSE", course)
+	})
+	socket.on('changeInAssignment', (assignment) => {
+		socket.broadcast.emit("CHANGE_IN_ASSIGNMENT", assignment)
+	})
 	// socket.on()
 
 	socket.on("msgSentInStream", (course) => {

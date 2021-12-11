@@ -118,9 +118,9 @@ module.exports.submitAssignmentController = async (req, res) => {
                             submitted: [...findAssignment.submitted, assignmentObj]
                         })
                         if (submitWithoutFile) {
-                            const editted = await Assignment.findById(assignmentID)
-                            if (editted) {
-                                res.send({ message: "Assignment Submitted Successfully...", editted })
+                            const assignment = await Assignment.findById(assignmentID)
+                            if (assignment) {
+                                res.send({ message: "Assignment Submitted Successfully...", assignment })
                             }
                         } else {
                             res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
@@ -145,9 +145,9 @@ module.exports.submitAssignmentController = async (req, res) => {
                                                 })
                                                 fs.unlinkSync(req.file.path);
                                                 if (submitWithoutDesc) {
-                                                    const editted = await Assignment.findById(assignmentID)
-                                                    if (editted) {
-                                                        res.send({ message: "Assignment Submitted Successfully...", editted })
+                                                    const assignment = await Assignment.findById(assignmentID)
+                                                    if (assignment) {
+                                                        res.send({ message: "Assignment Submitted Successfully...", assignment })
                                                     }
                                                 } else {
                                                     res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
@@ -181,9 +181,9 @@ module.exports.submitAssignmentController = async (req, res) => {
                                                 })
                                                 fs.unlinkSync(req.file.path);
                                                 if (submitWithBoth) {
-                                                    const editted = await Assignment.findById(assignmentID)
-                                                    if (editted) {
-                                                        res.send({ message: "Assignment Submitted Successfully...", editted })
+                                                    const assignment = await Assignment.findById(assignmentID)
+                                                    if (assignment) {
+                                                        res.send({ message: "Assignment Submitted Successfully...", assignment })
                                                     }
                                                 } else {
                                                     res.status(512).send({ error: "Unfourtunatly Assignment not saved ..." })
@@ -263,7 +263,10 @@ module.exports.giveMarksController = async (req, res) => {
                     submitted: [...filtered, findSubmit]
                 })
                 if (updateSubmitted) {
-                    res.send({ message: "Marks Given..." })
+                    const assignment = await Assignment.findById(assignmentID)
+                    if (assignment) {
+                        res.send({ message: "Marks Given...", assignment })
+                    }
                 } else {
                     res.status(505).send({ error: "Student Marks not Updating..." })
                 }

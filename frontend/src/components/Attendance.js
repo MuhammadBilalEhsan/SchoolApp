@@ -216,7 +216,7 @@ const Attendance = ({ curUser, setAuth }) => {
 					{
 						holiday ? <Box mt={8} maxWidth="80%" mx="auto" py={2} textAlign="center">
 							<Typography color="green" variant="h4">Today is Holiday</Typography>
-						</Box> : <>
+						</Box> : <Box>
 							<Typography mt={8} mb={2} variant="h4" display="inline-block">
 								Mark Today's Attendance
 							</Typography>
@@ -232,7 +232,7 @@ const Attendance = ({ curUser, setAuth }) => {
 									{todayAttend ? "Marked" : "Mark"}
 								</Button>
 							</Box>
-						</>
+						</Box>
 					}
 
 				</Box>

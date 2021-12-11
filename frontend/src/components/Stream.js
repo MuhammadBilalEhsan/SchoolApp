@@ -25,8 +25,9 @@ const Stream = ({ curUser, currentCourse }) => {
         if (currentCourse && curUser) {
             const findStudentInCourse = currentCourse?.students?.find(student => student.id === curUser?._id)
             if (findStudentInCourse?.muted) {
-                // console.log(findStudentInCourse)
                 setIsMuted(true)
+            } else {
+                setIsMuted(false)
             }
         }
     })
@@ -87,9 +88,7 @@ const Stream = ({ curUser, currentCourse }) => {
                 })
             }
             {
-                isMuted ? <Box mt={3} border="1px solid red" borderRadius={2} width="100%" py={3} textAlign="center">
-                    <Typography variant="h6" color="red">You Can't send Message Because You are Muted...</Typography>
-                </Box> : <SendingMessageInputComp
+                !isMuted ? <SendingMessageInputComp
                     name="message"
                     autoFocus={true}
                     value={message}
@@ -98,7 +97,9 @@ const Stream = ({ curUser, currentCourse }) => {
                     color="success"
                     submitFunc={submitFunc}
                     userName={curUser?.fname[0]}
-                />
+                /> : <Box mt={3} border="1px solid red" borderRadius={2} width="100%" py={3} textAlign="center">
+                    <Typography variant="h6" color="red">You Can't send Message Because You're Muted...</Typography>
+                </Box>
             }
 
         </Box >

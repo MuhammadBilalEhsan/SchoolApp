@@ -28,13 +28,14 @@ const CDTeacher = ({ curUser, course, setAuth }) => {
 					</Typography>
 					<Typography variant="body1" mt={2} color="green">
 						{
-							course ? ("") : (<AddCourse
+							!course && curUser?.atClass ? <AddCourse
 								curUser={curUser}
 								course={course}
 								editCourse={false}
 								setSeverity={setSeverity}
 								setOpenSnack={setOpenSnack}
-							/>)
+							/> : !curUser?.atClass ? <Button color="success" size="small">Set Your Class</Button>
+								: ""
 						}
 					</Typography>
 				</Box>
@@ -44,10 +45,9 @@ const CDTeacher = ({ curUser, course, setAuth }) => {
 					p={3}
 					pt={-1}
 					color="green"
-
-					sx={{
-						bgcolor: "background.paper",
-					}}
+				// sx={{
+				// 	bgcolor: "background.paper",
+				// }}
 				>
 					{course && Object.entries(course).length > 0 ? (
 						<Box>
@@ -124,23 +124,13 @@ const CDTeacher = ({ curUser, course, setAuth }) => {
 								</Tooltip>
 							</Box>
 						</Box>
-					) : (
-						<Box
-							sx={{
-								marginTop: "15px",
-								width: "100%",
-								minHeight: "80%",
-								color: "green",
-								justifyContent: "center",
-								alignItems: "center",
-								bgcolor: "background.paper",
-							}}
-						>
-							<Typography marginX="auto" variant="subtitle1">
-								Currently No Course.
-							</Typography>
-						</Box>
-					)}
+					) : <Box pt={9} width="100%"
+						textAlign="center"
+					>
+						<Typography variant="h6" color="green">
+							Currently No Course Added
+						</Typography>
+					</Box>}
 				</Box>
 			</Box>
 		</Box>

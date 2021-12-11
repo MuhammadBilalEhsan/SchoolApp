@@ -5,9 +5,14 @@ import CourseAcc from './CourseAcc'
 import TabsComp from './TabsComp'
 import StudentTab2 from './StudentTab2'
 import axios from 'axios'
+import MuiSnacks from './MuiSnacks'
 
 const CDStudent = ({ curUser, courses, setAuth }) => {
     const [removedByTeacherState, setRemovedByTeacherState] = useState(true)
+
+    const [openSnack, setOpenSnack] = useState("");
+    const [severity, setSeverity] = useState("");
+
     const CDstudentStartFunction = async () => {
         try {
             const deleteCoursesIDsArr = curUser?.courses?.filter(course =>
@@ -32,6 +37,7 @@ const CDStudent = ({ curUser, courses, setAuth }) => {
         <Box className="_main" >
             <Header curUser={curUser} setAuth={setAuth} />
             <Box width="100%">
+                {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
                 <Box mx="auto" mt={2} maxWidth="800px" display="flex" flexDirection="column" justifyContent="center" >
                     <TabsComp
                         tab1Label="Available Courses"
@@ -42,13 +48,29 @@ const CDStudent = ({ curUser, courses, setAuth }) => {
                                 </Typography>
                             </Box>
                             {
-                                courses?.map((curElem, ind) => {
-                                    return <CourseAcc
-                                        key={ind}
-                                        curElem={curElem}
-                                        curUser={curUser}
-                                    />
-                                })
+                                courses?.length > 0 && curUser?.atClass ?
+                                    courses?.map((curElem, ind) => {
+                                        return <CourseAcc
+                                            setOpenSnack={setOpenSnack}
+                                            setSeverity={setSeverity}
+                                            key={ind}
+                                            curElem={curElem}
+                                            curUser={curUser}
+                                        />
+                                    }) : !curUser?.atClass ? <Box pt={9} width="100%"
+                                        textAlign="center"
+                                    >
+                                        <Typography variant="h6" color="green">
+                                            Please Set Your class to get Available Courses..
+                                        </Typography>
+                                    </Box>
+                                        : <Box pt={9} width="100%"
+                                            textAlign="center"
+                                        >
+                                            <Typography variant="h6" color="green">
+                                                Currently No Course Available...
+                                            </Typography>
+                                        </Box>
                             }
                         </Box>}
 
@@ -62,29 +84,37 @@ const CDStudent = ({ curUser, courses, setAuth }) => {
                                 </Box>
                                 <Box>
                                     {
-                                        curUser?.courses.map((curCor, ind) => {
-                                            return (
-                                                curCor.removedByTeacher && removedByTeacherState ? (<Box
-                                                    key={ind}
-                                                    width="100%"
-                                                    textAlign="center"
-                                                    mt={1} py={2}
-                                                    sx={{
-                                                        borderRadius: 1,
-                                                        backgroundColor: "#ff0000d1",
-                                                        "&:hover": { boxShadow: 3, cursor: "pointer" }
-                                                    }}
-                                                >
-                                                    <Typography variant="body1" color="white">
-                                                        You Were Removed from "{curCor.name}"
-                                                    </Typography></Box>
-                                                ) : <StudentTab2
-                                                    curCor={curCor}
-                                                    key={ind}
-                                                    ind={ind}
-                                                />
-                                            )
-                                        })
+                                        curUser?.courses?.length > 0 ?
+                                            curUser?.courses.map((curCor, ind) => {
+                                                return (
+                                                    curCor.removedByTeacher && removedByTeacherState ? <Box
+                                                        key={ind}
+                                                        width="100%"
+                                                        textAlign="center"
+                                                        mt={1} py={2}
+                                                        sx={{
+                                                            borderRadius: 1,
+                                                            backgroundColor: "#ff0000d1",
+                                                            "&:hover": { boxShadow: 3, cursor: "pointer" }
+                                                        }}
+                                                    >
+                                                        <Typography variant="body1" color="white">
+                                                            You Were Removed from "{curCor.name}"
+                                                        </Typography>
+                                                    </Box>
+                                                        : <StudentTab2
+                                                            curCor={curCor}
+                                                            key={ind}
+                                                            ind={ind}
+                                                        />
+                                                )
+                                            }) : <Box pt={9} width="100%"
+                                                textAlign="center"
+                                            >
+                                                <Typography variant="h6" color="green">
+                                                    Currently Not Enrolled In Any Course...
+                                                </Typography>
+                                            </Box>
                                     }
                                 </Box>
                             </Box>

@@ -4,7 +4,9 @@ const initialState = {
   course: {},
   studentCourse: [],
   currentCourse: null,
-  allAssignments: null
+  currentAssignment: null,
+  allAssignments: null,
+  checkedAssignments: null
 };
 
 const usersReducer = (state = initialState, action) => {
@@ -17,8 +19,15 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, course: action.payload };
     case "GET_Student_COURSES":
       return { ...state, studentCourse: action.payload };
+    case "EDIT_AVAILABLE_COURSES":
+      let findAlready = state.studentCourse?.find(course => course._id === action.payload._id)
+      if (!findAlready) {
+        return { ...state, studentCourse: [...state.studentCourse, action.payload] };
+      } else {
+        return state;
+      }
     case "UPDATE_COURSES":
-      var findCourse = state.studentCourse.find(course => course._id === action.payload._id)
+      let findCourse = state.studentCourse.find(course => course._id === action.payload._id)
       if (findCourse) {
         findCourse = action.payload
         const filterOther = state.studentCourse.filter(course => course._id !== action.payload._id)
@@ -37,6 +46,10 @@ const usersReducer = (state = initialState, action) => {
       }
     case "ALL_ASSIGNMENTS":
       return { ...state, allAssignments: action.payload };
+    case "CURRENT_ASSIGNMENT":
+      return { ...state, currentAssignment: action.payload };
+    case "CHECKED_ASSIGNMENTS":
+      return { ...state, checkedAssignments: action.payload };
 
     case "UPDATE_ALL_ASSIGNMENTS":
       if (state.allAssignments && state.allAssignments[0].courseID === action.payload[0].courseID) {

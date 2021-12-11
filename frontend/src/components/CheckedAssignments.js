@@ -3,7 +3,9 @@ import { Box, Tooltip, Button, Typography, Avatar } from '@mui/material'
 import { BiArrowBack } from "react-icons/bi"
 import { useHistory } from 'react-router-dom'
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { checkedAssignmentsRedux } from '../redux/actions'
+// import { socket } from '../App'
 
 
 const CheckedAssignments = ({ currentCourseID }) => {
@@ -11,20 +13,25 @@ const CheckedAssignments = ({ currentCourseID }) => {
     const curUser = useSelector((state) => state.usersReducer.curUser);
 
     const [checkedAssignments, setCheckedAssignments] = useState(null)
+
     const history = useHistory()
-    const useEffectFunction = async () => {
+    const dispatch = useDispatch()
+
+    // useEffect(() => {
+    // socket.on
+    // })
+
+    useEffect(async () => {
         try {
             const res = await axios.post(`assignment/studentallchecked`, { courseID: currentCourseID, studentID: curUser?._id })
             if (res) {
                 setCheckedAssignments(res.data.checked)
+                dispatch(checkedAssignmentsRedux(res.data.checked))
             }
         } catch (error) {
             console.log(error)
         }
-    }
-    useEffect(
-        useEffectFunction()
-        , [])
+    }, [])
     return (
         <div>
             <Box>
@@ -64,7 +71,13 @@ const CheckedAssignments = ({ currentCourseID }) => {
                             </Box>
                         </Box>
                     )
-                }) : <Box>No Assignments</Box>
+                }) : <Box pt={9} borderTop="1px solid green" width="100%"
+                    textAlign="center"
+                >
+                    <Typography variant="h6" color="green">
+                        No Assignment Checked
+                    </Typography>
+                </Box>
             }
         </div>
     )
