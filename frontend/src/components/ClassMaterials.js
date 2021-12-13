@@ -8,6 +8,7 @@ import Announcement from './Announcement';
 import CourseStudentsComp from './CourseStudentsComp';
 import AssignmentComp from './AssignmentComp';
 import { useHistory, useParams } from 'react-router-dom'
+import Spinner from './Spinner';
 
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,8 +29,10 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 	// const [currentCourse, setCurrentCourse] = useState(currentCourseFunc)
 	const [openSnack, setOpenSnack] = useState("");
 	const [severity, setSeverity] = useState("");
+	const [showClass, setShowClass] = useState(null);
+	const [spinner, setSpinner] = useState(true);
 
-	const enrolledStudent = currentCourse?.students?.find(student => student.id !== curUser?._id);
+	const enrolledStudent = currentCourse?.students?.find(student => student.id === curUser?._id);
 
 	const classes = useStyles()
 	const params = useParams()
@@ -37,6 +40,19 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 	const history = useHistory()
 	const dispatch = useDispatch()
 
+	useEffect(async () => {
+
+		const res = await axios.post(`/course/specific`, { id: params.id })
+		if (res.data.currentCourse) {
+			dispatch(currentCourseFunc(res.data.currentCourse))
+			setShowClass(true)
+			setSpinner(false)
+		} else {
+			console.log(res.data.error)
+			setSpinner(false)
+			setShowClass(false)
+		}
+	}, [])
 	useEffect(() => {
 		socket.on("CHANGE_IN_COURSE", (course) => {
 			if (currentCourse?._id === course._id) {
@@ -45,24 +61,14 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 		})
 	})
 
-	useEffect(async () => {
-
-		const res = await axios.post(`/course/specific`, { id: params.id })
-		if (res.data.currentCourse) {
-			dispatch(currentCourseFunc(res.data.currentCourse))
-		} else {
-			console.log(res.data.error)
-		}
-	}, [])
-
+	if (spinner) { return <Spinner /> }
 	return (
 		<Box className={classes.class_materials}>
 			<Header curUser={curUser} setAuth={setAuth} />
-			{
-
-				curUser?.roll === "student" && !enrolledStudent ||
+			{showClass ?
+				curUser?.roll === "student" && enrolledStudent ||
 					curUser?.roll === "teacher" && currentCourse?.teacher_id === curUser?._id ?
-					<Box>
+					(<Box>
 						{openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
 						<TabsComp
 							tab1Label="Stream"
@@ -72,13 +78,14 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 							panel2={<AssignmentComp isTeacher={curUser?.roll === "teacher" ? true : false} currentCourse={currentCourse} curUser={curUser} />}
 
 							tab3Label={curUser?.roll === "teacher" ? "Students" : "Announcement"}
-							panel3={curUser?.roll === "teacher" ? <CourseStudentsComp setOpenSnack={setOpenSnack} setSeverity={setSeverity} currentCourse={currentCourse} curUser={curUser} /> : < Announcement currentCourse={currentCourse} curUser={curUser} />}
+							panel3={curUser?.roll === "teacher" ? <CourseStudentsComp currentCourse={currentCourse} curUser={curUser} /> : < Announcement currentCourse={currentCourse} curUser={curUser} />}
 
 							tab4Label={curUser?.roll === "teacher" ? "Announcement" : ""}
 							panel4={curUser?.roll === "teacher" ? <Announcement currentCourse={currentCourse} curUser={curUser} /> : ""}
 						/>
-					</Box> : history.push('/')
-
+					</Box>)
+					: history.push('/')
+				: history.push('/')
 			}
 		</Box>
 	);

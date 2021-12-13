@@ -53,7 +53,7 @@ const SubmittedAndChecked = ({ currentAssignmentID, checked }) => {
                     {checked ? "Checked " : "Submitted "} Students
                 </Typography>
                 <Typography variant="body1" mt={2} color="green">
-                    (Assignment Name)
+                    ({assignment?.title})
                 </Typography>
             </Box>
             {

@@ -1,4 +1,5 @@
 const User = require("./userModel");
+const Conversation = require("../conversation/conversationModel")
 const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
 // const jwt = require("jsonwebtoken")
@@ -133,8 +134,6 @@ module.exports.loginUser = async (req, res) => {
 				res.cookie("jwtoken", token, {
 					httpOnly: true,
 				});
-
-
 				if (!isMatch) {
 					return res.status(401).json({ error: "Invalid Credentials" });
 				} else {
@@ -163,7 +162,7 @@ module.exports.markAttendance = async (req, res) => {
 		const findUser = await User.findOne({ _id });
 		const mm_yy = `${month}_${year}`;
 		if (!findUser) {
-			return res.status(400).send({ error: "User not found" });
+			return res.status(404).send({ error: "User not found" });
 		} else {
 			const getMonth = findUser.attendance.find(
 				(cur) => cur.monthName === mm_yy,
@@ -229,29 +228,111 @@ module.exports.getData = async (req, res) => {
 
 module.exports.sendMessageController = async (req, res) => {
 	try {
-		const { senderID, name, time, message, recieverID } = req.body
-		if (!senderID || !name || !time || !message || !recieverID) {
+		const { senderID, senderName, time, message, recieverID, _id, recieverName } = req.body
+		if (!senderID || !time || !message || !recieverID) {
 			res.status(400).send({ error: "Invalid Request" })
-
 		} else {
-			const findReciever = await User.findById(recieverID)
-			if (findReciever) {
-				const updateMessages = await User.findByIdAndUpdate(recieverID, {
-					messages: [...findReciever.messages, { senderID, name, time, message }]
-				})
-				if (updateMessages) {
-					res.send({ message: "Message Sent" })
-				} else {
-					res.status(504).send({ error: "Message not Send" })
+			const combinedID1 = `${senderID}_${recieverID}`
+			const combinedID2 = `${recieverID}_${senderID}`
+			const newMessage = { senderID, message, time }
+			if (_id) {
+				const findConversation = await Conversation.findById(_id)
+				if (findConversation) {
+					const updateConversation = await Conversation.findByIdAndUpdate(_id, {
+						chat: [...findConversation.chat, newMessage]
+					})
+					if (updateConversation) {
+						const conversation = await Conversation.findById(_id)
+						if (conversation) {
+							res.send({ message: "Message sent", conversation })
+						}
+					} else {
+						res.status(505).send({ error: "Message not sent.." })
+					}
 				}
 			} else {
-				res.status(404).send({ error: "Not Found..." })
+				const findWithcombinedID1 = await Conversation.findOne({ combinedID: combinedID1 })
+				if (findWithcombinedID1) {
+					const updateConversation = await Conversation.findOneAndUpdate(combinedID1, {
+						chat: [...findWithcombinedID1.chat, newMessage]
+					})
+					if (updateConversation) {
+						const conversation = await Conversation.findOne({ combinedID: combinedID1 })
+						if (conversation) {
+							res.send({ message: "Message sent", conversation })
+						} else {
+							res.status(506).send({ error: "Message not sent.." })
+						}
+					}
+				} else {
+					const findWithcombinedID2 = await Conversation.findOne({ combinedID: combinedID2 })
+					if (findWithcombinedID2) {
+						const updateConversation = await Conversation.findOneAndUpdate(combinedID2, {
+							chat: [...findWithcombinedID2.chat, newMessage]
+						})
+						if (updateConversation) {
+							const conversation = await Conversation.findOne({ combinedID: combinedID2 })
+							if (conversation) {
+								res.send({ message: "Message sent", conversation })
+							} else {
+								res.status(507).send({ error: "Message not sent.." })
+							}
+						}
+					} else {
+						const newConversation = new Conversation({
+							combinedID: combinedID1,
+							user1ID: senderID,
+							user1Name: senderName,
+							user2ID: recieverID,
+							user2Name: recieverName,
+							chat: [newMessage],
+						});
+						const saveConversation = await newConversation.save();
+						if (saveConversation) {
+							const conversation = await Conversation.findOne({ combinedID: combinedID1 })
+							if (conversation) {
+								const sender = await User.findById(senderID)
+								const reciever = await User.findById(recieverID)
+								if (sender && reciever) {
+									const saveInSender = await User.findByIdAndUpdate(senderID, {
+										conversations: [...sender.conversations, conversation._id]
+									})
+									const saveInReciever = await User.findByIdAndUpdate(recieverID, {
+										conversations: [...reciever.conversations, conversation._id]
+									})
+									if (saveInSender && saveInReciever) {
+										res.send({ message: "Message sent", conversation })
+									} else {
+										res.status(508).send({ error: "Message not Sent" })
+									}
+								}
+							}
+						} else {
+							res.status(505).send({ error: "Message not Sent" })
+						}
+					}
+				}
 			}
 		}
 	} catch (error) {
 		console.log(error)
 	}
 }
+
+module.exports.myAllConversations = async (req, res) => {
+	try {
+		const id = req.params.id
+		const allConversations = await Conversation.find({ $or: [{ user1ID: id }, { user2ID: id }] })
+		if (allConversations) {
+			res.send({ allConversations })
+		} else {
+			res.send({ allConversations })
+		}
+	} catch (error) {
+		res.status(450).send({ error })
+	}
+}
+
 // module.exports.logOutController = (req, res) => {
 // 	res.clearCookie('jwtoken')
 // 	res.send("clear")

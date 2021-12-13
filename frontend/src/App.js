@@ -7,6 +7,7 @@ import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
+import PrivateConversation from "./components/PrivateConversation";
 import appSetting from "./appSetting/appSetting"
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import {
@@ -147,6 +148,12 @@ const App = () => {
 						SuccessComp={<MessagesComp curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
+					{/* <PrivateRoute
+						auth={auth}
+						path="/messages/:id"
+						SuccessComp={<PrivateConversation curUser={curUser} setAuth={setAuth} />}
+						FailComp={<Redirect to="/" />}
+					/> */}
 					<PrivateRoute
 						auth={auth}
 						path="/classmaterials"

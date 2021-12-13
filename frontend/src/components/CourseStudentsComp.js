@@ -5,12 +5,18 @@ import SendingMessageInputComp from "./SendingMessageInputComp";
 import moment from "moment";
 import axios from "axios";
 import { socket } from '../App';
+import MuiSnacks from './MuiSnacks';
 
-const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity }) => {
+const CourseStudentsComp = ({ currentCourse, curUser, }) => {
     const [courseStudents, setCourseStudents] = useState(currentCourse?.students);
     const [anchorEl, setAnchorEl] = useState(null);
     const [message, setMessage] = useState("");
     const [studentID, setStudentID] = useState("");
+    const [studentName, setStudentName] = useState("");
+
+    const [openSnack, setOpenSnack] = useState("");
+    const [severity, setSeverity] = useState("");
+
     const open = Boolean(anchorEl);
 
     const { _id, fname, lname } = curUser || {}
@@ -18,6 +24,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity 
     const handleClick = (event) => {
         setStudentID("")
         setMessage("")
+        setStudentName("")
         setAnchorEl(event.currentTarget);
     };
     const removeStudentFunc = async (id) => {
@@ -27,7 +34,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity 
             if (res) {
                 if (res.data.message) {
                     socket.emit("changeInCourse", res.data.course)
-                    // setCourseStudents(res.data.course.students)
+                    setCourseStudents(res.data.course.students)
                     setOpenSnack(res.data.message)
                     setSeverity("success")
                 } else {
@@ -73,13 +80,14 @@ const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity 
                 const name = `${fname} ${lname}`
                 let time = moment().format('hh:mm:ss A')
                 const messageObj = {
-                    senderID: _id, name, time, message: newMessage, recieverID: studentID
+                    senderID: _id, senderName: name, time,
+                    message: newMessage, recieverID: studentID,
+                    recieverName: studentName
                 }
                 const res = await axios.post("user/sendmsg", messageObj)
-                setMessage("")
-                setStudentID("")
                 if (res) {
-
+                    console.log("changeInConversation", res.data.conversation)
+                    // socket.emit("changeInConversation", res.data.conversation)
                     if (res.data.message) {
                         setOpenSnack(res.data.message)
                         setSeverity("success")
@@ -87,6 +95,9 @@ const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity 
                         setOpenSnack(res.data.error)
                         setSeverity("error")
                     }
+                    setMessage("")
+                    setStudentID("")
+                    setStudentName("")
                 }
             } else {
                 setOpenSnack("write something")
@@ -101,6 +112,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity 
     return (
         <Box>
             <Box sx={{ maxWidth: "760px", margin: "0 auto" }}>
+                {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
 
                 <Box display="flex" justifyContent="space-between" pb={1} px={2} borderBottom="1.5px solid #009c0052" width="100%" >
                     <Typography variant="h4" color="green">
@@ -145,7 +157,12 @@ const CourseStudentsComp = ({ currentCourse, curUser, setOpenSnack, setSeverity 
                                             'aria-labelledby': 'basic-button',
                                         }}
                                     >
-                                        <MenuItem onClick={() => setStudentID(currentStudent.id)}>Send Message to {currentStudent?.name}</MenuItem>
+                                        <MenuItem onClick={() => {
+                                            setStudentID(currentStudent.id);
+                                            setStudentName(currentStudent.name)
+                                            handleClose()
+                                        }}>
+                                            Send Message to {currentStudent?.name}</MenuItem>
                                         <MenuItem onClick={() => removeStudentFunc(currentStudent.id)}>Remove</MenuItem>
                                         <MenuItem onClick={() => muteStudentFunc(currentStudent.id)}>{currentStudent.muted ? "Unmute" : "Mute"}</MenuItem>
                                     </Menu>

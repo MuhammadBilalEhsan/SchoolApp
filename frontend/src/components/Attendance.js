@@ -51,27 +51,27 @@ const Attendance = ({ curUser, setAuth }) => {
 	// ____________________________________________________________________________________________
 
 	const checkTodayAtt = () => {
-		if (curUser.attendance && curUser.attendance.length > 0) {
-			const attArr = curUser.attendance;
-			const lastMonth = attArr[attArr?.length - 1];
+		// if (curUser.attendance && curUser.attendance.length > 0) {
+		const attArr = curUser.attendance;
+		const lastMonth = attArr[attArr?.length - 1];
 
-			// check user have marked his/her attendance of today or not
-			const checkTodayAtt = lastMonth?.days?.find(
-				(curElem) => curElem.todayDate === moment().date(),
-			);
-			if (!checkTodayAtt && moment().date() === 1) {
-				handleClick()
-				setTodayAttend(true);
-			}
-			const checkHoliday = moment().day() === 0 || moment().day() === 6
-			if (checkTodayAtt) {
-				setTodayAttend(true);
-			} else if (checkHoliday) {
-				setHoliday(true)
-			} else {
-				setTodayAttend(false);
-			}
+		// check user have marked his/her attendance of today or not
+		const checkTodayAtt = lastMonth?.days?.find(
+			(curElem) => curElem.todayDate === moment().date(),
+		);
+		if (!checkTodayAtt && moment().date() === 1) {
+			handleClick()
+			setTodayAttend(true);
 		}
+		const checkHoliday = moment().day() === 0 || moment().day() === 6
+		if (checkTodayAtt) {
+			setTodayAttend(true);
+		} else if (checkHoliday) {
+			setHoliday(true)
+		} else {
+			setTodayAttend(false);
+		}
+		// }
 		latestMonthAttCalc();
 		overAllAttCalc();
 	};
