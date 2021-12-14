@@ -12,7 +12,7 @@ import Spinner from './Spinner';
 
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
-import { currentCourseFunc } from '../redux/actions';
+import { currentCourseFunc, updateCurrentCourse } from '../redux/actions';
 import { socket } from '../App';
 import MuiSnacks from './MuiSnacks';
 
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 
 const ClassMaterials = ({ curUser, setAuth }) => {
 	const currentCourse = useSelector((state) => state.usersReducer.currentCourse);
-	// const [currentCourse, setCurrentCourse] = useState(currentCourseFunc)
+	// const [currentCourse, setCurrentCourse] = useState(currCourse)
 	const [openSnack, setOpenSnack] = useState("");
 	const [severity, setSeverity] = useState("");
 	const [showClass, setShowClass] = useState(null);
@@ -45,15 +45,17 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 		const res = await axios.post(`/course/specific`, { id: params.id })
 		if (res.data.currentCourse) {
 			dispatch(currentCourseFunc(res.data.currentCourse))
+			// setCurrentCourse(res.data.currentCourse)
 			setShowClass(true)
 			setSpinner(false)
 		} else {
 			console.log(res.data.error)
-			setSpinner(false)
 			setShowClass(false)
+			setSpinner(false)
 		}
 	}, [])
 	useEffect(() => {
+
 		socket.on("CHANGE_IN_COURSE", (course) => {
 			if (currentCourse?._id === course._id) {
 				dispatch(currentCourseFunc(course))
@@ -84,8 +86,8 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 							panel4={curUser?.roll === "teacher" ? <Announcement currentCourse={currentCourse} curUser={curUser} /> : ""}
 						/>
 					</Box>)
-					: history.push('/')
-				: history.push('/')
+					: history.push('/coursedetails')
+				: history.push('/coursedetails')
 			}
 		</Box>
 	);

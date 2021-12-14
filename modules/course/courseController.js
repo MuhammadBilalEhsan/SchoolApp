@@ -310,9 +310,12 @@ module.exports.addAnnouncementController = async (req, res) => {
 					announcement: [...findCourse.announcement, { id, name, time, message }]
 				})
 				if (updateAnnouncement) {
-					res.send({ message: "message send successfully" })
+					const course = await Course.findById(courseID)
+					if (course) {
+						res.send({ message: "Announced...", course })
+					}
 				} else {
-					res.status(512).send({ error: "message not send..." })
+					res.status(512).send({ error: "Announcing error..." })
 				}
 			} else {
 				res.status(404).send({ error: "Course not found..." })

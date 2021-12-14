@@ -9,6 +9,7 @@ const CourseDetails = ({ curUser, setAuth }) => {
 	const courses = useSelector((state) => state.usersReducer.studentCourse);
 
 
+
 	if (curUser.roll === "teacher") {
 		return <CDTeacher curUser={curUser} course={course} setAuth={setAuth} />;
 	} else {
